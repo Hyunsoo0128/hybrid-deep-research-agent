@@ -6,6 +6,15 @@
 [![Next.js](https://img.shields.io/badge/Next.js-14+-black.svg)](https://nextjs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+<p align="center">
+  <img src="docs/images/05-query-input.png" width="720" alt="Deep Research — Query Input" />
+</p>
+<p align="center">
+  <img src="docs/images/03-research-report.png" width="720" alt="Deep Research — Research Report" />
+</p>
+
+> For a full UI walkthrough with all screenshots, see [docs/UI_GUIDE.md](docs/UI_GUIDE.md).
+
 ---
 
 ## 📄 Research Report
