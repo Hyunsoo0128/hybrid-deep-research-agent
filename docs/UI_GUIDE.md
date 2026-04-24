@@ -16,6 +16,8 @@ Each step is gated: the next step only becomes available after the current one c
 
 ## 1. Query Input
 
+![Query Input](images/05-query-input.png)
+
 Enter a research question in the text box and press **Start Research**.
 
 - Any natural language question works.
@@ -50,6 +52,9 @@ Controls how many LLM calls the writer node makes.
 | Detailed | 3 + N (one per sub-query) | 15,000+ chars |
 
 ### Technique Toggles
+
+![Technique Toggles](images/06-technique-toggles.png)
+
 Below the plan, the **Techniques** panel shows all 9 implemented RAG techniques grouped into four stages. Each technique can be toggled on or off before approving.
 
 | Stage | Techniques |
@@ -67,6 +72,8 @@ Click **Start Research** to approve, or **Cancel** to return to the query input.
 
 ## 3. Live Progress
 
+![Research Progress](images/01-research-progress.png)
+
 Once approved, the research pipeline runs and streams progress events in real time.
 
 | Event | What it means |
@@ -82,6 +89,8 @@ An elapsed timer runs during the streaming phase. The number of sources collecte
 
 ## 4. Report View
 
+![Research Report](images/03-research-report.png)
+
 When synthesis completes, the report streams into the report panel as Markdown, rendered in real time.
 
 - **Citations** are shown inline as `[Source N]` links.
@@ -91,6 +100,8 @@ When synthesis completes, the report streams into the report panel as Markdown, 
 ---
 
 ## 5. Follow-up Chat
+
+![Sources & Follow-up](images/04-sources-and-followup.png)
 
 After the report is complete, a chat input appears at the bottom of the page.
 
@@ -174,6 +185,8 @@ For a deeper explanation of the privacy boundary design, see [docs/HYBRID_STRATE
 ---
 
 ## 9. LLM Settings
+
+![LLM Settings](images/02-llm-settings.png)
 
 Click the gear icon (top right) to open the settings modal. You can switch the LLM provider at runtime without restarting the server.
 
