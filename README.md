@@ -38,7 +38,7 @@ From the experiments in the report (full data: `eval/results/`):
 
 ## What This Is
 
-A production-grade deep research system that implements the same pipeline as Perplexity Deep Research, built to answer one question:
+A production-grade deep research system implementing the same workflow as commercial deep research products (plan generation, parallel search, gap detection, cross-validation, critique, synthesis), built to answer one question:
 
 > **Can a small local LLM + cloud LLM hybrid match cloud-only quality on real research tasks — while keeping sensitive data local?**
 
@@ -145,7 +145,7 @@ LLM Provider             Search Tools
 Bedrock / Claude / Ollama  Tavily + Qdrant (local files)
 ```
 
-**Hybrid routing**: In `LLM_PROVIDER=hybrid` mode, evaluation nodes (CRAG scoring, AlignRAG suspect extraction, CONSTRUCT) run on the local model at $0/call. Generation nodes (writer, gap_detector) use the cloud model. Raw documents and queries never leave the local machine — only LLM-generated abstractions are sent to the cloud.
+**Hybrid routing**: In `LLM_PROVIDER=hybrid` mode, the local model handles evaluation and critique roles at $0/call: CRAG scoring, AlignRAG suspect extraction, CONSTRUCT trust scoring, and plan generation Stage 1 (extracting a privacy-safe research profile from the original query). The cloud model (Bedrock/Claude) receives only the abstracted profile — never the original query or raw documents — and handles sub-query generation, gap detection, and final synthesis. Raw local files are abstracted by the local LLM (MASS-RAG) before any content reaches the cloud.
 
 Full design: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/HYBRID_STRATEGY.md](docs/HYBRID_STRATEGY.md)
 
@@ -350,7 +350,7 @@ https://github.com/Hyunsoo0128/deep-research-agent
 ## Author
 
 **Hyunsoo Kim, Ph.D.**
-Senior GenAI Specialist Solutions Architect, Amazon Web Services · Ph.D., The University of Tokyo · Former AI/ML Researcher — Samsung Electronics, POSCO
+Senior GTM Specialist Solutions Architect — GenAI, Amazon Web Services · Ph.D., The University of Tokyo · Former AI/ML Researcher — Samsung Electronics, POSCO
 
 [Google Scholar](https://scholar.google.com/citations?user=n09wpHYAAAAJ&hl=en) · [LinkedIn](https://www.linkedin.com/in/hyunsoo-kim-ph-d-297b46186) · hyunkai@amazon.com
 
