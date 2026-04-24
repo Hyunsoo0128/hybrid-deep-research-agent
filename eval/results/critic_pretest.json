@@ -1,0 +1,20 @@
+[
+  {
+    "label": "Local (qwen3:8b)",
+    "macro_precision": 0.2,
+    "macro_recall": 0.2,
+    "phase3_recall": 0.0,
+    "phase_tp": {
+      "phase1": 1,
+      "phase2": 1
+    },
+    "phase_total": {
+      "phase3": 5,
+      "phase1": 3,
+      "phase2": 3
+    },
+    "total_tp": 2,
+    "total_fn": 9,
+    "total_fp": 7
+  }
+]

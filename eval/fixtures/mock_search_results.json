@@ -1,0 +1,687 @@
+{
+  "q1": {
+    "query": "What are the main causes and effects of global warming?",
+    "results": {
+      "sq1a": {
+        "sub_query": {
+          "id": "sq1a",
+          "question": "What are the primary causes of global warming?",
+          "dimension": "Cause/Mechanism"
+        },
+        "search_results": [
+          {
+            "url": "https://www.quora.com/What-are-the-primary-causes-of-global-warming-and-how-do-they-contribute-to-climate-change",
+            "title": "What are the primary causes of global warming, and how do they ...",
+            "summary": "Global warming refers to the long-term increase in Earth's average temperature due to human activities, primarily the emission of greenhouse",
+            "relevance_score": 0.8364614,
+            "raw_content": ""
+          },
+          {
+            "url": "https://wwf.org.au/what-we-do/climate/causes-of-global-warming/",
+            "title": "Causes of global warming | WWF-Australia | Causes of global warming | WWF Australia",
+            "summary": "Global warming refers to the long-term increase of the Earth’s surface temperatures caused by the increasing concentration of greenhouse gases in the atmosphere. The greenhouse gases that are the bigg",
+            "relevance_score": 0.81347597,
+            "raw_content": ""
+          },
+          {
+            "url": "https://science.nasa.gov/climate-change/causes/",
+            "title": "Causes - NASA Science",
+            "summary": "### About NASA. Scientists attribute the global warming trend observed since the mid-20th century to the human expansion of the \"greenhouse effect\"1 — warming that results when the atmosphere traps he",
+            "relevance_score": 0.70847535,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.epa.gov/climatechange-science/causes-climate-change",
+            "title": "Causes of Climate Change | US EPA",
+            "summary": "About 70 percent of the sunlight that reaches the earth is absorbed.5Natural changes in the earth’s surface, like the melting of sea ice, have contributed to climate change in the past, often acting a",
+            "relevance_score": 0.604703,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.un.org/en/climatechange/science/causes-effects-climate-change",
+            "title": "Causes and Effects of Climate Change | United Nations",
+            "summary": "Fossil fuels – coal, oil and gas – are by far the largest contributor to global climate change, accounting for around 68 per cent of global greenhouse gas emissions and nearly 90 per cent of all carbo",
+            "relevance_score": 0.6044228,
+            "raw_content": ""
+          }
+        ]
+      },
+      "sq1b": {
+        "sub_query": {
+          "id": "sq1b",
+          "question": "What are the measurable effects of global warming on ecosystems?",
+          "dimension": "Current State/Evidence"
+        },
+        "search_results": [
+          {
+            "url": "https://scied.ucar.edu/learning-zone/climate-change-impacts/ecology",
+            "title": "Effects of Climate Change on Ecology | Center for Science Education",
+            "summary": "## Climate change causes shifts in ecosystems. Rising temperatures cause shifting ecosystems, either expanding or decreasing the geographical range of specific types of habitats, or changing the timin",
+            "relevance_score": 0.6765563,
+            "raw_content": ""
+          },
+          {
+            "url": "https://support.climateinteractive.org/support/solutions/articles/47001271998-ecosystem-shifts-from-warming-graph",
+            "title": "Ecosystem Shifts from Warming—Graph : Climate Interactive",
+            "summary": "Frequently Asked Questions Top Resources & Materials Contact Us. Solution home  En-ROADS Impacts of Climate Change. * Warming influences an area’s weather, water supply, temperature, humidity, and veg",
+            "relevance_score": 0.57780564,
+            "raw_content": ""
+          },
+          {
+            "url": "http://toolkit.climate.gov/ecosystems-impacts",
+            "title": "Ecosystems Impacts | U.S. Climate Resilience Toolkit",
+            "summary": "Changing temperature extremes, wildfire patterns, sea level rise, hurricanes, floods, droughts, and warming ocean temperatures have already redistributed",
+            "relevance_score": 0.512376,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.noaa.gov/education/resource-collections/climate/climate-change-impacts",
+            "title": "Climate change impacts | National Oceanic and Atmospheric Administration",
+            "summary": "# Climate change impacts. Ecosystems and people in the United States and around the world are affected by the ongoing process of climate change today. Climate change affects the environment in many di",
+            "relevance_score": 0.49611887,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.greenpeace.org.uk/challenges/wildlife-and-biodiversity/climate-change-biodiversity/",
+            "title": "What are the effects of climate change on biodiversity? - Greenpeace UK",
+            "summary": "# What are the effects of climate change on biodiversity? Let’s explore how climate change and biodiversity are interlinked – and how tackling one can help the other. ## **The effects of climate chang",
+            "relevance_score": 0.45188335,
+            "raw_content": ""
+          }
+        ]
+      },
+      "sq1c": {
+        "sub_query": {
+          "id": "sq1c",
+          "question": "How does CO2 compare to other greenhouse gases in warming potential?",
+          "dimension": "Comparison/Alternatives"
+        },
+        "search_results": [
+          {
+            "url": "https://en.wikipedia.org/wiki/Global_warming_potential",
+            "title": "Global warming potential - Wikipedia",
+            "summary": "Therefore, by definition CO 2 has a GWP of 1. For other gases it depends on how strongly the gas absorbs thermal radiation, how quickly the gas leaves the",
+            "relevance_score": 0.8755427,
+            "raw_content": ""
+          },
+          {
+            "url": "https://climatechangeconnection.org/emissions/co2-equivalents/",
+            "title": "CO2 equivalents | Climate Change Connection",
+            "summary": "Climate Change Connection > Emissions > CO2 equivalents. CO2 Emissions smokestackCharts and tables in this Emissions section of our website **convert** all greenhouse gas (GHG) emissions **into CO**2*",
+            "relevance_score": 0.853046,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.c2es.org/content/main-greenhouse-gases/",
+            "title": "Main Greenhouse Gases - Center for Climate and Energy SolutionsCenter for Climate and Energy Solutions",
+            "summary": "The most common greenhouse gases are (in order of atmospheric concentration) water vapor (H2O), carbon dioxide (CO2), methane (CH4), nitrous oxide (N2O), and a suite of halogen-bearing gases (like flu",
+            "relevance_score": 0.83093774,
+            "raw_content": ""
+          },
+          {
+            "url": "https://ourworldindata.org/greenhouse-gas-emissions",
+            "title": "Greenhouse gas emissions - Our World in Data",
+            "summary": "Methane emissions are measured in tonnes of carbon dioxide equivalent (CO2e), so are weighted for their 100-year global warming potential value. Nitrous oxide emissions are measured in tonnes of carbo",
+            "relevance_score": 0.73299384,
+            "raw_content": ""
+          },
+          {
+            "url": "https://niwa.co.nz/atmosphere/what-are-global-warming-potentialtm-and-co2-equivalent-emissionstm",
+            "title": "What are Global Warming Potential™ and CO2 equivalent emissions™? | Earth Sciences New Zealand | NIWA",
+            "summary": "Earth Sciences New Zealand | NIWA. ## Tools & services. ## Tools & services. ## NIWA can help you leverage updated climate projections. ## Tools & services. ## Tools & Services. ## Tools & Services. T",
+            "relevance_score": 0.67347145,
+            "raw_content": ""
+          }
+        ]
+      }
+    }
+  },
+  "q2": {
+    "query": "How does transformer architecture work in large language models?",
+    "results": {
+      "sq2a": {
+        "sub_query": {
+          "id": "sq2a",
+          "question": "What is the attention mechanism in transformer models?",
+          "dimension": "Definition/Background"
+        },
+        "search_results": [
+          {
+            "url": "https://www.youtube.com/watch?v=KMHkbXzHn7s",
+            "title": "How Attention Mechanism Works in Transformer Architecture",
+            "summary": "llm #embedding #gpt The attention mechanism in transformers is a key component that allows models to focus on different parts of an input",
+            "relevance_score": 0.99992156,
+            "raw_content": ""
+          },
+          {
+            "url": "https://developer.nvidia.com/blog/emulating-the-attention-mechanism-in-transformer-models-with-a-fully-convolutional-network/",
+            "title": "Emulating the Attention Mechanism in Transformer Models with a ...",
+            "summary": "The attention mechanism enables transformers to capture long-range interactions between image elements, facilitating a more holistic",
+            "relevance_score": 0.99992037,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.ibm.com/think/topics/attention-mechanism",
+            "title": "What is an attention mechanism? | IBM",
+            "summary": "An attention mechanism is a [machine learning](https://www.ibm.com/topics/machine-learning) technique that directs [deep learning](https://www.ibm.com/topics/deep-learning) models to prioritize (or *a",
+            "relevance_score": 0.99984527,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.machinelearningmastery.com/the-transformer-attention-mechanism/",
+            "title": "The Transformer Attention Mechanism - MachineLearningMastery.com",
+            "summary": "As the name suggests, the scaled dot-product attention first computes a *dot product* for each query, $\\mathbf{q}$, with all of the keys, $\\mathbf{k}$. $$\\text{attention}(\\mathbf{Q}, \\mathbf{K}, \\math",
+            "relevance_score": 0.9997851,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc",
+            "title": "Attention in transformers, step-by-step | Deep Learning Chapter 6",
+            "summary": "Demystifying attention, the key mechanism inside transformers and ... models from the ground up, @vcubingx just started a short series of",
+            "relevance_score": 0.9997546,
+            "raw_content": ""
+          }
+        ]
+      },
+      "sq2b": {
+        "sub_query": {
+          "id": "sq2b",
+          "question": "What are the limitations of transformer architecture?",
+          "dimension": "Limitations/Challenges"
+        },
+        "search_results": [
+          {
+            "url": "https://medium.com/@thiru42/limitations-of-transformer-architecture-4e6118cbf5a4",
+            "title": "Limitations of Transformer Architecture | by Thirupathi Thangavel",
+            "summary": "Data Requirements: Transformers often require large amounts of data for effective training. Smaller datasets can lead to overfitting or",
+            "relevance_score": 0.9999938,
+            "raw_content": ""
+          },
+          {
+            "url": "https://openreview.net/forum?id=KidynPuLNW",
+            "title": "On Limitations of the Transformer Architecture | OpenReview",
+            "summary": "## On Limitations of the Transformer Architecture. **Keywords:** Transformer, computation complexity, communication complexity. We use Communication Complexity to prove that the Transformer layer is i",
+            "relevance_score": 0.9999895,
+            "raw_content": ""
+          },
+          {
+            "url": "https://medium.com/@ai.zeynepaslan/transformer-architecture-9876c2e5ac19",
+            "title": "Transformer Architecture:. Strengths, Limitations, and… - Medium",
+            "summary": "The ability to generate synthetic text, images, and audio brings ethical challenges — such as misinformation, deepfakes, and biased outputs.",
+            "relevance_score": 0.9999876,
+            "raw_content": ""
+          },
+          {
+            "url": "https://aiml.com/what-are-the-drawbacks-of-transformer-models/",
+            "title": "What are the limitations of transformer models? - AIML.com",
+            "summary": "The limitations of transformer models are high computational requirements, long training times, complex architecture, high carbon footprint.",
+            "relevance_score": 0.99998605,
+            "raw_content": ""
+          },
+          {
+            "url": "https://par.nsf.gov/servlets/purl/10580944",
+            "title": "[PDF] On Limitations of the Transformer Architecture",
+            "summary": "In particular, we show that a single Transformer attention layer cannot compute the answer to a function composition query correctly with significant probability of success, as long as the size n of t",
+            "relevance_score": 0.9999716,
+            "raw_content": ""
+          }
+        ]
+      },
+      "sq2c": {
+        "sub_query": {
+          "id": "sq2c",
+          "question": "How do transformers compare to RNNs for sequence modeling?",
+          "dimension": "Comparison/Alternatives"
+        },
+        "search_results": [
+          {
+            "url": "https://medium.com/@priyaila888/why-do-transformers-outperform-rnns-in-sequence-modeling-tasks-60baad188dbb",
+            "title": "Why do transformers outperform RNNs in sequence modeling tasks?",
+            "summary": "Transformers build contextual embeddings where each word representation depends on the entire sequence. RNNs tend to bias toward recent tokens.",
+            "relevance_score": 0.9999695,
+            "raw_content": ""
+          },
+          {
+            "url": "https://interviewdb.com/natural-language-processing/732/",
+            "title": "How do Transformer models differ from RNNs in handling sequences?",
+            "summary": "At its core, the fundamental difference between Transformer models and RNNs lies in how they process sequences of data. RNNs approach sequences in a linear and",
+            "relevance_score": 0.99995494,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.linkedin.com/pulse/why-transformer-preferred-over-rnn-answering-question-gina-lee-4vn9e",
+            "title": "Why is Transformer Preferred Over RNN? - Answering the question",
+            "summary": "One of the key reasons Transformers outperform RNNs is their ability to process sequences in parallel. In RNNs, tokens are processed",
+            "relevance_score": 0.9999318,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.baeldung.com/cs/rnns-transformers-nlp",
+            "title": "From RNNs to Transformers | Baeldung on Computer Science",
+            "summary": "Transformers are non-sequential models that process data in parallel. ... RNNs are well-suited for modeling sequential dependencies. They can",
+            "relevance_score": 0.99983907,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.reddit.com/r/MachineLearning/comments/gqxcjq/d_are_transformers_strictly_more_effective_than/",
+            "title": "[D] Are Transformers Strictly More Effective Than LSTM RNNs?",
+            "summary": "Transformers are generally more efficient, but they usually need to be deeper or bigger than the correspodning LSTM model. 1-layer LSTM can go",
+            "relevance_score": 0.9997508,
+            "raw_content": ""
+          }
+        ]
+      }
+    }
+  },
+  "q3": {
+    "query": "What is the current state of quantum computing and its practical applications?",
+    "results": {
+      "sq3a": {
+        "sub_query": {
+          "id": "sq3a",
+          "question": "What progress has been made in quantum computing hardware?",
+          "dimension": "Current State/Evidence"
+        },
+        "search_results": [
+          {
+            "url": "https://arstechnica.com/science/2025/11/new-quantum-computing-hardware-sorts-ions-for-computation/",
+            "title": "New quantum hardware puts the mechanics in quantum mechanics - Ars Technica",
+            "summary": "And since the qubits themselves can be moved around, it’s theoretically possible to entangle any atom or ion with any other in the system, allowing for a lot of flexibility in how algorithms and error",
+            "relevance_score": 0.99977654,
+            "raw_content": ""
+          },
+          {
+            "url": "https://blog.colobridge.net/en/2025/05/quantum-hardware-qubit-technologies-en/",
+            "title": "Quantum Hardware: An Overview of the Technologies That Will Change the World of Computing",
+            "summary": "# Quantum Hardware: an overview of the technologies that will change the world of computing. * **Qubits: The Foundation of Quantum Hardware**. * **It’s All About Qubits:** Unlike classical bits, quant",
+            "relevance_score": 0.9993487,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.ibm.com/quantum/hardware",
+            "title": "IBM Quantum Computing | Hardware and roadmap",
+            "summary": "*   [Hardware](https://www.ibm.com/quantum/hardware). *   [Community](https://www.ibm.com/quantum/hardware#). *   [Resources](https://www.ibm.com/quantum/hardware#). *   [Hardware](https://www.ibm.com",
+            "relevance_score": 0.9969722,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.reddit.com/r/QuantumComputing/comments/1hcimmw/what_has_quantum_computing_achieved_so_far/",
+            "title": "What has quantum computing achieved so far? : r/QuantumComputing",
+            "summary": "[Skip to main content](https://www.reddit.com/r/QuantumComputing/comments/1hcimmw/what_has_quantum_computing_achieved_so_far/#main-content)What has quantum computing achieved so far? Open menu Open na",
+            "relevance_score": 0.9843364,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.discovermagazine.com/quantum-computing-is-beginning-to-take-shape-here-are-three-recent-breakthroughs-48938",
+            "title": "Quantum Computing Is Beginning to Take Shape",
+            "summary": "[![Discover Magazine Logo](https://cdn.discovermagazine.com/immutable-assets/images/logos/discover.svg). ![Envelope Icon](https://cdn.discovermagazine.com/immutable-assets/images/icons/staycuriousicon",
+            "relevance_score": 0.7704648,
+            "raw_content": ""
+          }
+        ]
+      },
+      "sq3b": {
+        "sub_query": {
+          "id": "sq3b",
+          "question": "What are real-world applications of quantum computing today?",
+          "dimension": "Definition/Background"
+        },
+        "search_results": [
+          {
+            "url": "https://www.youtube.com/watch?v=vGOzPq3oTlY",
+            "title": "Quantum Computing: Real-World Applications Today - YouTube",
+            "summary": "Are our passwords safe, even with the increasing accessibility of quantum computing? Florian Neukart, Chief Product Officer at Terra Quantum",
+            "relevance_score": 0.9998134,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.forbes.com/councils/forbestechcouncil/2025/06/09/20-real-world-applications-of-quantum-computing-to-watch/",
+            "title": "20 Real-World Applications Of Quantum Computing To Watch - Forbes",
+            "summary": "1. Communication Security · 2. Simulations For Autonomous Vehicle Testing · 3. Rapid Data Analysis · 4. Drug Discovery And Materials Design · 5.",
+            "relevance_score": 0.99972624,
+            "raw_content": ""
+          },
+          {
+            "url": "https://quantumai.google/applications",
+            "title": "Quantum Applications",
+            "summary": "Quantum computing is rapidly evolving, transitioning from early explorations of benchmark tasks to more practical applications.",
+            "relevance_score": 0.9991768,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.reddit.com/r/QuantumComputing/comments/1hmf5j5/applications_of_quantum_computing/",
+            "title": "Applications of Quantum Computing : r/QuantumComputing - Reddit",
+            "summary": "The (practical) applications that we know of are factoring big numbers and simulating quantum mechanics.",
+            "relevance_score": 0.9979652,
+            "raw_content": ""
+          },
+          {
+            "url": "https://quantumcomputing.stackexchange.com/questions/27023/what-are-quantum-computers-actually-doing-today",
+            "title": "What are quantum computers actually doing today?",
+            "summary": "They are being used for simulating experiments that address the quantum-to-classical transition, for instance trying to prove quantum Darwinism.",
+            "relevance_score": 0.99750805,
+            "raw_content": ""
+          }
+        ]
+      },
+      "sq3c": {
+        "sub_query": {
+          "id": "sq3c",
+          "question": "What are the main challenges to practical quantum computing?",
+          "dimension": "Limitations/Challenges"
+        },
+        "search_results": [
+          {
+            "url": "https://thequantuminsider.com/2023/03/24/quantum-computing-challenges/",
+            "title": "What Are The Remaining Challenges of Quantum Computing?",
+            "summary": "# What Are The Remaining Challenges of Quantum Computing? ## **What Makes Quantum Computing So Challenging?**. However, quantum computing is also challenging for several reasons. **The biggest quantum",
+            "relevance_score": 0.8745175,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.techtarget.com/searchcio/feature/Quantum-computing-challenges-and-opportunities",
+            "title": "9 quantum computing challenges IT leaders should know",
+            "summary": "[Informa TechTarget](https://www.informatechtarget.com/)[Explore the Network](https://www.techtarget.com/searchcio/feature/Quantum-computing-challenges-and-opportunities#). [Other Content](https://www",
+            "relevance_score": 0.8742601,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.reddit.com/r/QuantumComputing/comments/j5xy0e/quantum_computing_challenges/",
+            "title": "Quantum computing challenges? : r/QuantumComputing - Reddit",
+            "summary": "One challenge is that quantum bits are subject to noise. How do we stop what we know as qubits being effected by the environment while letting us observe the",
+            "relevance_score": 0.8482825,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.date-conference.com/proceedings-archive/2017/pdf/7096.pdf",
+            "title": "[PDF] The Engineering Challenges in Quantum Computing",
+            "summary": "Thereafter, it discusses the different engineering challenges when building a quantum computer ranging from the core qubit technology, the control electronics, to the microarchitecture for the executi",
+            "relevance_score": 0.8232293,
+            "raw_content": ""
+          },
+          {
+            "url": "https://www.researchgate.net/post/What_are_the_challenges_and_opportunities_to_utilize_Quantum_Computing_as_Core_of_the_computational_capacity_for_the_next_generation_of_Quantum_AI",
+            "title": "What are the challenges and opportunities to utilize Quantum ...",
+            "summary": "1. The lack of a quantum-engineering (SE) methodology. · 2. The lack of a naturalist, adaptive quantum-computing architecture. · 3. The lack of a",
+            "relevance_score": 0.80625874,
+            "raw_content": ""
+          }
+        ]
+      }
+    }
+  },
+  "q4": {
+    "query": "How does Python compare to Rust for systems programming?",
+    "results": {
+      "sq4a": {
+        "sub_query": {
+          "id": "sq4a",
+          "question": "What are Python's strengths and weaknesses for systems programming?",
+          "dimension": "Limitations/Challenges"
+        },
+        "search_results": [
+          {
+            "url": "https://realpython.com/python-vs-rust/",
+            "title": "Python vs Rust: Key Differences for Systems Programming",
+            "summary": "Python is an interpreted language with dynamic typing and a Global Interpreter Lock (GIL) that limits true parallelism. For systems programming, Python offers rapid development and a rich ecosystem but suffers from slower execution speed compared to compiled languages. The GIL prevents multiple native threads from executing Python bytecodes simultaneously, making CPU-bound parallelism challenging.",
+            "relevance_score": 0.88,
+            "raw_content": "Python offers rapid prototyping and has an extensive library ecosystem (NumPy, SciPy, etc.) making it popular for scientific computing. However, for systems programming, Python has key weaknesses: the Global Interpreter Lock (GIL) prevents true multi-threading, memory management is automatic but less predictable, and performance-critical code often requires C extensions. Python memory usage is typically 5-10x higher than equivalent Rust programs. The language lacks ownership semantics, making memory safety guarantees difficult without garbage collection."
+          },
+          {
+            "url": "https://blog.logrocket.com/when-to-use-rust-vs-python/",
+            "title": "When to use Rust vs Python - LogRocket Blog",
+            "summary": "Python excels in data science, ML pipelines, and scripting due to its readability and extensive libraries. For systems programming tasks requiring low-level control, direct hardware access, or deterministic performance, Python is generally unsuitable without significant performance workarounds like Cython or ctypes.",
+            "relevance_score": 0.82,
+            "raw_content": "Python strengths for systems work: rapid development, readable code, enormous ecosystem. Python weaknesses: GIL, high memory overhead, slow execution (typically 50-100x slower than C/Rust for compute-bound tasks), no memory safety guarantees at the language level. Python is excellent for scripting system administration tasks, DevOps automation, and build systems."
+          },
+          {
+            "url": "https://stackoverflow.blog/2023/10/rust-python-systems/",
+            "title": "Rust and Python: Choosing for Systems Work | Stack Overflow",
+            "summary": "Stack Overflow Developer Survey 2023 shows Rust as most loved language for 8 consecutive years. Python remains most used language overall. For systems programming, the choice depends heavily on performance requirements and team expertise.",
+            "relevance_score": 0.75,
+            "raw_content": "Python GIL is being addressed in Python 3.13+ with the No-GIL branch (PEP 703), which could improve Python suitability for concurrent systems programming. However, even without GIL, Python still lacks compile-time memory safety guarantees and ownership semantics that Rust provides."
+          },
+          {
+            "url": "https://www.nature.com/articles/s41597-023-rust-systems",
+            "title": "Performance Analysis: Python vs Rust in Systems Programming",
+            "summary": "Benchmark comparisons show Rust typically outperforms Python by 50-200x in CPU-bound tasks. However, for I/O bound systems work, the gap narrows significantly. Python async I/O (asyncio) can match Rust performance for network-heavy applications.",
+            "relevance_score": 0.71,
+            "raw_content": "Empirical performance data: Rust binary search 150x faster than Python equivalent. JSON parsing: Rust 80x faster. However for async I/O workloads (web servers, database clients), Python asyncio closes the gap to 2-5x. PyPy JIT compilation can reduce Python performance gap to 10-20x for numerical workloads."
+          },
+          {
+            "url": "https://medium.com/systems-programming-2024-python",
+            "title": "Python for Systems Programming in 2024",
+            "summary": "Modern Python tooling including Cython, cffi, and ctypes allows Python to interface with C code for performance-critical sections. This hybrid approach is used in production systems at major companies including Dropbox and Instagram.",
+            "relevance_score": 0.65,
+            "raw_content": "Python-in-systems case studies: Dropbox uses Python for its sync client despite initial performance concerns, using Cython for hot paths. Instagram runs Django (Python web framework) serving billions of requests. The argument is that developer productivity often outweighs raw execution speed."
+          }
+        ]
+      },
+      "sq4b": {
+        "sub_query": {
+          "id": "sq4b",
+          "question": "What makes Rust suitable for systems programming?",
+          "dimension": "Definition/Background"
+        },
+        "search_results": [
+          {
+            "url": "https://doc.rust-lang.org/book/why-rust.html",
+            "title": "Why Rust for Systems Programming - The Rust Book",
+            "summary": "Rust provides memory safety without garbage collection through its ownership system. The borrow checker enforces rules at compile time that prevent data races, use-after-free errors, and buffer overflows — the most common categories of security vulnerabilities in C and C++ codebases.",
+            "relevance_score": 0.92,
+            "raw_content": "Rust ownership system: each value has a single owner, ownership can be borrowed (shared reference or mutable reference), and the borrow checker enforces these rules at compile time. This eliminates entire classes of bugs: null pointer dereferences, dangling pointers, use-after-free, double-free, and data races in concurrent code. Rust achieves C-like performance with zero-cost abstractions — generics and traits compile to the same machine code as hand-written C."
+          },
+          {
+            "url": "https://google.github.io/comprehensive-rust/why-rust.html",
+            "title": "Why Rust? - Comprehensive Rust by Google",
+            "summary": "Google has adopted Rust in Android, Chromium, and internal infrastructure. Rust eliminates 70% of security vulnerabilities that are memory-safety related. The language offers C-like performance with modern language ergonomics.",
+            "relevance_score": 0.89,
+            "raw_content": "Google findings on Rust adoption: in Android codebase, Rust code has shown 0 memory safety vulnerabilities after deployment, compared to historical C/C++ rates. Chromium team reports Rust as 2x more productive than C++ for new subsystems. Microsoft reports 70% of CVEs in Windows are memory-safety related — addressable with Rust."
+          },
+          {
+            "url": "https://www.rust-lang.org/learn/get-started",
+            "title": "Rust Systems Programming: Performance and Safety",
+            "summary": "Rust systems programming: direct hardware access, no runtime overhead, deterministic performance. The standard library provides primitives for threading, async I/O, and FFI without garbage collection pauses.",
+            "relevance_score": 0.84,
+            "raw_content": "Rust performance characteristics: zero-cost abstractions mean high-level code compiles to optimal machine code. No garbage collector means deterministic latency — critical for real-time systems, embedded devices, and OS kernels. Rust has been adopted in: Linux kernel (since 6.1), Windows NT kernel modules (Microsoft), Android BINDER driver (Google), Firefox browser engine (Mozilla)."
+          },
+          {
+            "url": "https://crates.io/blog/systems-programming-2024",
+            "title": "Rust Ecosystem for Systems Programming 2024",
+            "summary": "The Rust crates ecosystem has grown to 140,000+ packages. Key systems programming crates: tokio (async runtime), rayon (data parallelism), serde (serialization), and bindgen (C FFI). Memory-safe systems programming is increasingly viable with Rust.",
+            "relevance_score": 0.77,
+            "raw_content": "Rust ecosystem highlights for systems work: Tokio async runtime powers production systems at AWS, Microsoft, Discord. Rayon provides safe data parallelism with work-stealing scheduler. Rust FFI allows calling C libraries directly. Ownership system prevents data races by construction — Rust std::sync primitives are compile-time verified."
+          },
+          {
+            "url": "https://linuxfoundation.org/rust-linux-kernel",
+            "title": "Rust in the Linux Kernel - Linux Foundation",
+            "summary": "Linux kernel merged Rust support in version 6.1 (2022). Rust subsystems in Linux must maintain the same performance as equivalent C code while providing memory safety guarantees. Early drivers written in Rust show no memory safety bugs in production.",
+            "relevance_score": 0.73,
+            "raw_content": "Linux Rust integration: kernel Rust code must use no_std (no standard library), requires manual memory management within kernel constraints, but benefits from compile-time safety. The Apple, Google, and Microsoft-backed Rust Foundation supports this adoption. As of 2024, multiple device drivers and filesystem components use Rust in mainline Linux."
+          }
+        ]
+      },
+      "sq4c": {
+        "sub_query": {
+          "id": "sq4c",
+          "question": "In what scenarios should you choose Rust over Python?",
+          "dimension": "Comparison/Alternatives"
+        },
+        "search_results": [
+          {
+            "url": "https://rustacean.net/choose-rust-or-python",
+            "title": "Rust vs Python: When to Choose Each Language",
+            "summary": "Choose Rust when: performance is critical (game engines, OS components, embedded), memory safety must be guaranteed without GC, concurrent systems require data race prevention at compile time, or binary size and startup time matter. Choose Python when: development speed matters more than runtime speed, data science and ML tasks dominate, or the team has deep Python expertise.",
+            "relevance_score": 0.91,
+            "raw_content": "Decision framework: Rust is appropriate for systems programming where (1) latency requirements are in microseconds, (2) memory footprint is constrained (embedded, WASM), (3) security vulnerabilities from memory bugs are unacceptable, (4) concurrent access patterns need compile-time race prevention. Python appropriate when (1) iteration speed matters, (2) rich library ecosystem needed (ML, data), (3) scripting and glue code."
+          },
+          {
+            "url": "https://github.com/nickel-lang/rust-vs-python-perf",
+            "title": "Rust vs Python Performance Benchmarks 2024",
+            "summary": "Benchmarks show Rust outperforms Python by 100-200x for CPU-bound workloads. For I/O-bound async workloads, the difference narrows to 2-10x. Both languages support async/await but with different ownership models.",
+            "relevance_score": 0.85,
+            "raw_content": "Benchmark categories: CPU-bound (sorting, hashing, matrix multiply) — Rust 100-300x faster. I/O-bound (HTTP server, database queries) — Rust 3-10x faster with async. Memory usage: Rust typically 5-20x less memory for equivalent programs. Startup time: Rust binaries start in <10ms, Python interpreter startup 50-200ms. For microservices with cold start requirements, Rust has significant advantage."
+          },
+          {
+            "url": "https://discord.engineering/blog/why-we-switched-from-go-to-rust",
+            "title": "Why Discord Switched from Go to Rust",
+            "summary": "Discord switched their Read States service from Go to Rust, achieving 10x latency improvement and eliminating GC pauses. The case study demonstrates Rust advantages for high-performance, low-latency systems where GC pauses are unacceptable.",
+            "relevance_score": 0.8,
+            "raw_content": "Discord case study: Go service had 2-minute GC pressure cycles causing p99 latency spikes to 5-20ms. Rust rewrite eliminated GC entirely, achieving p99 latency <0.5ms consistently. Memory usage reduced 5x. Rust code was comparable in development time to Go despite team being new to Rust. Conclusion: for latency-sensitive systems, Rust is superior to GC languages including Go, Java, Python."
+          },
+          {
+            "url": "https://blog.cloudflare.com/rust-in-production",
+            "title": "Rust in Production at Cloudflare",
+            "summary": "Cloudflare uses Rust for performance-critical networking code, Wasm compilation, and security tools. Rust enables systems-level performance with memory safety for their edge computing platform processing millions of requests per second.",
+            "relevance_score": 0.76,
+            "raw_content": "Cloudflare Rust deployment: Pingora (HTTP proxy, replacing nginx) written in Rust, processes 1 trillion requests/day. Rust chosen over C for safety, over Go for performance. Python used for internal tooling, configuration, and monitoring scripts. The hybrid approach: Rust for hot path, Python for everything else."
+          },
+          {
+            "url": "https://stackoverflow.com/questions/when-rust-over-python",
+            "title": "Stack Overflow: When to use Rust over Python?",
+            "summary": "Community consensus: Rust for systems programming, embedded, performance-critical services, and security-sensitive code. Python for data science, rapid prototyping, scripting, and when rich ecosystem matters more than performance.",
+            "relevance_score": 0.7,
+            "raw_content": "Top-voted answer: The question is not just performance but guarantees. Rust gives compile-time guarantees about memory safety and concurrency correctness. Python gives none of these. For safety-critical systems (automotive, aerospace, medical devices), Rust is increasingly required. Python is excellent for everything where those guarantees are not needed."
+          }
+        ]
+      }
+    }
+  },
+  "q5": {
+    "query": "What are the health effects of intermittent fasting and who should avoid it?",
+    "results": {
+      "sq5a": {
+        "sub_query": {
+          "id": "sq5a",
+          "question": "What are the proven health benefits of intermittent fasting?",
+          "dimension": "Current State/Evidence"
+        },
+        "search_results": [
+          {
+            "url": "https://www.nejm.org/doi/full/10.1056/NEJMra1905136",
+            "title": "Intermittent Fasting — New England Journal of Medicine",
+            "summary": "Comprehensive review in NEJM (2019) confirms intermittent fasting triggers metabolic switching from glucose to ketones, promoting weight loss, improved insulin sensitivity, and cellular autophagy. Studies across multiple IF protocols (16:8, 5:2, ADF) show consistent metabolic improvements in overweight adults.",
+            "relevance_score": 0.94,
+            "raw_content": "NEJM meta-analysis findings: IF protocols produce 0.8-13% weight reduction over 8-24 weeks. Fasting insulin reduced 20-31% across studies. Insulin resistance (HOMA-IR) improved 20-40%. Blood pressure reduction: systolic -3-8 mmHg. LDL cholesterol reduction in most studies. Autophagy (cellular self-cleaning) upregulated after 16-18 hours of fasting — potentially protective against neurodegeneration and cancer. Caloric restriction equivalent produces similar weight loss outcomes."
+          },
+          {
+            "url": "https://www.cell.com/cell-metabolism/fulltext/S1550-4131(19)30611-4",
+            "title": "Metabolic Effects of Intermittent Fasting - Cell Metabolism",
+            "summary": "Autophagy increases significantly during extended fasting periods. This cellular recycling process removes damaged proteins and organelles, potentially reducing risk of neurodegenerative diseases, certain cancers, and aging-related conditions. 16-hour fasting windows consistently trigger measurable autophagy in human studies.",
+            "relevance_score": 0.91,
+            "raw_content": "Cell Metabolism study: 16:8 IF protocol in overweight men showed reduced calorie intake without counting calories, weight loss, improved blood pressure, and reduced markers of oxidative stress and inflammation. Autophagy markers (LC3-II, beclin-1) significantly elevated after 16+ hours fasting. mTOR pathway inhibited by fasting — same pathway targeted by rapamycin for longevity effects."
+          },
+          {
+            "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6836017/",
+            "title": "Intermittent Fasting and Metabolic Health - PubMed",
+            "summary": "Systematic review of 27 trials: IF produces significant improvements in metabolic syndrome components including visceral fat reduction, HbA1c improvement in pre-diabetics, and triglyceride reduction. Effects comparable to continuous caloric restriction for weight loss.",
+            "relevance_score": 0.87,
+            "raw_content": "Meta-analysis of 27 randomized controlled trials: mean weight loss 4.1 kg (IF) vs 4.8 kg (caloric restriction) — not significantly different. Visceral fat reduction: IF shows preferential visceral fat loss compared to subcutaneous fat. HbA1c improvements in pre-diabetic populations: -0.3 to -0.7% reduction. Insulin sensitivity improvements seen consistently across protocols."
+          },
+          {
+            "url": "https://harvard.edu/health/intermittent-fasting",
+            "title": "Intermittent Fasting: Surprising Update - Harvard Health",
+            "summary": "Harvard Health review: evidence supports IF for weight management and metabolic health in healthy adults. Benefits include weight loss, reduced inflammation markers (CRP, IL-6), and improved lipid profiles. Long-term safety data beyond 2 years is limited.",
+            "relevance_score": 0.82,
+            "raw_content": "Harvard summary: strongest evidence for IF benefits: weight loss (level A), insulin sensitivity improvement (level A), blood pressure reduction (level B). Emerging evidence: cognitive benefits, longevity markers, cancer risk reduction (all level C — preliminary). Key limitation: most studies under 1 year duration; long-term cardiovascular outcomes data needed. Adherence rates comparable to continuous caloric restriction."
+          },
+          {
+            "url": "https://mayo.edu/research/intermittent-fasting-2024",
+            "title": "Mayo Clinic: Intermittent Fasting Health Effects",
+            "summary": "Mayo Clinic review confirms IF benefits for weight loss and insulin resistance. Recommends 16:8 or 5:2 protocols for healthy adults seeking metabolic improvement. Notes growing evidence for cognitive benefits in animal models, with human trial data still emerging.",
+            "relevance_score": 0.78,
+            "raw_content": "Mayo Clinic clinical guidance: IF appropriate for healthy overweight/obese adults with metabolic syndrome. Recommended protocols: 16:8 (16-hour fast, 8-hour eating window) or 5:2 (normal eating 5 days, 500-600 kcal restriction 2 days). Expected outcomes: 0.5-1.5 kg/week weight loss in first month, plateauing to 0.2-0.5 kg/week by month 3."
+          }
+        ]
+      },
+      "sq5b": {
+        "sub_query": {
+          "id": "sq5b",
+          "question": "What are the risks and side effects of intermittent fasting?",
+          "dimension": "Limitations/Challenges"
+        },
+        "search_results": [
+          {
+            "url": "https://jamanetwork.com/journals/jama/intermittent-fasting-risks",
+            "title": "Risks of Intermittent Fasting - JAMA",
+            "summary": "JAMA review identifies key risks: muscle loss when protein intake insufficient, disordered eating patterns in susceptible individuals, hypoglycemia in diabetics, and refeeding syndrome risk with extreme protocols. Nutrient deficiencies reported in long-term IF without dietary guidance.",
+            "relevance_score": 0.9,
+            "raw_content": "JAMA clinical risks: (1) Muscle catabolism — fasting without adequate protein (1.6g/kg/day) leads to lean mass loss. Resistance training during IF windows mitigates this. (2) Disordered eating — IF can trigger binge eating, orthorexia, or eating disorder relapse in vulnerable populations. (3) Hypoglycemia risk in type 1 and type 2 diabetics on insulin or sulfonylureas. (4) Cortisol elevation during fasting periods — may be problematic in high-stress individuals. (5) Sleep disruption reported with evening eating restriction."
+          },
+          {
+            "url": "https://www.thelancet.com/journals/lancet/fasting-cardiovascular-2024",
+            "title": "Intermittent Fasting and Cardiovascular Risk - The Lancet",
+            "summary": "AHA 2024 abstract: observational study of 20,000 US adults found those eating within 8-hour windows had 91% higher cardiovascular mortality risk compared to 12-16 hour eating windows. Controversial finding prompting debate about IF safety for cardiac patients.",
+            "relevance_score": 0.88,
+            "raw_content": "AHA 2024 preliminary data: 8-hour eating window associated with significantly higher cardiovascular death in 20,000 person observational study over 8-year follow-up. Limitations: observational design, reverse causation possible (ill people restrict eating due to illness). Study not yet peer-reviewed. Counter-evidence: multiple RCTs show IF improves cardiovascular risk factors. Debate highlights need for long-term randomized controlled trial data on cardiac endpoints."
+          },
+          {
+            "url": "https://endocrine.org/news/fasting-hormones-2023",
+            "title": "Hormonal Effects of Intermittent Fasting",
+            "summary": "Endocrine Society findings: IF affects multiple hormones including cortisol, growth hormone, and sex hormones. In women, IF can disrupt menstrual cycles and affect fertility hormones. Cortisol elevation during fasting may increase stress response in already-stressed individuals.",
+            "relevance_score": 0.84,
+            "raw_content": "Hormonal impacts: Growth hormone increases 2-5x during fasting (beneficial for fat burning). Cortisol elevates during fasting periods — manageable in healthy adults, problematic for those with adrenal dysfunction. Female-specific findings: caloric restriction and excessive fasting associated with hypothalamic amenorrhea in women with low body fat. Testosterone levels unchanged in men in most studies. Thyroid hormone (T3) may decrease with prolonged fasting."
+          },
+          {
+            "url": "https://pubmed.ncbi.nlm.nih.gov/34543749/",
+            "title": "IF Side Effects: Systematic Review",
+            "summary": "Systematic review of 150+ IF studies identifies most common adverse effects: hunger/irritability (60-90% of participants in first 2 weeks), headaches (20-30%), fatigue (20-40%), difficulty concentrating (15-25%). Most side effects resolve within 2-4 weeks as metabolic adaptation occurs.",
+            "relevance_score": 0.79,
+            "raw_content": "Common side effects timeline: Week 1-2: hunger, irritability, headache, low energy (most common, usually self-limiting). Week 3-4: adaptation phase — side effects decrease substantially. Month 2+: most participants report normalized energy and reduced hunger. Social eating challenges and lifestyle inflexibility reported as major reasons for IF discontinuation. Compliance rates: 60-70% maintain IF protocols at 6 months."
+          },
+          {
+            "url": "https://nutrition.org/if-disordered-eating-review",
+            "title": "Intermittent Fasting and Disordered Eating Risk",
+            "summary": "Review examining relationship between IF and eating disorders: IF is not recommended for individuals with history of anorexia nervosa, bulimia, or binge eating disorder. The restriction-binge cycle may be worsened by IF protocols. However, for individuals without eating disorder history, IF does not increase disordered eating markers.",
+            "relevance_score": 0.75,
+            "raw_content": "Disordered eating risk: individuals with current or historical eating disorders face elevated risk from IF due to the cognitive emphasis on food restriction. IF can reinforce restrictive eating patterns. However, in populations without eating disorder history, IF does not trigger disordered eating based on validated questionnaires (EDE-Q, TFEQ). Medical supervision recommended for anyone with eating disorder history who wants to try IF."
+          }
+        ]
+      },
+      "sq5c": {
+        "sub_query": {
+          "id": "sq5c",
+          "question": "Who should avoid intermittent fasting for health reasons?",
+          "dimension": "Cause/Mechanism"
+        },
+        "search_results": [
+          {
+            "url": "https://mayoclinic.org/healthy-lifestyle/who-should-avoid-if",
+            "title": "Who Should Avoid Intermittent Fasting? - Mayo Clinic",
+            "summary": "Mayo Clinic contraindications for IF: pregnant or breastfeeding women, children and teenagers, individuals with type 1 diabetes (hypoglycemia risk), history of eating disorders, and those underweight (BMI <18.5). Medical supervision required for type 2 diabetics on insulin or sulfonylureas.",
+            "relevance_score": 0.93,
+            "raw_content": "Absolute contraindications: (1) Pregnancy — caloric restriction during pregnancy associated with adverse fetal outcomes. (2) Breastfeeding — caloric restriction reduces milk supply and nutritional quality. (3) Children under 18 — caloric restriction during growth phases is contraindicated. (4) Active eating disorder (anorexia, bulimia, BED). (5) Underweight (BMI <18.5). Relative contraindications requiring medical supervision: type 1 diabetes, type 2 diabetes on insulin, prior hypoglycemia episodes, any medication with food interaction requirements."
+          },
+          {
+            "url": "https://diabetes.org/food-nutrition/intermittent-fasting",
+            "title": "Intermittent Fasting for Diabetics - American Diabetes Association",
+            "summary": "ADA position: IF is not recommended for type 1 diabetics due to unpredictable hypoglycemia risk. For type 2 diabetics, IF may be beneficial but requires medication adjustment under physician supervision. Blood glucose monitoring frequency must increase during IF implementation.",
+            "relevance_score": 0.9,
+            "raw_content": "ADA clinical guidance: Type 1 diabetes + IF: contraindicated due to insulin dosing complexity during fasting. Type 2 diabetes + IF: may reduce HbA1c but medication doses (especially insulin and sulfonylureas) must be reduced to prevent hypoglycemia. Metformin generally safe with IF as it does not cause hypoglycemia. SGLT-2 inhibitors may increase diabetic ketoacidosis risk during fasting. All diabetic patients must monitor blood glucose when trying IF."
+          },
+          {
+            "url": "https://acog.org/clinical/clinical-guidance/if-pregnancy",
+            "title": "IF During Pregnancy - ACOG Guidelines",
+            "summary": "ACOG strongly advises against IF during pregnancy. Fetal development requires consistent glucose supply, and maternal ketosis (even mild) during fasting may affect fetal brain development. Breastfeeding women should maintain normal caloric intake for milk production.",
+            "relevance_score": 0.87,
+            "raw_content": "ACOG statement: intermittent fasting during pregnancy not recommended due to (1) fetal glucose dependency throughout 24-hour cycle, (2) evidence of impaired fetal growth with maternal caloric restriction, (3) ketone exposure during fetal neurodevelopment associated with reduced IQ in observational studies. Ramadan fasting studies (natural experiment) show mixed results — some studies report normal birth outcomes, others show slight reduction in birth weight."
+          },
+          {
+            "url": "https://psychiatry.org/patients-families/eating-disorders/if",
+            "title": "Eating Disorders and Intermittent Fasting - APA",
+            "summary": "American Psychiatric Association: IF is contraindicated for individuals with active eating disorders. The restrictive eating structure of IF can trigger relapse in individuals with anorexia or bulimia. Any history of eating disorders requires psychiatric clearance before beginning IF.",
+            "relevance_score": 0.84,
+            "raw_content": "APA clinical guidance: eating disorder history + IF: contraindicated without psychiatric supervision. Restriction-based eating patterns (IF) can activate cognitive schemas associated with eating disorders. Social isolation around eating (common with IF due to meal timing restrictions) can worsen eating disorder psychopathology. For individuals in eating disorder recovery: IF is generally not recommended as it reinstates restrictive cognitions."
+          },
+          {
+            "url": "https://webmd.com/diet/if-who-should-not-fast",
+            "title": "Who Should Not Try Intermittent Fasting - WebMD",
+            "summary": "WebMD summary of IF contraindications: pregnant/breastfeeding women, children, teenagers, type 1 diabetics, individuals with history of eating disorders, those on blood-sugar medications, and individuals with a history of low blood pressure. Older adults should consult physician due to muscle loss risk.",
+            "relevance_score": 0.8,
+            "raw_content": "Practical guide: consult doctor before IF if you: take any prescription medications (especially diabetes, blood pressure, anticoagulants), have chronic conditions (kidney disease, liver disease, heart disease), have history of disordered eating, are over 65 (muscle loss accelerated), or have had recent surgery. Generally safe populations: healthy adults aged 18-65 without chronic conditions who want weight management or metabolic improvement."
+          }
+        ]
+      }
+    }
+  }
+}

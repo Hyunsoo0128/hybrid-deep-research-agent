@@ -1,0 +1,1933 @@
+{
+  "phase_label": "bedrock_full_v1",
+  "timestamp": "2026-04-23T01:48:55Z",
+  "provider": "bedrock",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "pricing": {
+    "input_per_1k": 0.003,
+    "output_per_1k": 0.015
+  },
+  "benchmark_config": {
+    "infra": "BM1b_build_graph",
+    "conditions": [
+      "baseline",
+      "phase1",
+      "phase1_2",
+      "phase1_2_3",
+      "phase1_2_3_no_mass_rag",
+      "phase1_2_3_no_stride"
+    ],
+    "query_count": 5,
+    "total_runs": 30
+  },
+  "conditions": [
+    {
+      "name": "baseline",
+      "config": {
+        "feature_flags": {
+          "query_decomp": false,
+          "crag": false,
+          "alignrag": false,
+          "dsap": false,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": false,
+          "rhinoinsight": false,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 5
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.762,
+        "avg_citation_density": 0.866,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.907,
+        "avg_llm_judge": 0.5,
+        "avg_citations_per_report": 31.0,
+        "avg_relevant_doc_ratio": 1.0,
+        "avg_retrieval_confidence": 0.7,
+        "avg_strip_retention": 1.0,
+        "avg_checklist_coverage_ratio": 0.0,
+        "avg_mass_rag_synthesis_ratio": 0.0,
+        "avg_trust_score": 0.0,
+        "avg_untrustworthy_count": 0.0,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.0,
+        "avg_corroboration_ratio": 0.0,
+        "cost_per_query_usd": {
+          "mean": 0.1317,
+          "p50": 0.1255,
+          "p95": 0.152
+        },
+        "latency_sec": {
+          "mean": 107.144,
+          "p50": 108.37,
+          "p95": 119.218
+        },
+        "total_input_tokens": 88899,
+        "total_output_tokens": 26116,
+        "total_cost_usd": 0.658437
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 108.37,
+          "input_tokens": 16064,
+          "output_tokens": 5152,
+          "cost_usd": 0.125472,
+          "citation_count": 30,
+          "relevant_doc_ratio": 1.0,
+          "avg_retrieval_confidence": 0.7,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperatures, driven primarily by the intensifying concentration of greenhouse gases in the atmosphere [Source 11] [Source 12]. *(cross-veri",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "query_type": "definitional",
+          "scores": {
+            "keyword_coverage": 0.42857142857142855,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 97.95,
+          "input_tokens": 17746,
+          "output_tokens": 4692,
+          "cost_usd": 0.123618,
+          "citation_count": 35,
+          "relevant_doc_ratio": 1.0,
+          "avg_retrieval_confidence": 0.7,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nTransformer architecture forms the foundational framework underlying modern large language models (LLMs), operating through a set of interconnected mechanisms that enable context-aware, parallel processing of s",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "query_type": "current_state",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 0.5,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 91.42,
+          "input_tokens": 15746,
+          "output_tokens": 4006,
+          "cost_usd": 0.107328,
+          "citation_count": 20,
+          "relevant_doc_ratio": 1.0,
+          "avg_retrieval_confidence": 0.7,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\n> \u26a0\ufe0f **Critical Data Quality Notice:** This executive summary is based on a source pool with a quality score of only 18%. All 20 collected sources are exact duplicates of just 5 unique sources, al",
+          "error": ""
+        },
+        {
+          "query_id": "q4",
+          "query": "How does Python compare to Rust for systems programming?",
+          "query_type": "comparative",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 118.61,
+          "input_tokens": 18753,
+          "output_tokens": 6205,
+          "cost_usd": 0.149334,
+          "citation_count": 35,
+          "relevant_doc_ratio": 1.0,
+          "avg_retrieval_confidence": 0.7,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "# How does Python compare to Rust for systems programming?\n\n## Executive Summary\n\nThis report presents a comprehensive comparison of Python and Rust across the key dimensions of systems programming, including performance, memory safety, concurrency, hardware control, and developer usability. Benchma",
+          "error": ""
+        },
+        {
+          "query_id": "q5",
+          "query": "What are the health effects of intermittent fasting and who should avoid it?",
+          "query_type": "factual",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 0.8285714285714286,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 119.37,
+          "input_tokens": 20590,
+          "output_tokens": 6061,
+          "cost_usd": 0.152685,
+          "citation_count": 35,
+          "relevant_doc_ratio": 1.0,
+          "avg_retrieval_confidence": 0.7,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "# What are the health effects of intermittent fasting and who should avoid it?\n\n## Executive Summary\n\nIntermittent fasting (IF) has emerged as a widely studied dietary strategy with a growing body of scientific evidence supporting its benefits for metabolic health and weight management in healthy ad",
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "phase1",
+      "config": {
+        "feature_flags": {
+          "query_decomp": true,
+          "crag": true,
+          "alignrag": false,
+          "dsap": false,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": false,
+          "rhinoinsight": true,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 5
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.848,
+        "avg_citation_density": 0.931,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.945,
+        "avg_llm_judge": 0.5,
+        "avg_citations_per_report": 28.8,
+        "avg_relevant_doc_ratio": 0.581,
+        "avg_retrieval_confidence": 0.545,
+        "avg_strip_retention": 0.924,
+        "avg_checklist_coverage_ratio": 0.329,
+        "avg_mass_rag_synthesis_ratio": 0.0,
+        "avg_trust_score": 0.0,
+        "avg_untrustworthy_count": 0.0,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.0,
+        "avg_corroboration_ratio": 1.0,
+        "cost_per_query_usd": {
+          "mean": 0.1636,
+          "p50": 0.1587,
+          "p95": 0.208
+        },
+        "latency_sec": {
+          "mean": 104.798,
+          "p50": 112.88,
+          "p95": 119.062
+        },
+        "total_input_tokens": 74923,
+        "total_output_tokens": 39543,
+        "total_cost_usd": 0.817914
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 94.88,
+          "input_tokens": 12724,
+          "output_tokens": 6327,
+          "cost_usd": 0.133077,
+          "citation_count": 26,
+          "relevant_doc_ratio": 0.286,
+          "avg_retrieval_confidence": 0.407,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 3,
+            "partial": 2,
+            "complete": 2
+          },
+          "checklist_coverage_ratio": 0.429,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperatures, driven predominantly by the accumulation of greenhouse gases in the atmosphere [Source 2] [cross-verified]. Scientific consens",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "query_type": "definitional",
+          "scores": {
+            "keyword_coverage": 0.7142857142857143,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 81.97,
+          "input_tokens": 12384,
+          "output_tokens": 5861,
+          "cost_usd": 0.125067,
+          "citation_count": 21,
+          "relevant_doc_ratio": 0.5,
+          "avg_retrieval_confidence": 0.462,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 6,
+          "checklist_status_counts": {
+            "pending": 5,
+            "partial": 1,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.083,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nThis report examines the internal technical mechanisms and architectural components that enable transformer-based large language models to process and generate language, with a particular focus on the attention",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "query_type": "current_state",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 0.8,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 120.35,
+          "input_tokens": 16580,
+          "output_tokens": 7264,
+          "cost_usd": 0.1587,
+          "citation_count": 35,
+          "relevant_doc_ratio": 0.714,
+          "avg_retrieval_confidence": 0.593,
+          "avg_strip_retention": 0.738,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 4,
+            "partial": 2,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.286,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is currently in a transitional phase, moving from purely theoretical research toward early-stage practical implementation, though significant technical challenges remain before w",
+          "error": ""
+        },
+        {
+          "query_id": "q4",
+          "query": "How does Python compare to Rust for systems programming?",
+          "query_type": "comparative",
+          "scores": {
+            "keyword_coverage": 1.0,
+            "citation_density": 0.8571428571428571,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 113.91,
+          "input_tokens": 16162,
+          "output_tokens": 9305,
+          "cost_usd": 0.188061,
+          "citation_count": 35,
+          "relevant_doc_ratio": 0.571,
+          "avg_retrieval_confidence": 0.593,
+          "avg_strip_retention": 0.952,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 3,
+            "partial": 2,
+            "complete": 2
+          },
+          "checklist_coverage_ratio": 0.429,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does Python compare to Rust for systems programming?\n\n## Executive Summary\n\nThis report examines the comparative suitability of Python and Rust for systems programming across four critical dimensions: performance, memory safety, concurrency, and ecosystem utility. Benchmark evidence consistent",
+          "error": ""
+        },
+        {
+          "query_id": "q5",
+          "query": "What are the health effects of intermittent fasting and who should avoid it?",
+          "query_type": "factual",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 112.88,
+          "input_tokens": 17073,
+          "output_tokens": 10786,
+          "cost_usd": 0.213009,
+          "citation_count": 27,
+          "relevant_doc_ratio": 0.833,
+          "avg_retrieval_confidence": 0.67,
+          "avg_strip_retention": 0.93,
+          "checklist_count": 6,
+          "checklist_status_counts": {
+            "pending": 3,
+            "partial": 1,
+            "complete": 2
+          },
+          "checklist_coverage_ratio": 0.417,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What are the health effects of intermittent fasting and who should avoid it?\n\n## Executive Summary\n\nIntermittent fasting (IF) demonstrates meaningful but nuanced health benefits across multiple physiological systems, supported by a convergence of clinical and meta-analytic evidence. Studies show I",
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "phase1_2",
+      "config": {
+        "feature_flags": {
+          "query_decomp": true,
+          "crag": true,
+          "alignrag": true,
+          "dsap": true,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": true,
+          "rhinoinsight": true,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 5
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.814,
+        "avg_citation_density": 0.994,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.952,
+        "avg_llm_judge": 0.6,
+        "avg_citations_per_report": 27.6,
+        "avg_relevant_doc_ratio": 0.609,
+        "avg_retrieval_confidence": 0.539,
+        "avg_strip_retention": 0.884,
+        "avg_checklist_coverage_ratio": 0.171,
+        "avg_mass_rag_synthesis_ratio": 1.0,
+        "avg_trust_score": 0.0,
+        "avg_untrustworthy_count": 0.0,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.0,
+        "avg_corroboration_ratio": 1.0,
+        "cost_per_query_usd": {
+          "mean": 0.5504,
+          "p50": 0.6054,
+          "p95": 0.6865
+        },
+        "latency_sec": {
+          "mean": 174.772,
+          "p50": 180.06,
+          "p95": 186.396
+        },
+        "total_input_tokens": 294506,
+        "total_output_tokens": 124565,
+        "total_cost_usd": 2.751993
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 167.67,
+          "input_tokens": 44460,
+          "output_tokens": 19010,
+          "cost_usd": 0.41853,
+          "citation_count": 26,
+          "relevant_doc_ratio": 0.286,
+          "avg_retrieval_confidence": 0.431,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 6,
+            "partial": 0,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.143,
+          "mass_rag_count": 4,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperatures, driven predominantly by the accumulation of greenhouse gases in the atmosphere resulting from human activities [Source 1] [Sou",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "query_type": "definitional",
+          "scores": {
+            "keyword_coverage": 0.7142857142857143,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 154.1,
+          "input_tokens": 38881,
+          "output_tokens": 16141,
+          "cost_usd": 0.358758,
+          "citation_count": 21,
+          "relevant_doc_ratio": 0.5,
+          "avg_retrieval_confidence": 0.453,
+          "avg_strip_retention": 0.945,
+          "checklist_count": 6,
+          "checklist_status_counts": {
+            "pending": 4,
+            "partial": 0,
+            "complete": 2
+          },
+          "checklist_coverage_ratio": 0.333,
+          "mass_rag_count": 3,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nThis report examines the transformer architecture underlying large language models (LLMs), with a particular focus on the attention mechanism as its central computational component. The attention mechanism enab",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "query_type": "current_state",
+          "scores": {
+            "keyword_coverage": 0.6666666666666666,
+            "citation_density": 0.96875,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 186.65,
+          "input_tokens": 71222,
+          "output_tokens": 26116,
+          "cost_usd": 0.605406,
+          "citation_count": 32,
+          "relevant_doc_ratio": 0.714,
+          "avg_retrieval_confidence": 0.557,
+          "avg_strip_retention": 0.667,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 6,
+            "partial": 1,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.071,
+          "mass_rag_count": 6,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is currently in a transitional phase, moving from purely theoretical research toward early-stage practical implementation, though significant technical and scalability challenges",
+          "error": ""
+        },
+        {
+          "query_id": "q4",
+          "query": "How does Python compare to Rust for systems programming?",
+          "query_type": "comparative",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 180.06,
+          "input_tokens": 69256,
+          "output_tokens": 31586,
+          "cost_usd": 0.681558,
+          "citation_count": 32,
+          "relevant_doc_ratio": 0.714,
+          "avg_retrieval_confidence": 0.593,
+          "avg_strip_retention": 0.917,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 6,
+            "partial": 0,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.143,
+          "mass_rag_count": 6,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does Python compare to Rust for systems programming?\n\n## Executive Summary\n\nThis report examines the comparative suitability of Python and Rust for systems programming across four key dimensions: performance, memory safety, usability, and ecosystem fit. Benchmark evidence consistently demonstr",
+          "error": ""
+        },
+        {
+          "query_id": "q5",
+          "query": "What are the health effects of intermittent fasting and who should avoid it?",
+          "query_type": "factual",
+          "scores": {
+            "keyword_coverage": 1.0,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 185.38,
+          "input_tokens": 70687,
+          "output_tokens": 31712,
+          "cost_usd": 0.687741,
+          "citation_count": 27,
+          "relevant_doc_ratio": 0.833,
+          "avg_retrieval_confidence": 0.662,
+          "avg_strip_retention": 0.889,
+          "checklist_count": 6,
+          "checklist_status_counts": {
+            "pending": 5,
+            "partial": 0,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.167,
+          "mass_rag_count": 5,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What are the health effects of intermittent fasting and who should avoid it?\n\n## Executive Summary\n\nIntermittent fasting (IF) has emerged as a widely studied dietary intervention with documented effects on weight management, metabolic health, and cellular function. Clinical evidence indicates that",
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "phase1_2_3",
+      "config": {
+        "feature_flags": {
+          "query_decomp": true,
+          "crag": true,
+          "alignrag": true,
+          "dsap": true,
+          "stride": true,
+          "sdp": false,
+          "mass_rag": true,
+          "rhinoinsight": true,
+          "proclaim": false,
+          "construct": true,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 5
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.729,
+        "avg_citation_density": 0.843,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.893,
+        "avg_llm_judge": 0.6,
+        "avg_citations_per_report": 37.4,
+        "avg_relevant_doc_ratio": 0.656,
+        "avg_retrieval_confidence": 0.569,
+        "avg_strip_retention": 0.881,
+        "avg_checklist_coverage_ratio": 0.255,
+        "avg_mass_rag_synthesis_ratio": 1.0,
+        "avg_trust_score": 0.601,
+        "avg_untrustworthy_count": 0.4,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.286,
+        "avg_corroboration_ratio": 1.0,
+        "cost_per_query_usd": {
+          "mean": 0.7511,
+          "p50": 0.7601,
+          "p95": 0.8473
+        },
+        "latency_sec": {
+          "mean": 213.018,
+          "p50": 215.82,
+          "p95": 222.032
+        },
+        "total_input_tokens": 406748,
+        "total_output_tokens": 169008,
+        "total_cost_usd": 3.755364
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 0.8695652173913043,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 218.36,
+          "input_tokens": 92056,
+          "output_tokens": 37499,
+          "cost_usd": 0.838653,
+          "citation_count": 46,
+          "relevant_doc_ratio": 0.636,
+          "avg_retrieval_confidence": 0.525,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 11,
+          "checklist_status_counts": {
+            "pending": 10,
+            "partial": 0,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.091,
+          "mass_rag_count": 8,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.771,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 11,
+          "supervisor_action_counts": {
+            "retrieve": 1,
+            "rewrite": 3,
+            "answer": 7
+          },
+          "supervisor_rewrite_ratio": 0.273,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperatures, driven primarily by the accumulation of greenhouse gases in the atmosphere resulting from human activities [Source 1, cross-ve",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "query_type": "definitional",
+          "scores": {
+            "keyword_coverage": 0.42857142857142855,
+            "citation_density": 0.7894736842105263,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 215.82,
+          "input_tokens": 75840,
+          "output_tokens": 30042,
+          "cost_usd": 0.67815,
+          "citation_count": 38,
+          "relevant_doc_ratio": 0.4,
+          "avg_retrieval_confidence": 0.427,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 10,
+          "checklist_status_counts": {
+            "pending": 8,
+            "partial": 1,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.15,
+          "mass_rag_count": 6,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.63,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 10,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 6,
+            "answer": 4
+          },
+          "supervisor_rewrite_ratio": 0.6,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nThis report examines the transformer architecture as it functions within large language models (LLMs), with a primary focus on the attention mechanism that serves as its foundational component. At its core, the",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "query_type": "current_state",
+          "scores": {
+            "keyword_coverage": 0.6666666666666666,
+            "citation_density": 0.5555555555555556,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 199.11,
+          "input_tokens": 97307,
+          "output_tokens": 37167,
+          "cost_usd": 0.849426,
+          "citation_count": 45,
+          "relevant_doc_ratio": 0.889,
+          "avg_retrieval_confidence": 0.639,
+          "avg_strip_retention": 0.522,
+          "checklist_count": 9,
+          "checklist_status_counts": {
+            "pending": 7,
+            "partial": 2,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.111,
+          "mass_rag_count": 9,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.532,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 9,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 1,
+            "answer": 8
+          },
+          "supervisor_rewrite_ratio": 0.111,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is an emerging computational paradigm that fundamentally differs from classical computing through its use of quantum bits (qubits), which exploit the principles of superposition ",
+          "error": ""
+        },
+        {
+          "query_id": "q4",
+          "query": "How does Python compare to Rust for systems programming?",
+          "query_type": "comparative",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 208.85,
+          "input_tokens": 63243,
+          "output_tokens": 29288,
+          "cost_usd": 0.629049,
+          "citation_count": 25,
+          "relevant_doc_ratio": 0.8,
+          "avg_retrieval_confidence": 0.744,
+          "avg_strip_retention": 0.9,
+          "checklist_count": 5,
+          "checklist_status_counts": {
+            "pending": 1,
+            "partial": 1,
+            "complete": 3
+          },
+          "checklist_coverage_ratio": 0.7,
+          "mass_rag_count": 5,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.7,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 5,
+          "supervisor_action_counts": {
+            "retrieve": 1,
+            "rewrite": 0,
+            "answer": 4
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does Python compare to Rust for systems programming?\n\n## Executive Summary\n\nThis report presents a comparative analysis of Python and Rust across the core dimensions of systems programming, including performance, memory safety, concurrency, and ecosystem suitability. Benchmark evidence consist",
+          "error": ""
+        },
+        {
+          "query_id": "q5",
+          "query": "What are the health effects of intermittent fasting and who should avoid it?",
+          "query_type": "factual",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 222.95,
+          "input_tokens": 78302,
+          "output_tokens": 35012,
+          "cost_usd": 0.760086,
+          "citation_count": 33,
+          "relevant_doc_ratio": 0.556,
+          "avg_retrieval_confidence": 0.511,
+          "avg_strip_retention": 0.981,
+          "checklist_count": 9,
+          "checklist_status_counts": {
+            "pending": 7,
+            "partial": 0,
+            "complete": 2
+          },
+          "checklist_coverage_ratio": 0.222,
+          "mass_rag_count": 5,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.37,
+          "avg_untrustworthy_count": 2.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 9,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 4,
+            "answer": 5
+          },
+          "supervisor_rewrite_ratio": 0.444,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What are the health effects of intermittent fasting and who should avoid it?\n\n## Executive Summary\n\nIntermittent fasting (IF) has emerged as a widely studied dietary strategy with demonstrated benefits for weight management, metabolic health, and cellular function. Clinical evidence indicates that",
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "phase1_2_3_no_mass_rag",
+      "config": {
+        "feature_flags": {
+          "query_decomp": true,
+          "crag": true,
+          "alignrag": true,
+          "dsap": true,
+          "stride": true,
+          "sdp": false,
+          "mass_rag": false,
+          "rhinoinsight": true,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 5
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.819,
+        "avg_citation_density": 0.63,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.862,
+        "avg_llm_judge": 0.4,
+        "avg_citations_per_report": 41.8,
+        "avg_relevant_doc_ratio": 0.72,
+        "avg_retrieval_confidence": 0.611,
+        "avg_strip_retention": 0.92,
+        "avg_checklist_coverage_ratio": 0.239,
+        "avg_mass_rag_synthesis_ratio": 0.0,
+        "avg_trust_score": 0.0,
+        "avg_untrustworthy_count": 0.0,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.213,
+        "avg_corroboration_ratio": 0.92,
+        "cost_per_query_usd": {
+          "mean": 0.3145,
+          "p50": 0.3114,
+          "p95": 0.328
+        },
+        "latency_sec": {
+          "mean": 163.952,
+          "p50": 161.49,
+          "p95": 181.572
+        },
+        "total_input_tokens": 171783,
+        "total_output_tokens": 70486,
+        "total_cost_usd": 1.572639
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 0.75,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 161.49,
+          "input_tokens": 33733,
+          "output_tokens": 14016,
+          "cost_usd": 0.311439,
+          "citation_count": 44,
+          "relevant_doc_ratio": 0.7,
+          "avg_retrieval_confidence": 0.559,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 10,
+          "checklist_status_counts": {
+            "pending": 7,
+            "partial": 2,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.2,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 10,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 3,
+            "answer": 7
+          },
+          "supervisor_rewrite_ratio": 0.3,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperatures, driven primarily by the accumulation of greenhouse gases in the atmosphere resulting from human activities [Source 1] [Source ",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "query_type": "definitional",
+          "scores": {
+            "keyword_coverage": 0.7142857142857143,
+            "citation_density": 0.3488372093023256,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 165.02,
+          "input_tokens": 36463,
+          "output_tokens": 14586,
+          "cost_usd": 0.328179,
+          "citation_count": 43,
+          "relevant_doc_ratio": 0.545,
+          "avg_retrieval_confidence": 0.479,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 11,
+          "checklist_status_counts": {
+            "pending": 10,
+            "partial": 1,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.045,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 11,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 5,
+            "answer": 6
+          },
+          "supervisor_rewrite_ratio": 0.455,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nThis report examines the transformer architecture as the foundational structure underpinning large language models, with a particular focus on its core internal mechanisms. Based on the available evidence, the ",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "query_type": "current_state",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 0.5111111111111111,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 153.52,
+          "input_tokens": 36318,
+          "output_tokens": 12710,
+          "cost_usd": 0.299604,
+          "citation_count": 45,
+          "relevant_doc_ratio": 0.556,
+          "avg_retrieval_confidence": 0.594,
+          "avg_strip_retention": 0.718,
+          "checklist_count": 9,
+          "checklist_status_counts": {
+            "pending": 8,
+            "partial": 0,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.111,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 9,
+          "supervisor_action_counts": {
+            "retrieve": 3,
+            "rewrite": 1,
+            "answer": 5
+          },
+          "supervisor_rewrite_ratio": 0.111,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing represents a fundamentally distinct paradigm from classical computing, built upon the behavior of quantum bits (qubits) that can exist in superposition states \u2014 enabling the simu",
+          "error": ""
+        },
+        {
+          "query_id": "q4",
+          "query": "How does Python compare to Rust for systems programming?",
+          "query_type": "comparative",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 0.7,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 154.02,
+          "input_tokens": 32752,
+          "output_tokens": 15258,
+          "cost_usd": 0.327126,
+          "citation_count": 40,
+          "relevant_doc_ratio": 1.0,
+          "avg_retrieval_confidence": 0.747,
+          "avg_strip_retention": 0.938,
+          "checklist_count": 8,
+          "checklist_status_counts": {
+            "pending": 4,
+            "partial": 1,
+            "complete": 3
+          },
+          "checklist_coverage_ratio": 0.438,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 8,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 8
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does Python compare to Rust for systems programming?\n\n## Executive Summary\n\nThis report presents a systematic comparison of Python and Rust as programming languages for systems programming, evaluating their respective strengths, weaknesses, and practical suitability across key technical dimens",
+          "error": ""
+        },
+        {
+          "query_id": "q5",
+          "query": "What are the health effects of intermittent fasting and who should avoid it?",
+          "query_type": "factual",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 0.8378378378378378,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 185.71,
+          "input_tokens": 32517,
+          "output_tokens": 13916,
+          "cost_usd": 0.306291,
+          "citation_count": 37,
+          "relevant_doc_ratio": 0.8,
+          "avg_retrieval_confidence": 0.676,
+          "avg_strip_retention": 0.944,
+          "checklist_count": 5,
+          "checklist_status_counts": {
+            "pending": 3,
+            "partial": 0,
+            "complete": 2
+          },
+          "checklist_coverage_ratio": 0.4,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 5,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 1,
+            "answer": 4
+          },
+          "supervisor_rewrite_ratio": 0.2,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 3,
+            "single_source": 0,
+            "unverified": 2
+          },
+          "corroboration_ratio": 0.6,
+          "report_preview": "# What are the health effects of intermittent fasting and who should avoid it?\n\n## Executive Summary\n\nIntermittent fasting (IF) has emerged as a widely studied dietary approach with documented effects on weight management, metabolic health, and inflammatory markers, though the strength of the availa",
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "phase1_2_3_no_stride",
+      "config": {
+        "feature_flags": {
+          "query_decomp": true,
+          "crag": true,
+          "alignrag": true,
+          "dsap": true,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": true,
+          "rhinoinsight": true,
+          "proclaim": false,
+          "construct": true,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 5
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.762,
+        "avg_citation_density": 0.939,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.925,
+        "avg_llm_judge": 0.8,
+        "avg_citations_per_report": 32.2,
+        "avg_relevant_doc_ratio": 0.652,
+        "avg_retrieval_confidence": 0.554,
+        "avg_strip_retention": 0.852,
+        "avg_checklist_coverage_ratio": 0.267,
+        "avg_mass_rag_synthesis_ratio": 1.0,
+        "avg_trust_score": 0.674,
+        "avg_untrustworthy_count": 0.12,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.0,
+        "avg_corroboration_ratio": 0.92,
+        "cost_per_query_usd": {
+          "mean": 0.6027,
+          "p50": 0.608,
+          "p95": 0.7875
+        },
+        "latency_sec": {
+          "mean": 187.456,
+          "p50": 183.66,
+          "p95": 219.298
+        },
+        "total_input_tokens": 331777,
+        "total_output_tokens": 134545,
+        "total_cost_usd": 3.013506
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 0.8947368421052632,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 166.18,
+          "input_tokens": 46264,
+          "output_tokens": 17109,
+          "cost_usd": 0.395427,
+          "citation_count": 38,
+          "relevant_doc_ratio": 0.286,
+          "avg_retrieval_confidence": 0.421,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 6,
+            "partial": 1,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.071,
+          "mass_rag_count": 3,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.837,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 3,
+            "single_source": 0,
+            "unverified": 2
+          },
+          "corroboration_ratio": 0.6,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming represents one of the most pressing environmental challenges of our time, driven primarily by human activities that release greenhouse gases into the atmosphere. Fossil fuels \u2014 coal, oil, and gas \u2014 consti",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "query_type": "definitional",
+          "scores": {
+            "keyword_coverage": 0.42857142857142855,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 168.89,
+          "input_tokens": 60206,
+          "output_tokens": 22736,
+          "cost_usd": 0.521658,
+          "citation_count": 29,
+          "relevant_doc_ratio": 0.429,
+          "avg_retrieval_confidence": 0.441,
+          "avg_strip_retention": 0.905,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 6,
+            "partial": 0,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.143,
+          "mass_rag_count": 5,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.7,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nTransformer architecture has emerged as the foundational mechanism underpinning modern large language models, with its core innovation centered on the **attention mechanism** \u2014 a technique that enables models t",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "query_type": "current_state",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 0.875,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 183.66,
+          "input_tokens": 69761,
+          "output_tokens": 26579,
+          "cost_usd": 0.607968,
+          "citation_count": 32,
+          "relevant_doc_ratio": 0.714,
+          "avg_retrieval_confidence": 0.55,
+          "avg_strip_retention": 0.643,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 6,
+            "partial": 0,
+            "complete": 1
+          },
+          "checklist_coverage_ratio": 0.143,
+          "mass_rag_count": 6,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.583,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is currently in a transitional phase, moving from purely experimental demonstrations toward early-stage practical deployment, though significant technical challenges remain befor",
+          "error": ""
+        },
+        {
+          "query_id": "q4",
+          "query": "How does Python compare to Rust for systems programming?",
+          "query_type": "comparative",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 192.57,
+          "input_tokens": 84518,
+          "output_tokens": 37524,
+          "cost_usd": 0.816414,
+          "citation_count": 35,
+          "relevant_doc_ratio": 1.0,
+          "avg_retrieval_confidence": 0.693,
+          "avg_strip_retention": 0.822,
+          "checklist_count": 7,
+          "checklist_status_counts": {
+            "pending": 2,
+            "partial": 1,
+            "complete": 4
+          },
+          "checklist_coverage_ratio": 0.643,
+          "mass_rag_count": 7,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.643,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# How does Python compare to Rust for systems programming?\n\n## Executive Summary\n\nThis report examines the comparative suitability of Python and Rust for systems programming across the critical dimensions of performance, memory safety, concurrency, and ecosystem utility. Benchmark evidence consisten",
+          "error": ""
+        },
+        {
+          "query_id": "q5",
+          "query": "What are the health effects of intermittent fasting and who should avoid it?",
+          "query_type": "factual",
+          "scores": {
+            "keyword_coverage": 0.8571428571428571,
+            "citation_density": 0.9259259259259259,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 225.98,
+          "input_tokens": 71028,
+          "output_tokens": 30597,
+          "cost_usd": 0.672039,
+          "citation_count": 27,
+          "relevant_doc_ratio": 0.833,
+          "avg_retrieval_confidence": 0.667,
+          "avg_strip_retention": 0.889,
+          "checklist_count": 6,
+          "checklist_status_counts": {
+            "pending": 4,
+            "partial": 0,
+            "complete": 2
+          },
+          "checklist_coverage_ratio": 0.333,
+          "mass_rag_count": 5,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.606,
+          "avg_untrustworthy_count": 0.6,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What are the health effects of intermittent fasting and who should avoid it?\n\n## Executive Summary\n\nIntermittent fasting (IF) has demonstrated a range of clinically meaningful metabolic benefits in healthy adult populations, including weight reductions of 0.8\u201313% over 8\u201324 weeks, fasting insulin r",
+          "error": ""
+        }
+      ]
+    }
+  ]
+}

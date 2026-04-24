@@ -1,0 +1,113 @@
+{
+  "phase_label": "phase0_baseline_ollama",
+  "timestamp": "2026-04-22T16:35:58Z",
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "pricing": {
+    "input_per_1k": 0.0,
+    "output_per_1k": 0.0
+  },
+  "conditions": [
+    {
+      "name": "baseline",
+      "config": {
+        "feature_flags": {
+          "query_decomp": false,
+          "crag": false,
+          "alignrag": false,
+          "dsap": false,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": false,
+          "rhinoinsight": false,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 3
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.754,
+        "avg_citation_density": 0.644,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.85,
+        "avg_llm_judge": 0.5,
+        "avg_citations_per_report": 15.0,
+        "cost_per_query_usd": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "latency_sec": {
+          "mean": 423.56,
+          "p50": 413.83,
+          "p95": 473.095
+        },
+        "total_input_tokens": 25763,
+        "total_output_tokens": 22240,
+        "total_cost_usd": 0.0
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 0.6,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 377.17,
+          "input_tokens": 8139,
+          "output_tokens": 6510,
+          "cost_usd": 0.0,
+          "citation_count": 15,
+          "report_preview": "# What are the main causes and effects of global warming?\n\nThe Executive Summary highlights that global warming is predominantly driven by human activities, particularly the emission of greenhouse gases (GHGs) from fossil fuel combustion, deforestation, and industrial processes [Source 5, 10, 15]. T",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "scores": {
+            "keyword_coverage": 0.42857142857142855,
+            "citation_density": 0.3333333333333333,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 479.68,
+          "input_tokens": 8192,
+          "output_tokens": 8555,
+          "cost_usd": 0.0,
+          "citation_count": 15,
+          "report_preview": "# How does transformer architecture work in large language models?\n\nThe transformer architecture in large language models (LLMs) relies on the **attention mechanism** as its core component, enabling models to dynamically prioritize relevant input elements [Source 3]. This mechanism employs **scaled ",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "scores": {
+            "keyword_coverage": 1.0,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 413.83,
+          "input_tokens": 9432,
+          "output_tokens": 7175,
+          "cost_usd": 0.0,
+          "citation_count": 15,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\nThe current state of quantum computing is marked by significant advancements in hardware and qubit technologies, with companies like IBM leading efforts to develop scalable quantum systems [Source 3]. Recent breakthrou",
+          "error": ""
+        }
+      ]
+    }
+  ]
+}

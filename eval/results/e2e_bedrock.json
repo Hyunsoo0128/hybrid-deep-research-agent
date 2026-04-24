@@ -1,0 +1,231 @@
+{
+  "provider": "bedrock",
+  "model": null,
+  "results": [
+    {
+      "condition": "baseline",
+      "query_id": "q1",
+      "scores": {
+        "keyword_coverage": 0.8333333333333334,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 165.46978783607483,
+      "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperatures, driven predominantly by the accumulation of greenhouse gases in the atmosphere [Source 2] [Source 7] *(cross-verified)*. Scien",
+      "citation_count": 25,
+      "error": ""
+    },
+    {
+      "condition": "applied",
+      "query_id": "q1",
+      "scores": {
+        "keyword_coverage": 0.8333333333333334,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.0,
+      "elapsed": 324.5246846675873,
+      "report_preview": "# What are the main causes and effects of global warming?\n\n---\n\n## Introduction\n\nGlobal warming refers to the long-term rise in Earth's average surface temperature, primarily driven by human activities that increase the concentration of greenhouse gases in the atmosphere. Understanding both its caus",
+      "citation_count": 22,
+      "error": ""
+    },
+    {
+      "condition": "new_only",
+      "query_id": "q1",
+      "scores": {
+        "keyword_coverage": 0.8333333333333334,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 1.0,
+      "elapsed": 210.48225903511047,
+      "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperatures, driven primarily by human activities that elevate concentrations of greenhouse gases in the atmosphere [Source 6] *(single sou",
+      "citation_count": 25,
+      "error": ""
+    },
+    {
+      "condition": "all_on",
+      "query_id": "q1",
+      "scores": {
+        "keyword_coverage": 0.8333333333333334,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 1.0,
+      "elapsed": 376.094199180603,
+      "report_preview": "# What are the main causes and effects of global warming?\n\n---\n\n## Key Findings\n\n**Finding 1:** The primary driver of global warming is the enhanced greenhouse effect caused by anthropogenic emissions of carbon dioxide (CO\u2082), methane (CH\u2084), and nitrous oxide (N\u2082O), which trap outgoing infrared radia",
+      "citation_count": 22,
+      "error": ""
+    },
+    {
+      "condition": "applied_no_dsap",
+      "query_id": "q1",
+      "scores": {
+        "keyword_coverage": 0.8333333333333334,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 1.0,
+      "elapsed": 119.56379580497742,
+      "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperature, driven predominantly by human activities that elevate greenhouse gas concentrations in the atmosphere [Source 2] [Source 8] *(c",
+      "citation_count": 22,
+      "error": ""
+    },
+    {
+      "condition": "baseline",
+      "query_id": "q2",
+      "scores": {
+        "keyword_coverage": 0.7142857142857143,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 163.57066917419434,
+      "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nTransformer architecture has emerged as the foundational framework underpinning modern large language models (LLMs), with its core innovation centered on the **attention mechanism** \u2014 a technique that enables m",
+      "citation_count": 25,
+      "error": ""
+    },
+    {
+      "condition": "applied",
+      "query_id": "q2",
+      "scores": {
+        "keyword_coverage": 0.7142857142857143,
+        "citation_density": 0.9090909090909091,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.0,
+      "elapsed": 178.96376991271973,
+      "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nTransformer architecture in large language models (LLMs) is fundamentally driven by the **attention mechanism**, which enables models to dynamically focus on relevant parts of an input sequence during processin",
+      "citation_count": 22,
+      "error": ""
+    },
+    {
+      "condition": "new_only",
+      "query_id": "q2",
+      "scores": {
+        "keyword_coverage": 0.5714285714285714,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.0,
+      "elapsed": 202.41041803359985,
+      "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nTransformer architecture serves as the foundational technology underlying modern large language models (LLMs), with its core innovation centered on the **attention mechanism** \u2014 a technique that enables deep le",
+      "citation_count": 25,
+      "error": ""
+    },
+    {
+      "condition": "all_on",
+      "query_id": "q2",
+      "scores": {
+        "keyword_coverage": 1.0,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 1.0,
+      "elapsed": 538.6099538803101,
+      "report_preview": "# How Does Transformer Architecture Work in Large Language Models?\n\n---\n\n## Introduction\n\nThe transformer architecture has become the foundational framework for large language models (LLMs), enabling breakthroughs in natural language understanding, generation, and reasoning. Originally introduced in",
+      "citation_count": 22,
+      "error": ""
+    },
+    {
+      "condition": "applied_no_dsap",
+      "query_id": "q2",
+      "scores": {
+        "keyword_coverage": 0.7142857142857143,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 1.0,
+      "elapsed": 139.86724305152893,
+      "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nTransformer architecture has become the foundational framework underpinning modern large language models (LLMs), with its core innovation residing in the **attention mechanism** \u2014 a technique that enables model",
+      "citation_count": 22,
+      "error": ""
+    },
+    {
+      "condition": "baseline",
+      "query_id": "q3",
+      "scores": {
+        "keyword_coverage": 0.8333333333333334,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 182.64476799964905,
+      "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is undergoing a significant hardware evolution, with qubits \u2014 the fundamental building blocks of quantum systems \u2014 enabling computational capabilities that fundamentally differ f",
+      "citation_count": 25,
+      "error": ""
+    },
+    {
+      "condition": "applied",
+      "query_id": "q3",
+      "scores": {
+        "keyword_coverage": 1.0,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.0,
+      "elapsed": 361.26545000076294,
+      "report_preview": "# What is the Current State of Quantum Computing and Its Practical Applications?\n\n---\n\n## Introduction\n\nQuantum computing represents a fundamentally different approach to computation, leveraging quantum mechanical phenomena such as superposition and entanglement to process information in ways that c",
+      "citation_count": 28,
+      "error": ""
+    },
+    {
+      "condition": "new_only",
+      "query_id": "q3",
+      "scores": {
+        "keyword_coverage": 1.0,
+        "citation_density": 0.7666666666666667,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 1.0,
+      "elapsed": 191.2901520729065,
+      "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is currently in a critical transitional phase, moving from foundational research toward practical, scalable systems, with competing hardware architectures defining the competitiv",
+      "citation_count": 30,
+      "error": ""
+    },
+    {
+      "condition": "all_on",
+      "query_id": "q3",
+      "scores": {
+        "keyword_coverage": 1.0,
+        "citation_density": 0.8275862068965517,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 1.0,
+      "elapsed": 180.10656714439392,
+      "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is advancing rapidly across competing hardware platforms, with superconducting qubits\u2014led by IBM and Google\u2014currently dominating at scale, while neutral atom and ion trap systems",
+      "citation_count": 29,
+      "error": ""
+    },
+    {
+      "condition": "applied_no_dsap",
+      "query_id": "q3",
+      "scores": {
+        "keyword_coverage": 1.0,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.0,
+      "elapsed": 139.19745898246765,
+      "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is currently in a period of active hardware development, with the field advancing primarily through improvements in qubit technologies and architectural design. Ion trap systems ",
+      "citation_count": 29,
+      "error": ""
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "label": "Local (qwen3:4b)",
+  "macro_precision": 0.0,
+  "macro_recall": 0.0,
+  "phase3_recall": 0.0,
+  "phase_tp": {},
+  "phase_total": {
+    "phase3": 5,
+    "phase1": 3,
+    "phase2": 3
+  },
+  "total_tp": 0,
+  "total_fn": 11,
+  "total_fp": 0,
+  "model": "qwen3:4b",
+  "tier": "A",
+  "elapsed_sec": 81.4,
+  "baseline": false,
+  "passed": false,
+  "pass_reason": "overall_recall=0.00 (gate\u22650.4)  phase3_recall=0.00 (gate\u22650.2)"
+}

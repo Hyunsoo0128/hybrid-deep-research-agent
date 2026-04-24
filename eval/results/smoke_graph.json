@@ -1,0 +1,241 @@
+{
+  "phase_label": "smoke_graph",
+  "timestamp": "2026-04-23T00:21:06Z",
+  "provider": "bedrock",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "pricing": {
+    "input_per_1k": 0.003,
+    "output_per_1k": 0.015
+  },
+  "benchmark_config": {
+    "infra": "BM1b_build_graph",
+    "conditions": [
+      "baseline",
+      "phase1_2_3"
+    ],
+    "query_count": 1,
+    "total_runs": 2
+  },
+  "conditions": [
+    {
+      "name": "baseline",
+      "config": {
+        "feature_flags": {
+          "query_decomp": false,
+          "crag": false,
+          "alignrag": false,
+          "dsap": false,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": false,
+          "rhinoinsight": false,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 1
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.833,
+        "avg_citation_density": 1.0,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.958,
+        "avg_llm_judge": 0.5,
+        "avg_citations_per_report": 35.0,
+        "avg_relevant_doc_ratio": 1.0,
+        "avg_retrieval_confidence": 0.7,
+        "avg_strip_retention": 1.0,
+        "avg_checklist_coverage_ratio": 0.0,
+        "avg_mass_rag_synthesis_ratio": 0.0,
+        "avg_trust_score": 0.0,
+        "avg_untrustworthy_count": 0.0,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.0,
+        "avg_corroboration_ratio": 0.0,
+        "cost_per_query_usd": {
+          "mean": 0.1272,
+          "p50": 0.1272,
+          "p95": 0.1272
+        },
+        "latency_sec": {
+          "mean": 109.09,
+          "p50": 109.09,
+          "p95": 109.09
+        },
+        "total_input_tokens": 17272,
+        "total_output_tokens": 5023,
+        "total_cost_usd": 0.127161
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 109.09,
+          "input_tokens": 17272,
+          "output_tokens": 5023,
+          "cost_usd": 0.127161,
+          "citation_count": 35,
+          "relevant_doc_ratio": 1.0,
+          "avg_retrieval_confidence": 0.7,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming represents a long-term increase in Earth's average surface temperatures, driven predominantly by human activities that elevate concentrations of greenhouse gases in the atmosphere [Source 3] [Source 13] *",
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "phase1_2_3",
+      "config": {
+        "feature_flags": {
+          "query_decomp": true,
+          "crag": true,
+          "alignrag": true,
+          "dsap": true,
+          "stride": true,
+          "sdp": false,
+          "mass_rag": true,
+          "rhinoinsight": true,
+          "proclaim": false,
+          "construct": true,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 1
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.833,
+        "avg_citation_density": 1.0,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.958,
+        "avg_llm_judge": 0.0,
+        "avg_citations_per_report": 41.0,
+        "avg_relevant_doc_ratio": 0.6,
+        "avg_retrieval_confidence": 0.58,
+        "avg_strip_retention": 1.0,
+        "avg_checklist_coverage_ratio": 0.2,
+        "avg_mass_rag_synthesis_ratio": 1.0,
+        "avg_trust_score": 0.796,
+        "avg_untrustworthy_count": 0.0,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.4,
+        "avg_corroboration_ratio": 1.0,
+        "cost_per_query_usd": {
+          "mean": 0.7778,
+          "p50": 0.7778,
+          "p95": 0.7778
+        },
+        "latency_sec": {
+          "mean": 199.96,
+          "p50": 199.96,
+          "p95": 199.96
+        },
+        "total_input_tokens": 87259,
+        "total_output_tokens": 34403,
+        "total_cost_usd": 0.777822
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 199.96,
+          "input_tokens": 87259,
+          "output_tokens": 34403,
+          "cost_usd": 0.777822,
+          "citation_count": 41,
+          "relevant_doc_ratio": 0.6,
+          "avg_retrieval_confidence": 0.58,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 10,
+          "checklist_status_counts": {
+            "pending": 8,
+            "partial": 0,
+            "complete": 2
+          },
+          "checklist_coverage_ratio": 0.2,
+          "mass_rag_count": 7,
+          "mass_rag_synthesis_ratio": 1.0,
+          "mass_rag_has_spans": true,
+          "mass_rag_has_inferences": true,
+          "avg_trust_score": 0.796,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 10,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 4,
+            "answer": 6
+          },
+          "supervisor_rewrite_ratio": 0.4,
+          "evidence_store_count": 5,
+          "reranked_count": 5,
+          "evidence_level_counts": {
+            "corroborated": 5,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 1.0,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperature, driven primarily by the accumulation of greenhouse gases in the atmosphere resulting from human activities [Source 1] [Source 2",
+          "error": ""
+        }
+      ]
+    }
+  ]
+}

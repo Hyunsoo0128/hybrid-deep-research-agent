@@ -1,0 +1,313 @@
+{
+  "provider": "bedrock/claude-sonnet-4-6",
+  "results": [
+    {
+      "technique": "query_decomp",
+      "score_off": 0.0,
+      "score_on": 1.0,
+      "delta": 1.0,
+      "latency_off_ms": 6834,
+      "latency_on_ms": 10398,
+      "passed": true,
+      "details": {
+        "per_query_off": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "per_query_on": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "error": ""
+    },
+    {
+      "technique": "stride",
+      "score_off": 0.4,
+      "score_on": 1.0,
+      "delta": 0.6,
+      "latency_off_ms": 0,
+      "latency_on_ms": 9222,
+      "passed": true,
+      "details": {
+        "initial_coverage": 0.4,
+        "initial_missing_dims": 3,
+        "after_stride_coverage": 1.0,
+        "remaining_missing_dims": 0,
+        "final_sq_count": 5,
+        "final_dimensions": [
+          "Current State/Evidence",
+          "Limitations/Challenges",
+          "Definition/Background",
+          "Comparison/Alternatives",
+          "Cause/Mechanism"
+        ]
+      },
+      "error": ""
+    },
+    {
+      "technique": "crag",
+      "score_off": 0.3,
+      "score_on": 0.955,
+      "delta": 0.655,
+      "latency_off_ms": 0,
+      "latency_on_ms": 4705,
+      "passed": true,
+      "details": {
+        "predictions": {
+          "Attention Is All You Need": "relevant",
+          "BERT Pre-training of Deep Bidi": "partial",
+          "Transformer vs RNN: Training S": "relevant",
+          "GPT-4 Technical Report": "irrelevant",
+          "Vision Transformer ViT: Image ": "partial",
+          "Long-Range Arena Benchmark for": "partial",
+          "Stock Market Prediction Using ": "irrelevant",
+          "Python Web Scraping Best Pract": "irrelevant",
+          "Database Indexing and Query Op": "irrelevant",
+          "JavaScript Framework Compariso": "irrelevant"
+        },
+        "precision": 1.0,
+        "recall": 0.833,
+        "f1": 0.909,
+        "noise_reduction": 1.0,
+        "baseline_precision": 0.3
+      },
+      "error": ""
+    },
+    {
+      "technique": "dsap",
+      "score_off": 0.75,
+      "score_on": 1.0,
+      "delta": 0.25,
+      "latency_off_ms": 10415,
+      "latency_on_ms": 6438,
+      "passed": true,
+      "details": {
+        "per_test": [
+          {
+            "test": "nested_plan_json",
+            "off_success": true,
+            "on_success": true,
+            "lat_off_ms": 12294,
+            "lat_on_ms": 6142
+          },
+          {
+            "test": "evaluation_array",
+            "off_success": true,
+            "on_success": true,
+            "lat_off_ms": 3511,
+            "lat_on_ms": 4041
+          },
+          {
+            "test": "gap_analysis",
+            "off_success": false,
+            "on_success": true,
+            "lat_off_ms": 17756,
+            "lat_on_ms": 9427
+          },
+          {
+            "test": "critic_feedback",
+            "off_success": true,
+            "on_success": true,
+            "lat_off_ms": 8100,
+            "lat_on_ms": 6144
+          }
+        ],
+        "successes_off": 3,
+        "successes_on": 4
+      },
+      "error": ""
+    },
+    {
+      "technique": "alignrag",
+      "score_off": 1.0,
+      "score_on": 1.0,
+      "delta": 0.0,
+      "latency_off_ms": 21196,
+      "latency_on_ms": 22733,
+      "passed": true,
+      "details": {
+        "gold_error_count": 3,
+        "detected_off": 3,
+        "detected_on": 3,
+        "misaligned_claims_on": [
+          {
+            "claim": "Recent benchmarks show quantum computers deliver a 1,000x speedup over classical computers for optimization problems [Source 2].",
+            "source": "[2] Quantum vs Classical Computing Performance Study",
+            "issue": "Exaggeration. Source 2 states '50-100x speedup', not 1,000x. The report inflates the figure by an order of magnitude."
+          },
+          {
+            "claim": "Scientists have completely eliminated decoherence through advanced qubit engineering techniques [Source 3].",
+            "source": "[3] Quantum Decoherence Progress Report",
+            "issue": "Distortion. Source 3 explicitly states 'Decoherence remains the prim[ary challenge]', meaning it has NOT been eliminated. The report makes the opposite claim of what the source states."
+          },
+          {
+            "claim": "making quantum computers ready for commercial deployment across industries [Source 4].",
+            "source": "[4] Quantum Error Correction Status",
+            "issue": "Unsupported inference. Source 4 describes that fault-tolerant operation still requires ~1,000 physical qubits per logical qubit and that current systems fall short, which directly contradicts a claim of readiness for broad commercial deployment."
+          }
+        ]
+      },
+      "error": ""
+    },
+    {
+      "technique": "cure",
+      "score_off": 0.35,
+      "score_on": 1.0,
+      "delta": 0.65,
+      "latency_off_ms": 0,
+      "latency_on_ms": 0,
+      "passed": true,
+      "details": {
+        "original_order": [
+          "sq1",
+          "sq2",
+          "sq3",
+          "sq4",
+          "sq5"
+        ],
+        "cure_order": [
+          "sq2",
+          "sq5",
+          "sq3",
+          "sq4",
+          "sq1"
+        ],
+        "expected_order": [
+          "sq2",
+          "sq5",
+          "sq3",
+          "sq4",
+          "sq1"
+        ],
+        "true_uncertainties": {
+          "sq1": 0.3,
+          "sq2": 0.9,
+          "sq3": 0.7,
+          "sq4": 0.5,
+          "sq5": 0.8
+        },
+        "spearman_off": 0.35,
+        "spearman_on": 1.0
+      },
+      "error": ""
+    },
+    {
+      "technique": "auto_search",
+      "score_off": 0.5,
+      "score_on": 1.0,
+      "delta": 0.5,
+      "latency_off_ms": 0,
+      "latency_on_ms": 21147,
+      "passed": true,
+      "details": {
+        "original_queries": [
+          "inference speed improvements",
+          "memory usage reduction",
+          "quantization techniques"
+        ],
+        "reformulated_queries": [
+          "LLM inference latency optimization techniques 2023-2024 beyond speculative decoding and FlashAttention-2, including continuous batching, PagedAttention, and token generation throughput benchmarks",
+          "large language model GPU memory footprint reduction techniques beyond 4-bit GPTQ quantization, including KV cache compression, weight sharing, and activation checkpointing for 70B+ parameter models",
+          "post-training quantization methods for LLMs compared to GPTQ 4-bit, including AWQ, SmoothQuant, and 2-3 bit quantization approaches with accuracy-compression tradeoff benchmarks on models like LLaMA and GPT"
+        ],
+        "llm_judge_score": 1.0,
+        "avg_words_orig": 2.7,
+        "avg_words_reform": 24.0
+      },
+      "error": ""
+    },
+    {
+      "technique": "sdp",
+      "score_off": 0.0,
+      "score_on": 1.0,
+      "delta": 1.0,
+      "latency_off_ms": 0,
+      "latency_on_ms": 3816,
+      "passed": true,
+      "details": {
+        "total_citations_before": 9,
+        "total_citations_after": 6,
+        "pruned_ids": [
+          "s3",
+          "s4",
+          "s7"
+        ],
+        "legitimate_prunable": [
+          "s3",
+          "s4",
+          "s7"
+        ],
+        "group_c_intact": true,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "error": ""
+    },
+    {
+      "technique": "construct",
+      "score_off": 0.0,
+      "score_on": 1.0,
+      "delta": 1.0,
+      "latency_off_ms": 0,
+      "latency_on_ms": 19681,
+      "passed": true,
+      "details": {
+        "entity_count": 10,
+        "relation_count": 15,
+        "central_claim": "LLM performance advances through scaling, architectural innovations like MoE, and optimization techniques, but critical challenges around hallucination and safety require targeted solutions such as RAG, RLHF, and Constitutional AI to ensure reliable and aligned outputs.",
+        "entities": [
+          "Large Language Models (LLMs)",
+          "Scaling Laws",
+          "Retrieval-Augmented Generation (RAG)",
+          "Hallucination",
+          "RLHF",
+          "Constitutional AI"
+        ],
+        "judge_score": 1.0
+      },
+      "error": ""
+    },
+    {
+      "technique": "mass_rag",
+      "score_off": 0.625,
+      "score_on": 0.6,
+      "delta": -0.025,
+      "latency_off_ms": 2479,
+      "latency_on_ms": 11173,
+      "passed": true,
+      "details": {
+        "excerpt_off": "Decoherence mechanisms: phonon interactions, TLS defects, magnetic flux/charge noise. T2: microseconds-milliseconds. Surface code correction uses ~1,000 physical qubits/logical qubit; threshold ~1% er",
+        "excerpt_on": "**Key Insight:** Decoherence stems from TLS defects, phonon coupling, and flux/charge noise, limiting T2. Surface codes require ~1,000:1 qubit overhead; error rates (0.1–0.5%) must breach the 1% thres",
+        "tech_density_off": 0.75,
+        "tech_density_on": 0.75,
+        "judge_score": 0.5
+      },
+      "error": ""
+    },
+    {
+      "technique": "speculative_rag",
+      "score_off": 1.0,
+      "score_on": 1.0,
+      "delta": 0.0,
+      "latency_off_ms": 0,
+      "latency_on_ms": 0,
+      "passed": true,
+      "details": {
+        "on_routes_to": "parallel_send_api",
+        "off_routes_to": "sequential_search",
+        "routing_correct": true,
+        "note": "Both ON and OFF should route correctly. Delta=0 is expected."
+      },
+      "error": ""
+    }
+  ],
+  "summary": {
+    "avg_score_off": 0.448,
+    "avg_score_on": 0.96,
+    "avg_delta": 0.512,
+    "pass_rate": 1.0
+  }
+}

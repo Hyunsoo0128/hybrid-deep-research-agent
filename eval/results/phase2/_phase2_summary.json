@@ -1,0 +1,304 @@
+{
+  "models": [
+    {
+      "model": "exaone3.5:7.8b",
+      "label": "ollama/exaone3.5:7.8b",
+      "elapsed_sec": 2140.8,
+      "pass_count": 1,
+      "total_techniques": 6,
+      "avg_score_on": 0.16,
+      "passed": false,
+      "techniques": [
+        {
+          "name": "query_decomp",
+          "score_off": 0.0,
+          "score_on": 0.6,
+          "delta": 0.6,
+          "passed": true,
+          "error": ""
+        },
+        {
+          "name": "crag",
+          "score_off": 0.3,
+          "score_on": 0.357,
+          "delta": 0.057,
+          "passed": false,
+          "error": ""
+        },
+        {
+          "name": "dsap",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Server disconnected w"
+        },
+        {
+          "name": "alignrag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "stride",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "cannot import name '_stride_refine' from 'src.nodes.plan_generator' (/Users/hyunkai/deep_research_ag"
+        },
+        {
+          "name": "mass_rag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "_extract_content() got an unexpected keyword argument 'dimension'"
+        }
+      ]
+    },
+    {
+      "model": "qwen3:14b",
+      "label": "ollama/qwen3:14b",
+      "elapsed_sec": 0.0,
+      "pass_count": 0,
+      "total_techniques": 6,
+      "avg_score_on": 0.0,
+      "passed": false,
+      "techniques": [
+        {
+          "name": "query_decomp",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "crag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "dsap",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "alignrag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "stride",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "cannot import name '_stride_refine' from 'src.nodes.plan_generator' (/Users/hyunkai/deep_research_ag"
+        },
+        {
+          "name": "mass_rag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "_extract_content() got an unexpected keyword argument 'dimension'"
+        }
+      ]
+    },
+    {
+      "model": "llama3.2:3b",
+      "label": "ollama/llama3.2:3b",
+      "elapsed_sec": 0.0,
+      "pass_count": 0,
+      "total_techniques": 6,
+      "avg_score_on": 0.0,
+      "passed": false,
+      "techniques": [
+        {
+          "name": "query_decomp",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "crag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "dsap",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "alignrag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "stride",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "cannot import name '_stride_refine' from 'src.nodes.plan_generator' (/Users/hyunkai/deep_research_ag"
+        },
+        {
+          "name": "mass_rag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "_extract_content() got an unexpected keyword argument 'dimension'"
+        }
+      ]
+    },
+    {
+      "model": "gemma3:12b",
+      "label": "ollama/gemma3:12b",
+      "elapsed_sec": 0.0,
+      "pass_count": 0,
+      "total_techniques": 6,
+      "avg_score_on": 0.0,
+      "passed": false,
+      "techniques": [
+        {
+          "name": "query_decomp",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "crag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "dsap",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "alignrag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "stride",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "cannot import name '_stride_refine' from 'src.nodes.plan_generator' (/Users/hyunkai/deep_research_ag"
+        },
+        {
+          "name": "mass_rag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "_extract_content() got an unexpected keyword argument 'dimension'"
+        }
+      ]
+    },
+    {
+      "model": "llama3.1:8b",
+      "label": "ollama/llama3.1:8b",
+      "elapsed_sec": 0.0,
+      "pass_count": 0,
+      "total_techniques": 6,
+      "avg_score_on": 0.0,
+      "passed": false,
+      "techniques": [
+        {
+          "name": "query_decomp",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "crag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "dsap",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "alignrag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "Cannot connect to Ollama server. Please check that 'ollama serve' is running. (Failed to connect to "
+        },
+        {
+          "name": "stride",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "cannot import name '_stride_refine' from 'src.nodes.plan_generator' (/Users/hyunkai/deep_research_ag"
+        },
+        {
+          "name": "mass_rag",
+          "score_off": 0.0,
+          "score_on": 0.0,
+          "delta": 0.0,
+          "passed": false,
+          "error": "_extract_content() got an unexpected keyword argument 'dimension'"
+        }
+      ]
+    }
+  ],
+  "pass_gate": {
+    "min_passing": 4,
+    "total": 6
+  },
+  "phase3_candidates": []
+}

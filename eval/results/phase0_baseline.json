@@ -1,0 +1,113 @@
+{
+  "phase_label": "phase0_baseline",
+  "timestamp": "2026-04-22T16:14:06Z",
+  "provider": "bedrock",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "pricing": {
+    "input_per_1k": 0.003,
+    "output_per_1k": 0.015
+  },
+  "conditions": [
+    {
+      "name": "baseline",
+      "config": {
+        "feature_flags": {
+          "query_decomp": false,
+          "crag": false,
+          "alignrag": false,
+          "dsap": false,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": false,
+          "rhinoinsight": false,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 3
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.889,
+        "avg_citation_density": 0.944,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.958,
+        "avg_llm_judge": 0.5,
+        "avg_citations_per_report": 26.7,
+        "cost_per_query_usd": {
+          "mean": 0.1047,
+          "p50": 0.1065,
+          "p95": 0.1071
+        },
+        "latency_sec": {
+          "mean": 152.29,
+          "p50": 162.68,
+          "p95": 163.382
+        },
+        "total_input_tokens": 44374,
+        "total_output_tokens": 12056,
+        "total_cost_usd": 0.313962
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 130.73,
+          "input_tokens": 13785,
+          "output_tokens": 4344,
+          "cost_usd": 0.106515,
+          "citation_count": 25,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperatures, driven predominantly by the accumulation of greenhouse gases in the atmosphere [Source 2] [Source 7] *(cross-verified)*. Scien",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "scores": {
+            "keyword_coverage": 1.0,
+            "citation_density": 0.8333333333333334,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 162.68,
+          "input_tokens": 15036,
+          "output_tokens": 3680,
+          "cost_usd": 0.100308,
+          "citation_count": 30,
+          "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nTransformer architecture has emerged as the foundational framework underpinning modern large language models (LLMs), distinguished primarily by its attention mechanism, which enables context-aware, parallel pro",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 163.46,
+          "input_tokens": 15553,
+          "output_tokens": 4032,
+          "cost_usd": 0.107139,
+          "citation_count": 25,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is currently in an active developmental phase, with hardware innovation serving as a central focus of ongoing research and industry investment. At the architectural level, quantu",
+          "error": ""
+        }
+      ]
+    }
+  ]
+}

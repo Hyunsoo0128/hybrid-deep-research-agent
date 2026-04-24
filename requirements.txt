@@ -1,0 +1,30 @@
+# Core
+anthropic[bedrock]>=0.40.0
+langgraph>=0.2.0
+langchain-core>=0.3.0
+
+# Local LLM (Phase 5) — Ollama 사용 시 필요
+ollama>=0.4.0
+
+# Search
+tavily-python>=0.3.0
+
+# API Server
+fastapi>=0.115.0
+uvicorn>=0.30.0
+sse-starlette>=2.0.0
+
+# Utils
+python-dotenv>=1.0.0
+tenacity>=8.2.0
+pydantic>=2.0.0
+
+# Local file search (Phase 3)
+qdrant-client>=1.7.0
+fastembed>=0.2.0
+pypdf>=4.0.0
+python-docx>=1.0.0
+
+# Persistence
+langgraph-checkpoint-sqlite>=2.0.0
+aiosqlite>=0.20.0

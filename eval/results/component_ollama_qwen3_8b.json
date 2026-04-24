@@ -1,0 +1,293 @@
+{
+  "provider": "ollama/qwen3:8b",
+  "results": [
+    {
+      "technique": "query_decomp",
+      "score_off": 0.0,
+      "score_on": 0.8,
+      "delta": 0.8,
+      "latency_off_ms": 28494,
+      "latency_on_ms": 54927,
+      "passed": true,
+      "details": {
+        "per_query_off": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "per_query_on": [
+          0.8,
+          0.8,
+          0.8
+        ]
+      },
+      "error": ""
+    },
+    {
+      "technique": "stride",
+      "score_off": 0.4,
+      "score_on": 0.4,
+      "delta": 0.0,
+      "latency_off_ms": 0,
+      "latency_on_ms": 76284,
+      "passed": false,
+      "details": {
+        "initial_coverage": 0.4,
+        "initial_missing_dims": 3,
+        "after_stride_coverage": 0.4,
+        "remaining_missing_dims": 3,
+        "final_sq_count": 2,
+        "final_dimensions": [
+          "Current State/Evidence",
+          "Limitations/Challenges"
+        ]
+      },
+      "error": ""
+    },
+    {
+      "technique": "crag",
+      "score_off": 0.3,
+      "score_on": 0.375,
+      "delta": 0.075,
+      "latency_off_ms": 0,
+      "latency_on_ms": 43428,
+      "passed": false,
+      "details": {
+        "predictions": {
+          "Attention Is All You Need": "partial",
+          "BERT Pre-training of Deep Bidi": "partial",
+          "Transformer vs RNN: Training S": "partial",
+          "GPT-4 Technical Report": "partial",
+          "Vision Transformer ViT: Image ": "partial",
+          "Long-Range Arena Benchmark for": "partial",
+          "Stock Market Prediction Using ": "partial",
+          "Python Web Scraping Best Pract": "partial",
+          "Database Indexing and Query Op": "partial",
+          "JavaScript Framework Compariso": "partial"
+        },
+        "precision": 0.6,
+        "recall": 1.0,
+        "f1": 0.75,
+        "noise_reduction": 0.0,
+        "baseline_precision": 0.3
+      },
+      "error": ""
+    },
+    {
+      "technique": "dsap",
+      "score_off": 0.25,
+      "score_on": 1.0,
+      "delta": 0.75,
+      "latency_off_ms": 23164,
+      "latency_on_ms": 36007,
+      "passed": true,
+      "details": {
+        "per_test": [
+          {
+            "test": "nested_plan_json",
+            "off_success": false,
+            "on_success": true,
+            "lat_off_ms": 25586,
+            "lat_on_ms": 40426
+          },
+          {
+            "test": "evaluation_array",
+            "off_success": true,
+            "on_success": true,
+            "lat_off_ms": 17915,
+            "lat_on_ms": 12781
+          },
+          {
+            "test": "gap_analysis",
+            "off_success": false,
+            "on_success": true,
+            "lat_off_ms": 24640,
+            "lat_on_ms": 20682
+          },
+          {
+            "test": "critic_feedback",
+            "off_success": false,
+            "on_success": true,
+            "lat_off_ms": 24516,
+            "lat_on_ms": 70141
+          }
+        ],
+        "successes_off": 1,
+        "successes_on": 4
+      },
+      "error": ""
+    },
+    {
+      "technique": "alignrag",
+      "score_off": 0.333,
+      "score_on": 0.667,
+      "delta": 0.333,
+      "latency_off_ms": 62813,
+      "latency_on_ms": 66572,
+      "passed": true,
+      "details": {
+        "gold_error_count": 3,
+        "detected_off": 1,
+        "detected_on": 2,
+        "misaligned_claims_on": [
+          "Recent benchmarks show quantum computers deliver a 1,000x speedup over classical computers for optimization problems",
+          "Scientists have completely eliminated decoherence through advanced qubit engineering techniques"
+        ]
+      },
+      "error": ""
+    },
+    {
+      "technique": "cure",
+      "score_off": 0.35,
+      "score_on": 1.0,
+      "delta": 0.65,
+      "latency_off_ms": 0,
+      "latency_on_ms": 0,
+      "passed": true,
+      "details": {
+        "original_order": [
+          "sq1",
+          "sq2",
+          "sq3",
+          "sq4",
+          "sq5"
+        ],
+        "cure_order": [
+          "sq2",
+          "sq5",
+          "sq3",
+          "sq4",
+          "sq1"
+        ],
+        "expected_order": [
+          "sq2",
+          "sq5",
+          "sq3",
+          "sq4",
+          "sq1"
+        ],
+        "true_uncertainties": {
+          "sq1": 0.3,
+          "sq2": 0.9,
+          "sq3": 0.7,
+          "sq4": 0.5,
+          "sq5": 0.8
+        },
+        "spearman_off": 0.35,
+        "spearman_on": 1.0
+      },
+      "error": ""
+    },
+    {
+      "technique": "auto_search",
+      "score_off": 0.5,
+      "score_on": 0.65,
+      "delta": 0.15,
+      "latency_off_ms": 0,
+      "latency_on_ms": 84854,
+      "passed": true,
+      "details": {
+        "original_queries": [
+          "inference speed improvements",
+          "memory usage reduction",
+          "quantization techniques"
+        ],
+        "reformulated_queries": [
+          "Recent advancements in inference speed optimization for large language models, specifically FlashAttention-2's 2-4x speedup through GPU memory access pattern improvements (2023)",
+          "Techniques for reducing memory footprint in large language models, such as GPTQ's 4-bit quantization reducing memory requirements by 99.9% while maintaining <1% accuracy loss (2023)",
+          "State-of-the-art quantization methods for large language models, including GPTQ's 4-bit quantization of 175B parameter models (2023)"
+        ],
+        "llm_judge_score": 0.5,
+        "avg_words_orig": 2.7,
+        "avg_words_reform": 20.7
+      },
+      "error": ""
+    },
+    {
+      "technique": "sdp",
+      "score_off": 0.0,
+      "score_on": 0.0,
+      "delta": 0.0,
+      "latency_off_ms": 0,
+      "latency_on_ms": 43513,
+      "passed": false,
+      "details": {
+        "total_citations_before": 9,
+        "total_citations_after": 9,
+        "pruned_ids": [],
+        "legitimate_prunable": [
+          "s3",
+          "s4",
+          "s7"
+        ],
+        "group_c_intact": true,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "error": ""
+    },
+    {
+      "technique": "construct",
+      "score_off": 0.0,
+      "score_on": 0.9,
+      "delta": 0.9,
+      "latency_off_ms": 0,
+      "latency_on_ms": 1711839,
+      "passed": true,
+      "details": {
+        "entity_count": 10,
+        "relation_count": 14,
+        "central_claim": "RAG and RLHF significantly improve LLM accuracy and safety by reducing hallucinations and aligning outputs with human values",
+        "entities": [
+          "LLM Scaling Laws",
+          "GPT-4",
+          "RAG",
+          "RLHF",
+          "Constitutional AI",
+          "Hallucination Rate"
+        ],
+        "judge_score": 0.5
+      },
+      "error": ""
+    },
+    {
+      "technique": "mass_rag",
+      "score_off": 0.25,
+      "score_on": 0.3,
+      "delta": 0.05,
+      "latency_off_ms": 15913,
+      "latency_on_ms": 22541,
+      "passed": false,
+      "details": {
+        "excerpt_off": "",
+        "excerpt_on": "",
+        "tech_density_off": 0.0,
+        "tech_density_on": 0.0,
+        "judge_score": 0.5
+      },
+      "error": ""
+    },
+    {
+      "technique": "speculative_rag",
+      "score_off": 1.0,
+      "score_on": 1.0,
+      "delta": 0.0,
+      "latency_off_ms": 0,
+      "latency_on_ms": 0,
+      "passed": true,
+      "details": {
+        "on_routes_to": "parallel_send_api",
+        "off_routes_to": "sequential_search",
+        "routing_correct": true,
+        "note": "Both ON and OFF should route correctly. Delta=0 is expected."
+      },
+      "error": ""
+    }
+  ],
+  "summary": {
+    "avg_score_off": 0.308,
+    "avg_score_on": 0.645,
+    "avg_delta": 0.337,
+    "pass_rate": 0.636
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "gold_error_count": 3,
+  "results": [
+    {
+      "label": "Baseline (single local LLM)",
+      "detected": 0,
+      "gold": 3,
+      "recall": 0.0,
+      "passed": true,
+      "elapsed_s": 132.43,
+      "misaligned_claims": []
+    },
+    {
+      "label": "Phase E Spec RAG (local\u2192cloud\u2192local)",
+      "detected": 2,
+      "gold": 3,
+      "recall": 0.667,
+      "passed": false,
+      "elapsed_s": 194.21,
+      "misaligned_claims": [
+        {
+          "phase": "phase3",
+          "claim": "Recent benchmarks show quantum computers deliver a 1,000x speedup over classical computers for optimization problems [Source 2].",
+          "source_citation_ids": [],
+          "source_quote": "",
+          "correction_hint": "Quantum advantage claims are problem-specific and context-dependent. A blanket 1,000x speedup claim overstates current capabilities. Should specify the problem class, conditions, and cite peer-reviewed comparisons rather than marketing benchmarks."
+        },
+        {
+          "phase": "phase3",
+          "claim": "Scientists have completely eliminated decoherence through advanced qubit engineering techniques [Source 3], making quantum computers ready for commercial deployment across industries [Source 4].",
+          "source_citation_ids": [],
+          "source_quote": "",
+          "correction_hint": "Decoherence remains a fundamental unsolved challenge in quantum computing. 'Completely eliminated' is factually incorrect. Should state that decoherence has been 'reduced' or 'mitigated' in specific systems, and acknowledge that commercial-scale deployment still faces significant obstacles."
+        }
+      ]
+    }
+  ]
+}

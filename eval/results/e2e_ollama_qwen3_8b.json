@@ -1,0 +1,141 @@
+{
+  "provider": "ollama",
+  "model": "qwen3:8b",
+  "results": [
+    {
+      "condition": "baseline",
+      "query_id": "q1",
+      "scores": {
+        "keyword_coverage": 0.5,
+        "citation_density": 0.3333333333333333,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 519.015772819519,
+      "report_preview": "# What are the main causes and effects of global warming?\n\nThe Executive Summary highlights that global warming is primarily driven by human activities, particularly the emission of greenhouse gases (GHGs) from fossil fuel combustion, deforestation, and industrial processes [Source 5]. These activit",
+      "citation_count": 15,
+      "error": ""
+    },
+    {
+      "condition": "applied",
+      "query_id": "q1",
+      "scores": {
+        "keyword_coverage": 0.5,
+        "citation_density": 0.6,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 792.3694291114807,
+      "report_preview": "# What are the main causes and effects of global warming?\n\nGlobal warming is primarily driven by human activities, particularly the emission of greenhouse gases from fossil fuels, which account for approximately 68% of global greenhouse gas emissions [Source 5]. These emissions enhance the greenhous",
+      "citation_count": 15,
+      "error": ""
+    },
+    {
+      "condition": "all_on",
+      "query_id": "q1",
+      "scores": {
+        "keyword_coverage": 0.8333333333333334,
+        "citation_density": 0.5,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 869.8726031780243,
+      "report_preview": "# What are the main causes and effects of global warming?\n\nThe Executive Summary highlights that human-driven greenhouse gas emissions, primarily from fossil fuel combustion, are the principal cause of global warming [Source 5, 10]. These emissions enhance the natural greenhouse effect, trapping hea",
+      "citation_count": 20,
+      "error": ""
+    },
+    {
+      "condition": "baseline",
+      "query_id": "q2",
+      "scores": {
+        "keyword_coverage": 0.42857142857142855,
+        "citation_density": 0.8,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 357.5723330974579,
+      "report_preview": "# How does transformer architecture work in large language models?\n\nThe transformer architecture in large language models (LLMs) relies on the **attention mechanism** as its core component, enabling models to dynamically focus on relevant parts of input data [Source 3]. This mechanism uses **scaled ",
+      "citation_count": 15,
+      "error": ""
+    },
+    {
+      "condition": "applied",
+      "query_id": "q2",
+      "scores": {
+        "keyword_coverage": 0.42857142857142855,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 700.8689227104187,
+      "report_preview": "# How does transformer architecture work in large language models?\n\nThe transformer architecture in large language models (LLMs) relies on the **attention mechanism** as its core innovation, enabling models to dynamically prioritize relevant input segments [Source 1]. This mechanism computes **scale",
+      "citation_count": 15,
+      "error": ""
+    },
+    {
+      "condition": "all_on",
+      "query_id": "q2",
+      "scores": {
+        "keyword_coverage": 0.42857142857142855,
+        "citation_density": 0.8,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 941.3844699859619,
+      "report_preview": "# How does transformer architecture work in large language models?\n\nThe transformer architecture revolutionizes large language models (LLMs) through its core innovation: the **attention mechanism**, which enables models to process sequential data and capture long-range dependencies [Source 1]. This ",
+      "citation_count": 15,
+      "error": ""
+    },
+    {
+      "condition": "baseline",
+      "query_id": "q3",
+      "scores": {
+        "keyword_coverage": 0.6666666666666666,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 416.85656094551086,
+      "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n**Executive Summary**  \nQuantum computing is advancing rapidly, with recent breakthroughs in hardware design and qubit technologies. New quantum hardware, such as ion-based systems, enables flexible qubit manipulation ",
+      "citation_count": 15,
+      "error": ""
+    },
+    {
+      "condition": "applied",
+      "query_id": "q3",
+      "scores": {
+        "keyword_coverage": 0.8333333333333334,
+        "citation_density": 1.0,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 669.4706308841705,
+      "report_preview": "# What is the current state of quantum computing and its practical applications?\n\nThe current state of quantum computing is marked by significant advancements in hardware and qubit technologies, with companies like IBM leading the development of scalable quantum systems [Source 3]. Innovations such ",
+      "citation_count": 15,
+      "error": ""
+    },
+    {
+      "condition": "all_on",
+      "query_id": "q3",
+      "scores": {
+        "keyword_coverage": 0.6666666666666666,
+        "citation_density": 0.3333333333333333,
+        "report_length": 1.0,
+        "structure": 1.0
+      },
+      "llm_judge": 0.5,
+      "elapsed": 866.3512680530548,
+      "report_preview": "# What is the current state of quantum computing and its practical applications?\n\nQuantum computing is advancing through breakthroughs in quantum hardware, which leverages qubits and entanglement to enable specialized applications [Source 2]. IBM plays a pivotal role in this development, with its Qu",
+      "citation_count": 15,
+      "error": ""
+    }
+  ]
+}

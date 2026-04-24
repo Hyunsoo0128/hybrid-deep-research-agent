@@ -1,0 +1,71 @@
+{
+  "run_id_new": "run_20260423_195123",
+  "c1_score": 0.94,
+  "c1_latency": 257.1,
+  "models": [
+    {
+      "model": "exaone3.5:7.8b",
+      "layer1_weighted": 0.969,
+      "c2_score": 0.78,
+      "c2_revisions": 2.0,
+      "c2_latency": 209.1,
+      "quality_gap": 0.15999999999999992
+    },
+    {
+      "model": "gemma3:4b",
+      "layer1_weighted": 0.905,
+      "c2_score": 0.895,
+      "c2_revisions": 2.0,
+      "c2_latency": 215.8,
+      "quality_gap": 0.04499999999999993
+    },
+    {
+      "model": "llama3.1:8b",
+      "layer1_weighted": 0.879,
+      "c2_score": 0.88,
+      "c2_revisions": 2.0,
+      "c2_latency": 182.9,
+      "quality_gap": 0.05999999999999994
+    },
+    {
+      "model": "phi4-mini:latest",
+      "layer1_weighted": 0.408,
+      "c2_score": 0.775,
+      "c2_revisions": 2.0,
+      "c2_latency": 169.7,
+      "quality_gap": 0.16499999999999992
+    },
+    {
+      "model": "qwen3:14b",
+      "layer1_weighted": 0.769,
+      "c2_score": 0.625,
+      "c2_revisions": 0.5,
+      "c2_latency": 419.2,
+      "quality_gap": 0.31499999999999995
+    },
+    {
+      "model": "gemma3:12b",
+      "layer1_weighted": 0.969,
+      "c2_score": 0.855,
+      "c2_revisions": 2.0,
+      "c2_latency": 298.6,
+      "quality_gap": 0.08499999999999996
+    },
+    {
+      "model": "qwen3:4b",
+      "layer1_weighted": 0.094,
+      "c2_score": 0.96,
+      "c2_revisions": 0.0,
+      "c2_latency": 326.7,
+      "quality_gap": -0.020000000000000018
+    },
+    {
+      "model": "qwen3:8b",
+      "layer1_weighted": 0.769,
+      "c2_score": 0.935,
+      "c2_revisions": 1.0,
+      "c2_latency": 399.2,
+      "quality_gap": 0.004999999999999893
+    }
+  ]
+}

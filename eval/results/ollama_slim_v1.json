@@ -1,0 +1,901 @@
+{
+  "phase_label": "ollama_slim_v1",
+  "timestamp": "2026-04-23T01:53:52Z",
+  "provider": "ollama",
+  "model": "qwen3:14b",
+  "pricing": {
+    "input_per_1k": 0.0,
+    "output_per_1k": 0.0
+  },
+  "benchmark_config": {
+    "infra": "BM1b_build_graph",
+    "conditions": [
+      "baseline",
+      "phase1_2",
+      "phase1_2_3"
+    ],
+    "query_count": 5,
+    "total_runs": 15
+  },
+  "conditions": [
+    {
+      "name": "baseline",
+      "config": {
+        "feature_flags": {
+          "query_decomp": false,
+          "crag": false,
+          "alignrag": false,
+          "dsap": false,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": false,
+          "rhinoinsight": false,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 5
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.0,
+        "avg_citation_density": 0.0,
+        "avg_report_length_score": 0.0,
+        "avg_structure_score": 0.0,
+        "avg_overall_score": 0.0,
+        "avg_llm_judge": 0.5,
+        "avg_citations_per_report": 0.0,
+        "avg_relevant_doc_ratio": 0.0,
+        "avg_retrieval_confidence": 0.0,
+        "avg_strip_retention": 1.0,
+        "avg_checklist_coverage_ratio": 0.0,
+        "avg_mass_rag_synthesis_ratio": 0.0,
+        "avg_trust_score": 0.0,
+        "avg_untrustworthy_count": 0.0,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.0,
+        "avg_corroboration_ratio": 0.0,
+        "cost_per_query_usd": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "latency_sec": {
+          "mean": 0.034,
+          "p50": 0.02,
+          "p95": 0.076
+        },
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cost_usd": 0.0
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.09,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "query_type": "definitional",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "query_type": "current_state",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q4",
+          "query": "How does Python compare to Rust for systems programming?",
+          "query_type": "comparative",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q5",
+          "query": "What are the health effects of intermittent fasting and who should avoid it?",
+          "query_type": "factual",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "phase1_2",
+      "config": {
+        "feature_flags": {
+          "query_decomp": true,
+          "crag": true,
+          "alignrag": true,
+          "dsap": true,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": true,
+          "rhinoinsight": true,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 5
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.0,
+        "avg_citation_density": 0.0,
+        "avg_report_length_score": 0.0,
+        "avg_structure_score": 0.0,
+        "avg_overall_score": 0.0,
+        "avg_llm_judge": 0.5,
+        "avg_citations_per_report": 0.0,
+        "avg_relevant_doc_ratio": 0.0,
+        "avg_retrieval_confidence": 0.0,
+        "avg_strip_retention": 1.0,
+        "avg_checklist_coverage_ratio": 0.0,
+        "avg_mass_rag_synthesis_ratio": 0.0,
+        "avg_trust_score": 0.0,
+        "avg_untrustworthy_count": 0.0,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.0,
+        "avg_corroboration_ratio": 0.0,
+        "cost_per_query_usd": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "latency_sec": {
+          "mean": 0.02,
+          "p50": 0.02,
+          "p95": 0.02
+        },
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cost_usd": 0.0
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "query_type": "definitional",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "query_type": "current_state",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q4",
+          "query": "How does Python compare to Rust for systems programming?",
+          "query_type": "comparative",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q5",
+          "query": "What are the health effects of intermittent fasting and who should avoid it?",
+          "query_type": "factual",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "phase1_2_3",
+      "config": {
+        "feature_flags": {
+          "query_decomp": true,
+          "crag": true,
+          "alignrag": true,
+          "dsap": true,
+          "stride": true,
+          "sdp": false,
+          "mass_rag": true,
+          "rhinoinsight": true,
+          "proclaim": false,
+          "construct": true,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 5
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.0,
+        "avg_citation_density": 0.0,
+        "avg_report_length_score": 0.0,
+        "avg_structure_score": 0.0,
+        "avg_overall_score": 0.0,
+        "avg_llm_judge": 0.5,
+        "avg_citations_per_report": 0.0,
+        "avg_relevant_doc_ratio": 0.0,
+        "avg_retrieval_confidence": 0.0,
+        "avg_strip_retention": 1.0,
+        "avg_checklist_coverage_ratio": 0.0,
+        "avg_mass_rag_synthesis_ratio": 0.0,
+        "avg_trust_score": 0.0,
+        "avg_untrustworthy_count": 0.0,
+        "avg_revision_count": 0.0,
+        "avg_misaligned_claims_count": 0.0,
+        "avg_supervisor_rewrite_ratio": 0.0,
+        "avg_corroboration_ratio": 0.0,
+        "cost_per_query_usd": {
+          "mean": 0.0,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "latency_sec": {
+          "mean": 0.028,
+          "p50": 0.02,
+          "p95": 0.052
+        },
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cost_usd": 0.0
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "query_type": "analytical",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "query_type": "definitional",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.06,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "query_type": "current_state",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q4",
+          "query": "How does Python compare to Rust for systems programming?",
+          "query_type": "comparative",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        },
+        {
+          "query_id": "q5",
+          "query": "What are the health effects of intermittent fasting and who should avoid it?",
+          "query_type": "factual",
+          "scores": {},
+          "llm_judge": 0.5,
+          "elapsed_sec": 0.02,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "citation_count": 0,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "checklist_count": 0,
+          "checklist_status_counts": {
+            "pending": 0,
+            "partial": 0,
+            "complete": 0
+          },
+          "checklist_coverage_ratio": 0.0,
+          "mass_rag_count": 0,
+          "mass_rag_synthesis_ratio": 0.0,
+          "mass_rag_has_spans": false,
+          "mass_rag_has_inferences": false,
+          "avg_trust_score": 0.0,
+          "avg_untrustworthy_count": 0.0,
+          "revision_count": 0,
+          "misaligned_claims_count": 0,
+          "supervisor_decisions_count": 0,
+          "supervisor_action_counts": {
+            "retrieve": 0,
+            "rewrite": 0,
+            "answer": 0
+          },
+          "supervisor_rewrite_ratio": 0.0,
+          "evidence_store_count": 0,
+          "reranked_count": 0,
+          "evidence_level_counts": {
+            "corroborated": 0,
+            "single_source": 0,
+            "unverified": 0
+          },
+          "corroboration_ratio": 0.0,
+          "report_preview": "",
+          "error": ""
+        }
+      ]
+    }
+  ]
+}

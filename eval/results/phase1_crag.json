@@ -1,0 +1,238 @@
+{
+  "phase_label": "phase1_crag",
+  "timestamp": "2026-04-22T17:29:58Z",
+  "provider": "bedrock",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "pricing": {
+    "input_per_1k": 0.003,
+    "output_per_1k": 0.015
+  },
+  "conditions": [
+    {
+      "name": "baseline",
+      "config": {
+        "feature_flags": {
+          "query_decomp": false,
+          "crag": false,
+          "alignrag": false,
+          "dsap": false,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": false,
+          "rhinoinsight": false,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 3
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.849,
+        "avg_citation_density": 0.889,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.935,
+        "avg_llm_judge": 0.5,
+        "avg_citations_per_report": 28.3,
+        "avg_relevant_doc_ratio": 0.0,
+        "avg_retrieval_confidence": 0.0,
+        "avg_strip_retention": 1.0,
+        "cost_per_query_usd": {
+          "mean": 0.1075,
+          "p50": 0.1038,
+          "p95": 0.1165
+        },
+        "latency_sec": {
+          "mean": 145.6833,
+          "p50": 136.45,
+          "p95": 163.45
+        },
+        "total_input_tokens": 46199,
+        "total_output_tokens": 12260,
+        "total_cost_usd": 0.322497
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 134.15,
+          "input_tokens": 13533,
+          "output_tokens": 4013,
+          "cost_usd": 0.100794,
+          "citation_count": 25,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "report_preview": "# What are the main causes and effects of global warming?\n\n## Executive Summary\n\nGlobal warming is defined as the long-term increase in Earth's average surface temperature, driven primarily by human activities that elevate concentrations of greenhouse gases in the atmosphere [Source 2] [Source 6] *(",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "scores": {
+            "keyword_coverage": 0.7142857142857143,
+            "citation_density": 0.6666666666666666,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 166.45,
+          "input_tokens": 15229,
+          "output_tokens": 3871,
+          "cost_usd": 0.103752,
+          "citation_count": 30,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "report_preview": "# How does transformer architecture work in large language models?\n\n## Executive Summary\n\nTransformer architecture forms the foundational framework underlying modern large language models (LLMs), with its core innovation being the attention mechanism that enables context-aware processing of sequenti",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "scores": {
+            "keyword_coverage": 1.0,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.5,
+          "elapsed_sec": 136.45,
+          "input_tokens": 17437,
+          "output_tokens": 4376,
+          "cost_usd": 0.117951,
+          "citation_count": 30,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n## Executive Summary\n\nQuantum computing is currently in an active phase of hardware development, with multiple competing qubit technologies advancing toward greater capability and scale. Trapped ion systems represent o",
+          "error": ""
+        }
+      ]
+    },
+    {
+      "name": "applied",
+      "config": {
+        "feature_flags": {
+          "query_decomp": true,
+          "crag": true,
+          "alignrag": true,
+          "dsap": true,
+          "stride": false,
+          "sdp": false,
+          "mass_rag": false,
+          "rhinoinsight": false,
+          "proclaim": false,
+          "construct": false,
+          "navirag": false
+        },
+        "depth": "normal"
+      },
+      "dataset": {
+        "name": "e2e_fixtures",
+        "sample_count": 3
+      },
+      "aggregate": {
+        "avg_keyword_coverage": 0.849,
+        "avg_citation_density": 0.772,
+        "avg_report_length_score": 1.0,
+        "avg_structure_score": 1.0,
+        "avg_overall_score": 0.905,
+        "avg_llm_judge": 0.667,
+        "avg_citations_per_report": 25.3,
+        "avg_relevant_doc_ratio": 0.0,
+        "avg_retrieval_confidence": 0.0,
+        "avg_strip_retention": 1.0,
+        "cost_per_query_usd": {
+          "mean": 0.2546,
+          "p50": 0.2623,
+          "p95": 0.2751
+        },
+        "latency_sec": {
+          "mean": 283.5,
+          "p50": 282.03,
+          "p95": 313.008
+        },
+        "total_input_tokens": 86814,
+        "total_output_tokens": 33559,
+        "total_cost_usd": 0.763827
+      },
+      "per_query": [
+        {
+          "query_id": "q1",
+          "query": "What are the main causes and effects of global warming?",
+          "scores": {
+            "keyword_coverage": 0.8333333333333334,
+            "citation_density": 1.0,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 0.0,
+          "elapsed_sec": 252.02,
+          "input_tokens": 22587,
+          "output_tokens": 10482,
+          "cost_usd": 0.224991,
+          "citation_count": 22,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "report_preview": "# What are the main causes and Effects of Global Warming?\n\n---\n\n## Key Findings\n\n1. The primary driver of global warming is the enhanced greenhouse effect, caused predominantly by human activities that release heat-trapping gases into the atmosphere.\n2. Carbon dioxide (CO\u2082) from fossil fuel combusti",
+          "error": ""
+        },
+        {
+          "query_id": "q2",
+          "query": "How does transformer architecture work in large language models?",
+          "scores": {
+            "keyword_coverage": 0.7142857142857143,
+            "citation_density": 0.5833333333333334,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 316.45,
+          "input_tokens": 28468,
+          "output_tokens": 11791,
+          "cost_usd": 0.262269,
+          "citation_count": 24,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "report_preview": "# How Does Transformer Architecture Work in Large Language Models?\n\n---\n\n## 1. Introduction\n\nTransformer architecture has become the dominant paradigm for large language models (LLMs), supplanting earlier recurrent approaches across a wide range of natural language processing tasks. Understanding ho",
+          "error": ""
+        },
+        {
+          "query_id": "q3",
+          "query": "What is the current state of quantum computing and its practical applications?",
+          "scores": {
+            "keyword_coverage": 1.0,
+            "citation_density": 0.7333333333333333,
+            "report_length": 1.0,
+            "structure": 1.0
+          },
+          "llm_judge": 1.0,
+          "elapsed_sec": 282.03,
+          "input_tokens": 35759,
+          "output_tokens": 11286,
+          "cost_usd": 0.276567,
+          "citation_count": 30,
+          "relevant_doc_ratio": 0.0,
+          "avg_retrieval_confidence": 0.0,
+          "avg_strip_retention": 1.0,
+          "report_preview": "# What is the current state of quantum computing and its practical applications?\n\n---\n\n## Introduction\n\nQuantum computing represents a fundamental shift in computational paradigm, leveraging quantum mechanical phenomena such as superposition, entanglement, and interference to process information in ",
+          "error": ""
+        }
+      ]
+    }
+  ]
+}
