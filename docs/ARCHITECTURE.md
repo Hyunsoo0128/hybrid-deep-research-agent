@@ -1,450 +1,228 @@
-# Architecture v2 — Technique Integration Design
+# Architecture — Stage-Aware Local-Cloud Inference
 
-This document records explicit design decisions.
-Last updated: 2026-04-23 (Phase 3 complete — Phase 4 designated Future Work).
+This document describes the system architecture as implemented and evaluated in the paper:
 
-Phase 1/2/3 implementation deviations are noted inline with **[Phase N actual]** markers.
+> **Stage-Aware Local-Cloud Inference: Hybrid Pipelines Consistently Outperform Matched Cloud-Only Baselines**
 
----
-
-## Pipeline Stage Map
-
-Each technique is assigned a primary stage and control target:
-
-| Technique | Stage | Controls |
-|---|---|---|
-| query_decomp | Input | Query coverage (decompose + rerank) |
-| STRIDE Meta-Planner | Plan | Abstract strategy Sq → concrete plan Cq |
-| RhinoInsight VCM | Plan | Sub-goal tracking and progress |
-| crag | Retrieval | Document quality filtering |
-| EAM Stage 1 | Retrieval | Evidence normalization |
-| MASS-RAG | Processing | Multi-angle evidence extraction |
-| EAM Stage 2 | Pre-Write | Evidence ranking + citation binding |
-| STRIDE Supervisor | Orchestration | Dependency-aware execution (retrieve/rewrite/answer) |
-| alignrag | Verification | Reasoning-evidence consistency |
-| CONSTRUCT | Verification | Structured output field confidence |
-| PROClaim | Verification (selective) | Controversial claim debate |
-| dsap | Cross-cutting | JSON output reliability |
-| NaviRAG | Retrieval (local only) | Hierarchical local document navigation |
+Last updated: 2026-05-14
 
 ---
 
-## Revised Pipeline Flow
+## Stage-Routing Principle
 
-### Target (full system, all phases)
+Stage-Aware Local-Cloud Inference rests on the observation that pipeline stages differ fundamentally in reasoning demand (Kahneman, 2011). The dividing criterion is **input scope**:
+
+- **System 1 (local)**: A stage that processes a single document or draft requires only fast, bounded-context operations. Retrieval classification, passage scoring, section drafting, and self-critique each process a single bounded input — a document excerpt, a scored passage, or a draft paragraph — with no cross-document lookup.
+
+- **System 2 (cloud)**: A stage that must simultaneously integrate evidence across multiple independent sources requires deliberate reasoning. Cross-document synthesis integrates claims from independent documents; coverage-gap detection surveys the full evidence state for under-covered topics — both require deliberate cross-document reasoning beyond what local models achieve in isolation.
+
+Restricting cloud calls to System 2 stages enforces a **Privacy Boundary** by construction.
+
+---
+
+## Privacy Boundary
+
+The Privacy Boundary is formalized as a constraint on the inputs to the cloud model call `g_c`:
+
 ```
-Query
-  │
-  ├─ [STRIDE Meta-Planner]  Abstract strategy Sq → Cq              (Phase 3)
-  │    └─ [query_decomp]    Grounds Cq: Q = {q} ∪ Decompose(q)     (Phase 1 ✅)
-  │
-  ├─ [RhinoInsight VCM]     Generates verifiable sub-goal checklist (Phase 1 ✅)
-  │
-  └─ [STRIDE Supervisor]    Dependency-aware execution              (Phase 3)
-       │
-       └─ Per sub-query (parallel fan-out via Send API):
-            ├─ Tavily search
-            └─ [crag]  3-way filter → CORRECT / AMBIGUOUS / INCORRECT  (Phase 1 ✅)
-                  └─ CORRECT:   Decompose-then-Recompose → clean strips
-                  └─ AMBIGUOUS: extraction + gap hint (uncertainty=0.5)
-                  └─ INCORRECT: minimal summary + gap hint (uncertainty=1.0)
-  │
-  ├─ [Reranker]             Dedup + cross-encoder top-k vs original query  (Phase 1 ✅)
-  │
-  ├─ [gap_detector]         Coverage analysis; INCORRECT/AMBIGUOUS hints → gap queries
-  ├─ [gap_search]           (conditional) Targeted supplementary retrieval
-  │
-  ├─ [cross_validator]      Corroboration / contradiction / SDP pruning
-  │
-  ├─ [EAM Stage 1]          Normalize: dedup + sort + verification_level  (Phase 1 ✅)
-  │                         Checklist status update (complete/partial/pending)
-  │                         [Phase 2: + MASS-RAG 3-agent input; + EAM Stage 2 binding]
-  │
-  ├─ [writer]               Draft; prefers evidence_store → SDP ids → raw  (Phase 1 ✅)
-  │
-  ├─ [alignrag critic]      3-phase misalignment check                     (Phase 2)
-  │    └─ [dsap]            JSON guard (cross-cutting, Phase 1 partial ✅)
-  │
-  ├─ [CONSTRUCT]            Field-level trustworthiness scoring             (Phase 3)
-  ├─ [PROClaim]             (selective) Courtroom debate                   (Phase 4)
-  └─ [revise → finalize]
+inputs(g_c) ∩ {q, C} = ∅
 ```
 
-### Implemented (Phase 3 actual graph)
+where `q` is the original query and `C` is the full document corpus. The cloud receives only compact local-model outputs — plan skeletons, section drafts, or coverage summaries — never the private inputs directly.
+
+**What the cloud receives:**
+- Document abstractions: titles and 150-character excerpts, never full document bodies
+- Local drafts: compact prose produced by the local model, containing no verbatim document excerpts
+
+**What the cloud never receives:**
+- Original user queries
+- Retrieved document bodies
+- Intermediate documents or file contents
+
+This constraint is enforced structurally: `q` and `C` are never passed as arguments to any cloud API call.
+
+---
+
+## Four-Phase Pipeline
+
+The four pipeline phases execute in sequence: **Planning → Retrieval → Drafting → Verification**. In each phase, System 1 operations execute locally and System 2 operations execute on the cloud.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Next.js Frontend                          │
+│   Query → Plan Approval → Live Progress → Report + Chat      │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ HTTP / SSE
+┌──────────────────────────▼──────────────────────────────────┐
+│                  FastAPI + SSE Server                        │
+└───────────┬──────────────────────────┬──────────────────────┘
+            │                          │
+   ┌────────▼────────┐       ┌─────────▼────────┐
+   │  Research Graph │       │   Chat Graph      │
+   │  (LangGraph)    │       │   (LangGraph)     │
+   └────────┬────────┘       └───────────────────┘
+            │
+   ┌────────▼──────────────────────────────────────┐
+   │  PLANNING PHASE                               │
+   │  generate_plan    [LOCAL]  Sq skeleton        │
+   │  plan_elaboration [CLOUD]  Cq from skeleton   │
+   │  checklist_node   [LOCAL]  VCM sub-goals      │
+   │  [INTERRUPT: plan_review]                     │
+   └────────┬──────────────────────────────────────┘
+            │ N sub_queries (Send API fan-out)
+   ┌────────▼──────────────────────────────────────┐
+   │  RETRIEVAL PHASE                              │
+   │  search_worker × N  [LOCAL]  CRAG 1st-pass    │
+   │  crag_recheck       [CLOUD]  AMBIGUOUS only   │
+   │                              (title+excerpt)  │
+   │  reranker           [LOCAL]  cross-encoder    │
+   └────────┬──────────────────────────────────────┘
+            │
+   ┌────────▼──────────────────────────────────────┐
+   │  DRAFTING PHASE                               │
+   │  mass_rag_drafters  [LOCAL]  parallel drafts  │
+   │  synthesis          [CLOUD]  from drafts only │
+   └────────┬──────────────────────────────────────┘
+            │
+   ┌────────▼──────────────────────────────────────┐
+   │  VERIFICATION PHASE                           │
+   │  gap_detector    [CLOUD]  coverage-gap survey │
+   │  gap_search      [LOCAL]  targeted re-retrieval│
+   │  cross_validator [LOCAL]  consistency check   │
+   │  evidence_auditor[LOCAL]  EAM claim binding   │
+   │  critique        [LOCAL]  AlignRAG self-critique│
+   │  revise          [LOCAL]  section rewrite     │
+   └───────────────────────────────────────────────┘
+```
+
+---
+
+## Phase Details
+
+### Planning Phase
+
+Local models decompose the query and generate an abstract research skeleton (System 1); the cloud elaborates each section with concrete execution steps (System 2), receiving only the plan skeleton.
+
+- `generate_plan` [LOCAL]: STRIDE Meta-Planner generates entity-agnostic abstract strategy Sq with [ENTITY] slots; query_decomp applies 5-dimension framework
+- `plan_elaboration` [CLOUD]: Derives concrete plan Cq from Sq — cloud receives only the skeleton, not the original query
+- `checklist_node` [LOCAL]: RhinoInsight VCM generates verifiable sub-goal checklist
+
+### Retrieval Phase
+
+Local models classify and score document relevance entirely locally (System 1); uncertain cases are escalated to the cloud for re-adjudication using only document titles and short excerpts (System 2).
+
+- `search_worker × N` [LOCAL]: CRAG 3-way classification (CORRECT/AMBIGUOUS/INCORRECT) + Decompose-then-Recompose
+- `crag_recheck` [CLOUD]: Re-adjudicates AMBIGUOUS cases using title + 150-char excerpt only — resolves over-conservative tendency without exposing document bodies
+- `reranker` [LOCAL]: Cross-encoder reranking (ms-marco-MiniLM, ONNX) against original query
+
+### Drafting Phase
+
+Local models produce section drafts in parallel (System 1); the cloud synthesizes these into a coherent final report, receiving only the draft text — never the underlying documents.
+
+- `mass_rag_drafters` [LOCAL]: MASS-RAG 3-agent parallel drafting (Summarizer/Extractor/Reasoner) — each agent reads source documents directly
+- `synthesis` [CLOUD]: Synthesizes 3-agent outputs into coherent report — receives only locally-generated draft text, no raw documents
+
+### Verification Phase
+
+The cloud first surveys the assembled evidence to identify coverage gaps and trigger targeted re-retrieval (System 2); then local models extract claims, check cross-source consistency, and assign trust scores within the complete evidence set (System 1).
+
+- `gap_detector` [CLOUD]: Surveys locally-compiled coverage index (structured record of retrieved topics and source counts) to identify under-covered topics
+- `gap_search` [LOCAL]: Targeted re-retrieval for identified gaps
+- `cross_validator` [LOCAL]: Cross-source consistency checking within fixed, bounded evidence pool
+- `evidence_auditor` [LOCAL]: RhinoInsight EAM claim binding + misalignment flagging
+- `critique` [LOCAL]: AlignRAG 3-phase self-critique
+- `revise` [LOCAL]: Section-by-section rewrite from feedback
+
+---
+
+## Node Routing Table
+
+```
+Node                        Route     Technique              Cloud receives
+──────────────────────────────────────────────────────────────────────────────
+generate_plan               LOCAL     STRIDE Sq + query_decomp  —
+plan_elaboration            CLOUD     STRIDE Cq              plan skeleton
+checklist_node              LOCAL     RhinoInsight VCM       —
+
+search_worker × N (parallel)
+  CRAG scoring              LOCAL     CRAG 1st-pass          —
+  CRAG AMBIGUOUS recheck    CLOUD     CRAG re-adjudication   title + 150-char excerpt
+  MASS-RAG Summarizer       LOCAL     MASS-RAG draft         —
+  MASS-RAG Extractor        LOCAL     MASS-RAG draft         —
+  MASS-RAG Reasoner         LOCAL     MASS-RAG draft         —
+  MASS-RAG Synthesis        CLOUD     MASS-RAG synthesis     3-agent draft text only
+  CONSTRUCT scorer          LOCAL     CONSTRUCT              —
+
+reranker                    LOCAL     Spec. Reranking (ONNX) —
+supervisor                  LOCAL     STRIDE Supervisor      —
+
+gap_detector                CLOUD     Coverage-gap detection coverage index (local-generated)
+gap_search                  LOCAL     —                      —
+cross_validator             LOCAL     —                      —
+evidence_auditor            LOCAL     RhinoInsight EAM       —
+
+critique                    LOCAL     AlignRAG               —
+revise                      LOCAL     DSAP JSON guard        —
+──────────────────────────────────────────────────────────────────────────────
+Total cloud calls: ~6–8              Total local calls: ~18–22
+```
+
+---
+
+## Nine RAG Technique Adaptations
+
+Each technique is partitioned across System 1 (local) and System 2 (cloud) tiers:
+
+| Phase | Technique | System 1 (Local) | System 2 (Cloud) | Cloud receives |
+|-------|-----------|-----------------|-----------------|----------------|
+| Planning | Query Decomp | sub-query generation | — | none |
+| Planning | STRIDE | abstract planning (Sq) | concrete planning (Cq) | plan skeleton |
+| Planning | DSAP | section outline | section elaboration | outline |
+| Retrieval | CRAG | 1st-pass classify | re-evaluate uncertain | doc title + excerpt |
+| Retrieval | Spec. Rerank | cross-encoder scoring | — | none |
+| Drafting | MASS-RAG | parallel drafting | multi-draft synthesis | local drafts |
+| Drafting | AlignRAG | self-critique rewrite | — | none |
+| Verification | RhinoInsight | claim extraction + trust scoring | — | none |
+| Verification | CONSTRUCT | evidence structuring + consistency | — | none |
+
+Techniques with no System 2 stage (Query Decomp, Speculative Reranking, AlignRAG, RhinoInsight, CONSTRUCT) execute entirely locally and expose no data to the cloud.
+
+---
+
+## LangGraph State Machine
+
+Two LangGraph state machines — research and chat — share a common LLM provider layer.
+
+### Research Graph (Implemented)
+
 ```
 generate_plan → checklist_node → [interrupt: plan_review]
   → search_orchestrator
       → [Send API parallel fan-out] search_worker × N
       │    inside per sub-query:
       │      crag (3-way verdict) → MASS-RAG 3-agent + Synthesis
-      │      if construct=True → CONSTRUCT score_mass_rag_output() → trust_scores in entry
+      │      if construct=True → CONSTRUCT score → trust_scores in entry
       │    + local_search_worker × N
       → reranker  (dedup + cross-encoder top-k)
       → supervisor   (STRIDE: retrieve/rewrite/answer per sub-query)
-      → gap_detector (CRAG hints + VCM hints* + STRIDE hints*)
-           *deep mode 2nd iter only (VCM); STRIDE: rewrite decisions from supervisor
+      → gap_detector (CRAG hints + VCM hints + STRIDE hints)
            → [has gaps] gap_search ─┐
            → [no gaps]              ┘→ cross_validator
-                                        → evidence_auditor  (EAM Stage 1 + Stage 2a)
-                                        → write_draft  (synthesis_block includes CONSTRUCT trust hints)
-                                        → critique  (alignrag 3-phase + CONSTRUCT trust alerts)
-                                        → evidence_stage2   (EAM Stage 2b: misalignment flags)
+                                        → evidence_auditor
+                                        → write_draft
+                                        → critique
+                                        → evidence_stage2
                                           → [passed]  finalize
                                           → [revise]  revise → critique → evidence_stage2 (loop)
 ```
 
----
-
-## Design Decisions
-
-### D1. query_decomp vs STRIDE — Role Separation
-
-**Decision**: STRIDE handles abstract planning; query_decomp handles concrete grounding.
-
-- STRIDE Meta-Planner generates entity-type-agnostic strategy Sq
-  (e.g., "need: definition + current state + comparison")
-- STRIDE converts Sq → concrete plan Cq with actual entities
-- query_decomp's 5-dimension framework maps onto Cq grounding:
-  each sub-query gets a dimension tag (Definition/Background, Current State, etc.)
-- The Reranker step (rerank all retrieved docs against original query) runs
-  after all sub-query searches complete, regardless of whether STRIDE is on
-
-**When STRIDE is off**: query_decomp operates independently as before (5-dimension decomp → parallel search → rerank).
-
-**When both are on**: STRIDE produces Cq, query_decomp applies dimension tagging to Cq sub-queries. They do not conflict.
-
-**[Phase 1 actual]**: STRIDE not yet implemented. query_decomp operates independently:
-- plan_generator prepends `sq0 = {original_query, dimension="Original Query"}` — Q = {q} ∪ Decompose(q)
-- `reranker_node` runs after parallel fan-out join: cross-encoder top-k vs original query
-- `dimension` field dropped in SubQuery dataclass (pre-existing limitation); MASS-RAG fallback unaffected since mass_rag=False
-
-**[Phase 3 actual]**: Both STRIDE and query_decomp implemented:
-- STRIDE off (`stride=False`): query_decomp operates independently as Phase 1 actual above.
-- STRIDE on (`stride=True`): 2-step flow — `_generate_abstract_strategy()` → entity-agnostic Sq
-  with [ENTITY] slots → `_STRIDE_CQ_PROMPT` derives concrete Cq guided by Sq strategy.
-  sq0 (original query) still prepended as first sub-query (Reranker grounding, orthogonal to STRIDE).
-- query_decomp dimension tags (Definition/Background etc.) remain in use as sub-query labels;
-  they apply to STRIDE-generated Cq sub-queries as well as the direct decomp path.
-- **Known Deviation**: Dependency graph Ω not implemented. Per-node dependency tracking from paper
-  replaced by per sub-query Supervisor verdict (retrieve/rewrite/answer). Extractor/Reasoner
-  roles from STRIDE paper are covered by MASS-RAG agents.
-
----
-
-### D2. EAM vs MASS-RAG — Ordering
-
-**Decision**: EAM Stage 1 runs BEFORE MASS-RAG. MASS-RAG output feeds EAM Stage 2.
-
-```
-raw search results
-  → crag filter
-  → [reranker]  top-k selection
-  → [cross_validator]
-  → EAM Stage 1  (normalize: dedup + sort + verification_level)     ← Phase 1 actual
-  → [Phase 2: MASS-RAG] (Summarizer/Extractor/Reasoner)
-  → [Phase 2: EAM Stage 2] (rank per outline section, bind citations)
-```
-
-**[Phase 1 actual deviation]**: EAM Stage 1 runs after cross_validator (R4b decision),
-not inside the per-sub-query loop as originally sketched. Rationale: cross_validator
-produces corroboration groups → evidence_auditor derives verification_level from them
-without an extra LLM call. The ordering EAM-after-CV is semantically correct and cheaper.
-
-**[Phase 2 actual]**: EAM Stage 2 split into 2a and 2b:
-- **Stage 2a** (in `audit_evidence`, same node as Stage 1): MASS-RAG `key_spans.source_citation_ids`
-  → `claim_bindings` per evidence item. Checklist coverage uses claim_bindings when available.
-- **Stage 2b** (`evidence_stage2` node, inserted after `critique`): `critic_feedback.misaligned_claims`
-  → `misalignment_flags` per evidence item. Overwrites each iteration (no accumulation).
-  Graph: `critique → evidence_stage2 → should_revise`. Revise loop: `revise → critique → evidence_stage2`.
-
-**Deviation from original D2 sketch**: MASS-RAG does not feed into a separate EAM Stage 2 node
-between search and write. Instead MASS-RAG runs inside `search_worker` (per sub-query),
-and its synthesis feeds `writer` directly as PRIMARY SOURCE. EAM Stage 2a binds key_spans
-to evidence_store concurrently in `audit_evidence`. The "MASS-RAG sees EAM-normalized inputs"
-invariant is maintained (MASS-RAG reads `reranked_citations` which Stage 1 already normalized).
-
----
-
-### D3. Confidence Score Authority
-
-Three separate systems produce confidence scores. Their authority is scoped:
-
-| Score | Source | Scope | Meaning |
-|---|---|---|---|
-| `retrieval_confidence` | crag evaluator | Document level | Is this document relevant to the sub-query? |
-| `evidence_confidence` | EAM Stage 1 | Evidence level | Normalized trust (source authority × recency × crag score) |
-| `field_confidence` | CONSTRUCT | Output field level | Is this JSON field / report claim trustworthy? |
-
-**Cascade rule**: EAM takes CRAG's `retrieval_confidence` as its initial value, then applies source authority and recency multipliers. This prevents double-scoring.
-
-**Final report confidence**: `min(evidence_confidence, field_confidence)` — the lower of the two is reported as the authoritative trust score for each claim.
-
-**[Phase 1 actual]**: EAM Stage 1 implemented without multipliers — `verification_level`
-(corroborated/single_source/unverified) is derived from `cross_validation_report` at zero
-extra LLM cost. `evidence_confidence` = raw `citation.confidence` (no authority/recency
-multiplier yet).
-
-**[Phase 2 actual]**: EAM Stage 2a adds `claim_bindings` per evidence item (MASS-RAG spans).
-EAM Stage 2b adds `misalignment_flags` per evidence item (alignrag critic output).
-Full confidence cascade (CRAG × authority × recency multiplier) deferred to Phase 3 alongside
-CONSTRUCT field scoring.
-
----
-
-### D4. STRIDE Supervisor vs VCM — Synchronization
-
-**Decision**: Supervisor plan mutations trigger VCM checklist recompute.
-
-When the STRIDE Supervisor decides to `rewrite` a sub-query or adds a new retrieval step:
-1. The updated sub-query is written back to the plan in state
-2. VCM re-evaluates the checklist against the updated plan
-3. Newly added sub-goals are appended as unchecked items
-4. Previously completed items are preserved
-
-**Implementation note**: VCM does not own the plan; it observes it.
-The Supervisor is the single authority on plan mutations.
-VCM's role is tracking, not controlling.
-
-**[Phase 1 actual]**: STRIDE Supervisor not yet implemented (Phase 3).
-- VCM checklist created once (checklist_node after plan_generator) and updated once
-  (evidence_auditor after cross_validator) — no mid-session recompute hook yet.
-
-**[Phase 2 actual]**: VCM pending/partial subgoals now wired to gap_detector (Phase 2-5).
-Two independent hint axes in gap_detector prompt: CRAG signals (retrieval quality) +
-VCM signals (subgoal completion). LLM synthesizes gap queries from both axes.
-**Known timing limitation**: checklist is updated by evidence_auditor (after cross_validator).
-First gap_detector call runs before checklist status is available → VCM hint only effective
-from 2nd gap iteration onward (deep mode). fast/normal: VCM hint has no effect on 1st run.
-
----
-
-### D5. Verification Chain
-
-**Default (always on)**:
-- `alignrag`: 3-phase misalignment check on every draft
-- `CONSTRUCT`: field confidence scoring on all JSON-producing nodes
-
-**Selective (on when triggered)**:
-- `PROClaim`: activated only when a claim is explicitly flagged as controversial
-  - Trigger: alignrag Phase 3 returns a claim with `controversial: true`
-  - Or: user explicitly enables `proclaim` flag
-  - Cost justification: ~211K tokens per debate — not viable for every claim
-
-**Rationale**: alignrag + CONSTRUCT cover the full verification surface.
-PROClaim adds adversarial depth but overlaps with alignrag on non-controversial content.
-Running both always-on doubles verification cost without proportional gain.
-
-**[Phase 2 actual]**: alignrag fully implemented (Phase 2-2):
-- `critic.py` `_PROMPT`: 3-phase diagnosis (Phase 1 relevance / Phase 2 mapping / Phase 3 synthesis)
-- Schema: unified `misaligned_claims[{phase, claim, source_citation_ids, source_quote, correction_hint}]`
-- DR2: `passed` computed in code from misalignment counts (no LLM self-report)
-- DR1c: phase-grouped `_REVISE_PROMPT` (correction_hint per misalignment)
-- Dynamic termination: `should_revise()` routes to finalize when passed=True
-- Known deviation: CLM fine-tuning not possible via API (ceiling ~vanilla+2-5%)
-
-**[Phase 3 actual]**: CONSTRUCT implemented (C1b+C2b+C3a+C4b+C4d):
-- Applied to MASS-RAG outputs only (C1b), not all JSON-producing nodes (D6 Phase 3a target)
-- 2-call simplified (C2b): Document-level + Field-level verifiers via asyncio.gather
-- trust_scores stored in `mass_rag_outputs[i]["trust_scores"]` (C3a)
-- C4b: writer's `_build_synthesis_block()` annotates low-trust fields with hedging instruction
-- C4d: `_build_construct_hint()` injects CONSTRUCT Trust Alerts into critic `_PROMPT`
-- `construct=False` default; enabled via `feature_flags={"construct": True}`
-- Known deviation: 5-template paper → 2-template impl (~70% effect at 40% cost).
-  Targeted regeneration (C5b) and paper benchmark reproduction (C6a) deferred.
-
-dsap JSON guard: Level 1+2 implemented (`llm_json` utility, cross-cutting).
-
----
-
-### D6. CONSTRUCT Scope
-
-**Phase 3a (implemented)**:
-- Applied to MASS-RAG synthesis outputs (C1b), not all JSON-producing nodes
-- Document-level + Field-level scores per sub-query entry
-- `untrustworthy_fields` (score < 0.5) → writer hedging hint (C4b) + critic scrutiny (C4d)
-- Targeted regeneration of low-trust fields (paper C5b) deferred — implement if benchmark shows regression
-
-**Phase 3b (deferred)**:
-- Report section-level confidence (treat each section as a "field")
-- Would require adapting the method from structured JSON to free-form text
-- Not from the paper directly — would be a novel extension; excluded from v1.0 scope
-
----
-
-## Synergy Map
-
-### Clear synergies
-
-| Combination | Effect |
-|---|---|
-| query_decomp → crag → MASS-RAG | Coverage → precision → depth funnel (each stage improves input quality for next) |
-| STRIDE + VCM | Structure (STRIDE) + tracking (VCM): naturally complementary at planning stage |
-| EAM + alignrag + CONSTRUCT | Normalize → consistency check → quantify: 3-layer verification chain |
-| dsap + CONSTRUCT | dsap = structural validity of JSON; CONSTRUCT = content validity. Same output, different layers. |
-
-### Interactions requiring care
-
-| Issue | Resolution |
-|---|---|
-| crag confidence + EAM confidence double-scoring | EAM takes crag score as initial value (cascade, not independent) |
-| MASS-RAG synthesis before EAM outline-alignment | Fixed by D2: EAM Stage 1 precedes MASS-RAG |
-| alignrag + PROClaim functional overlap | Fixed by D5: PROClaim is selective, not default |
-| STRIDE Supervisor dynamic rewrite vs VCM tracking | Fixed by D4: Supervisor mutates plan, VCM observes |
-
-### Structural risks
-
-| Risk | Mitigation |
-|---|---|
-| MASS-RAG × query_decomp cost amplification (5 sub-queries × 3 agents = 15 LLM calls) | Measure per-query cost in Phase 2 benchmark; add budget cap option |
-| CONSTRUCT scope creep into free-form report | Phase 3a applies to JSON nodes only; report-level scoring deferred to Phase 3b as experimental |
-| PROClaim + NaviRAG integration mismatch | PROClaim: selective activation. NaviRAG: parallel path (local files only), not integrated into main web search flow |
-
----
-
-## Updated Implementation Order
-
-Based on the above decisions, Phase ordering remains unchanged but with these additions:
-
-**Phase 1** ✅:
-- crag: Decompose-then-Recompose + 3-way verdict + AMBIGUOUS/INCORRECT gap hints
-- query_decomp: sq0 prepend + cross-encoder reranker (Q = {q} ∪ Decompose(q))
-- RhinoInsight: VCM (checklist_node) + EAM Stage 1 (evidence normalization)
-- dsap: Level 1 context refinement
-
-**Phase 2** ✅:
-- MASS-RAG: 3-agent parallel (Summarizer/Extractor/Reasoner) + Synthesis per sub-query
-  - Writer: Synthesis as PRIMARY SOURCE via `_ANALYSIS_WITH_MASSRAG_PROMPT`
-  - EAM Stage 2a: MASS-RAG key_spans → claim_bindings in evidence_store
-- dsap: Level 2 stagnation detection + last-resort strategy (error_sink, caller_tag)
-- alignrag: 3-phase diagnosis + DR1c/DR2 + structured misaligned_claims schema
-  - EAM Stage 2b: misalignment_flags in evidence_store (post-critique node)
-- VCM → gap_detector: PENDING/PARTIAL hints as independent axis (deep mode 2nd iter+)
-
-**Phase 3** ✅:
-- STRIDE: Meta-Planner (Sq→Cq 2-step) + Supervisor (retrieve/rewrite/answer per sub-query)
-  - query_decomp remains as grounding mechanism for Cq (per D1)
-  - STRIDE hints → 3rd axis in gap_detector (alongside CRAG and VCM)
-  - Known Deviation: dependency graph Ω not implemented; per-subquery Supervisor verdict used instead
-- CONSTRUCT: C2b 2-call scorer (Document + Field-level) on MASS-RAG outputs (per D6 Phase 3a)
-  - C4b writer hint + C4d critic alert; targeted regeneration (C5b) deferred
-  - Known Deviation: 5-template → 2-template (~70% effect at 40% cost)
-
-**Phase 4** — Future Work (not implemented):
-- PROClaim (arxiv:2603.28488): Courtroom multi-agent debate for controversial claims.
-  Excluded: primary use case is general research reports, not adversarial claim verification.
-  alignrag + CONSTRUCT cover the verification surface for this use case.
-  Cost: ~211K tokens per debate — not viable for general use.
-- NaviRAG (arxiv:2604.12766): Hierarchical knowledge tree navigation.
-  Excluded: requires offline KB build (~50 min); web-search-centric pipeline is primary path.
-  local_search_worker exists as extension point if local-file research becomes primary use case.
-
----
-
-## State Schema — Implemented and Planned
-
-```python
-# ── Phase 1 — implemented ────────────────────────────────────────────────
-retrieval_quality: Annotated[list[dict], operator.add]
-# per sub-query: {sub_query_id, verdict, max_doc_score, strip_retention_ratio, dsap_errors}
-
-reranked_citations: list[dict]   # plain overwrite; top-k after cross-encoder
-# produced by reranker_node; downstream nodes prefer this over raw citations
-
-checklist: list[dict]            # plain overwrite; one per session
-# [{id, subgoal, sub_query_id, status: pending|partial|complete, evidence_ids}]
-
-evidence_store: list[dict]       # plain overwrite; writer prefers this
-# Phase 1: {id, url, title, excerpt, confidence, trust_level, crawled_at, verification_level}
-# Phase 2: + claim_bindings: [{sub_query_id, text, type}]   (Stage 2a, from MASS-RAG key_spans)
-#          + misalignment_flags: [{phase, claim, correction_hint}]  (Stage 2b, from alignrag)
-
-# ── Phase 2 — implemented ─────────────────────────────────────────────────
-mass_rag_outputs: Annotated[list[dict], operator.add]
-# per sub-query (CORRECT/AMBIGUOUS, non-fast):
-#   {sub_query_id, question, summary, key_spans, inferences}
-#   Phase 3: + trust_scores: {document_score, per_field: {summary, key_spans, inferences},
-#                              untrustworthy_fields}  (CONSTRUCT, when construct=True)
-# key_spans: [{text, source_citation_ids, type}]
-# inferences: [{claim, supporting_span_indices}]
-
-# critic_feedback: dict  (already in Phase 1 schema — schema extended in Phase 2)
-# Phase 2 schema: {passed (code-computed), has_logic_errors (derived),
-#   uncited_claims, unanswered_sub_queries, suggestions,
-#   misaligned_claims: [{phase, claim, source_citation_ids, source_quote, correction_hint}]}
-
-# ── Phase 3 — implemented ─────────────────────────────────────────────────
-supervisor_decisions: list[dict]
-# [{sub_query_id, question, action: retrieve|rewrite|answer, reformulated_question?,
-#   verdict, max_doc_score}]
-# produced by supervisor_node; gap_detector reads rewrite decisions as STRIDE hint
-
-# Note: CONSTRUCT trust_scores stored inline in mass_rag_outputs (see above)
-# No separate top-level state field — trust data travels with the entry it scores.
-
-# ── Future Work (Phase 4) — not implemented ───────────────────────────────
-# controversial_claims: list[str]  # would be needed for PROClaim selective activation
-```
-
-### Note on reducer semantics
-- `citations`, `retrieval_quality`, `error_log`: `Annotated[list, operator.add]` — append only
-- All other new fields: **plain overwrite** (no operator.add) — one authoritative value per session
-- Do NOT use operator.add for any new Phase 2+ fields unless explicitly accumulating from parallel workers
-
----
-
-## Planned Enhancement: Hybrid Local/Cloud LLM Provider
-
-**Status**: Design complete. Not implemented. Informed by E2E benchmark (2026-04-23).
-
-### Problem
-
-qwen3:8b measured at ~481s/query in the full pipeline (local-only). Primary bottleneck:
-evaluation loops (CRAG batch scoring: 6–8 calls, CONSTRUCT 2-call scorer) use the same
-high-quality cloud model as report generation, but don't need it.
-
-### Architecture: RoutedLLM Wrapper
-
-```
-LLM_PROVIDER=hybrid
-       │
-       ▼
-RoutedLLM(cloud=BedrockProvider, local=OllamaProvider)
-       │
-       ├── node_hint in CLOUD_NODES  →  BedrockProvider.complete()
-       └── node_hint in LOCAL_NODES  →  OllamaProvider.complete()
-                                         OllamaProvider.embed()  (always local)
-```
-
-The wrapper implements the same `LLMProvider` Protocol (`complete`, `stream`, `embed`).
-It is a drop-in replacement — `src/graph.py` passes a single provider to all nodes.
-Nodes receive `node_hint` as a string argument to `complete()`; RoutedLLM uses it for
-dispatch. No node code changes required.
-
-### Routing: Generation vs Evaluation split
-
-```
-Cloud (generation — few, high-quality calls):
-  plan_generator  → STRIDE Sq→Cq reasoning
-  writer          → report generation (primary user-facing output)
-  critic          → AlignRAG 3-phase diagnosis
-  gap_detector    → strategic gap query generation
-
-Local (evaluation — many, classification calls):
-  search_worker   → CRAG batch scoring + DRC extraction
-  quality_scorer  → CONSTRUCT trustworthiness 2-call scorer
-  supervisor      → retrieve/rewrite/answer classification
-  cross_validator → source comparison judgment
-  checklist_node  → VCM subgoal generation
-  evidence_auditor→ claim binding + misalignment flagging
-```
-
-### Provider Layer Impact
-
-No changes to existing provider files. `RoutedLLM` is a new `src/providers/hybrid.py`:
+### HybridProvider
 
 ```python
 class HybridProvider:
-    CLOUD_NODES = {"plan_generator", "writer", "critic", "gap_detector"}
+    """Routes each node to System 1 (local) or System 2 (cloud) tier."""
+
+    CLOUD_NODES = {"plan_elaboration", "crag_recheck", "synthesis", "gap_detector"}
 
     def __init__(self, cloud: LLMProvider, local: LLMProvider):
         self._cloud = cloud
@@ -458,24 +236,91 @@ class HybridProvider:
         return await self._local.embed(text)
 ```
 
-`src/providers/__init__.py` factory: `LLM_PROVIDER=hybrid` → `HybridProvider(cloud, local)`.
+`LLM_PROVIDER=hybrid` in `.env` activates this routing. `embed()` always routes to local.
 
-### Projected Impact
+---
 
-| Metric | Cloud-only (phase1_2_3) | Hybrid (estimated) |
-|--------|------------------------|-------------------|
-| Cost/query | $0.75 | ~$0.19 (−75%) |
-| Latency | 216s | ~120–150s |
-| Privacy | query exposed to cloud | original query stays local |
-| API rate exposure | high (eval loops) | low (eval → local) |
+## State Schema
 
-### Known Risks
+```python
+# Planning
+plan: dict                    # sub_queries, interpretation, research_skeleton
+checklist: list[dict]         # [{id, subgoal, sub_query_id, status, evidence_ids}]
 
-1. **qwen3 thinking overhead on eval nodes**: Even with `/no_think`, complex prompts
-   may trigger partial thinking. Use qwen3:1.5b or exaone3.5:2.4b for eval nodes.
-2. **CRAG threshold calibration**: 0.3/0.5 thresholds calibrated on Claude. Local model
-   may score with different distribution. Requires a recalibration run on 5 queries
-   before production routing.
-3. **JSON reliability**: Local models produce more malformed JSON. DSAP Level 1+2
-   (`llm_json.py`) must be applied to all local-routed nodes — already the case in
-   current architecture since all structured outputs go through `call_llm_json()`.
+# Retrieval
+citations: Annotated[list[dict], operator.add]  # accumulated across parallel workers
+retrieval_quality: Annotated[list[dict], operator.add]  # CRAG verdicts per sub-query
+reranked_citations: list[dict]  # top-k after cross-encoder (plain overwrite)
+
+# Drafting
+mass_rag_outputs: Annotated[list[dict], operator.add]
+# per sub-query: {sub_query_id, summary, key_spans, inferences}
+# + trust_scores when construct=True: {document_score, per_field, untrustworthy_fields}
+
+# Verification
+evidence_store: list[dict]    # normalized evidence with claim_bindings + misalignment_flags
+cross_validation_report: dict
+supervisor_decisions: list[dict]  # STRIDE: retrieve/rewrite/answer per sub-query
+critic_feedback: dict         # {passed, misaligned_claims, uncited_claims, ...}
+
+# Output
+final_report: str
+```
+
+---
+
+## Why Local Models Improve System 1 Stages
+
+An unexpected finding from the paper: replacing frontier-model System 1 stages with 2–4B local models not only preserves but **improves** overall quality. Two complementary mechanisms:
+
+1. **Task-scope alignment**: Frontier models tend to over-elaborate outputs for constrained generation tasks such as CRAG classification or trust scoring, producing verbose reasoning where a concise label is required. Smaller models, with narrower output distributions, stay on-task more reliably.
+
+2. **Synthesis leverage**: When local models generate section drafts, the cloud synthesis stage receives imperfect but diverse raw material, creating genuine revision leverage that is absent when a frontier draft is already near-final.
+
+These mechanisms are consistent with the confound-control results: the hybrid gain is present regardless of which cloud model handles System 2 stages, ruling out model-diversity as the sole explanation.
+
+---
+
+## Performance Characteristics
+
+From the paper (N=600 per condition, 120 queries × 5 runs):
+
+| Configuration | Quality (Med) | Cloud Tokens/q | Cost/q | Latency/q |
+|---------------|---------------|----------------|--------|-----------|
+| Cloud-only Sonnet 4.6 | 0.798 | 136,891 | $1.128 | 270s |
+| exaone3.5:2.4b + Sonnet 4.6 | **0.869** | 45,918 | $0.375 | 233s |
+| gemma3:4b + Sonnet 4.6 | 0.867 | 47,330 | $0.379 | 312s |
+| exaone3.5:2.4b + Haiku 4.5 | 0.828 | 42,568 | $0.093 | 155s |
+| exaone3.5:2.4b (all-local) | 0.802 | 0 | $0.000 | 174s |
+
+Hardware: NVIDIA L4 GPU (24GB VRAM), Ubuntu 22.04. Local models served via Ollama with Q4_K_M quantization.
+
+---
+
+## Design Decisions
+
+### D1. System 1/System 2 Boundary
+
+The boundary is determined by input scope, not model capability. A stage is System 1 if it processes a single bounded input (one document, one draft, one passage). A stage is System 2 if it must integrate across multiple independent sources simultaneously.
+
+This means CRAG classification (one document at a time) is System 1, while coverage-gap detection (surveying the full evidence state) is System 2 — even though both could theoretically be handled by either tier.
+
+### D2. CRAG AMBIGUOUS Re-adjudication
+
+Small local models over-predict AMBIGUOUS due to low calibration confidence. The cloud re-adjudication step resolves this: when the local verdict is AMBIGUOUS, the cloud re-classifies using only document titles and 150-character excerpts — resolving the over-conservative tendency without exposing document bodies to the cloud.
+
+### D3. STRIDE Stage Separation
+
+STRIDE generates an abstract research plan (Sq) followed by a concrete execution plan (Cq) in a single model. We split these stages: the local model generates Sq directly from the original query, then the cloud model generates Cq from Sq and a topic summary derived locally — preserving frontier-model planning quality while keeping the original query local.
+
+### D4. MASS-RAG Speculative Synthesis
+
+MASS-RAG assigns multiple agents to draft sections in parallel. In the hybrid variant, local models produce parallel section drafts; the cloud synthesizes these into a coherent final report, receiving only the drafted text — no retrieved documents.
+
+### D5. Verification Phase Ordering
+
+The Verification phase begins with cloud-based gap detection (System 2) that surveys the assembled evidence before claim verification begins. This ordering is critical: verifying claims against an incomplete evidence set yields unreliable results. Once the evidence set is complete, local models handle consistency checking (System 1) — pattern-matching over a known, bounded set requires no integrative reasoning.
+
+### D6. All-Local Fallback
+
+When `LLM_PROVIDER=ollama`, all System 2 stages fall back to the local model. This enables air-gapped deployment at a 6–7 point quality gap vs. Hybrid+Sonnet (0.802 vs. 0.869). The all-local path is validated: exaone3.5:2.4b all-local (0.802) exceeds cloud-only Haiku (0.671) and cloud-only Llama 70B (0.688).

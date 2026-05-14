@@ -1,5 +1,9 @@
 # Guide to Connecting a New LLM Provider
 
+> This guide covers adding new providers to the Stage-Aware Local-Cloud Inference system.
+> For the hybrid routing design (System 1/System 2), see [HYBRID_STRATEGY.md](HYBRID_STRATEGY.md).
+> For recommended local models from the paper's evaluation, see [LOCAL_LLM_GUIDE.md](LOCAL_LLM_GUIDE.md).
+
 Step-by-step instructions for connecting another cloud LLM API or local LLM to this system.
 
 ---

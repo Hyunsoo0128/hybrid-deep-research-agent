@@ -2,7 +2,12 @@
 
 This guide is designed for **reading this project's code like a textbook**. Each design decision is backed by a research paper, and each paper has a corresponding implementation in this codebase.
 
-The goal is to answer: "What do you need to know to build Agentic RAG properly?"
+The goal is to answer: "What do you need to know to build Stage-Aware Local-Cloud Inference properly?"
+
+> This codebase implements the architecture from the paper:
+> **Stage-Aware Local-Cloud Inference: Hybrid Pipelines Consistently Outperform Matched Cloud-Only Baselines**
+>
+> The core insight: not all pipeline stages require frontier-model reasoning. System 1 stages (bounded-context operations) run locally on 2–4B models; System 2 stages (integrative reasoning) run on frontier cloud LLMs. See [HYBRID_STRATEGY.md](HYBRID_STRATEGY.md) for the full design.
 
 ---
 

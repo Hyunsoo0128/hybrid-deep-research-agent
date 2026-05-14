@@ -1,22 +1,41 @@
-# Cloud Benchmark Plan — Local LLM Candidate Evaluation
+# Cloud Benchmark Plan — Reproducing the 35-Condition Evaluation
 
-**Purpose**: Bulk evaluation of small LLM candidate models on EC2 GPU instances to fill the "local" role in the Hybrid pipeline.
-**Background**: The current baseline model `qwen3:8b` FAILs on 4 techniques: stride/crag/sdp/mass_rag.
-Determine whether better candidates exist, and where the size-performance trade-off optimum lies.
+**Purpose**: Infrastructure setup for reproducing the full 35-condition evaluation from the paper:
+
+> **Stage-Aware Local-Cloud Inference: Hybrid Pipelines Consistently Outperform Matched Cloud-Only Baselines**
+
+The paper evaluates 35 configurations (120 queries × 5 runs) across cloud-only, hybrid, and all-local tiers using a Triple Judge Jury.
 
 ---
 
-## 1. Evaluation Premises
+## 1. Experiment Overview
 
-- **No changes to production code** — only the benchmark environment moves to EC2
-- **Role of the local LLM** (per the Hybrid pipeline):
-  - Spec RAG Stage 1 (drafting suspect claims) — core of AlignRAG recall
-  - Spec RAG Stage 3 (applying corrections and refining)
-  - CRAG relevance classification (3-way: relevant / partial / irrelevant)
-  - MASS-RAG expert persona synthesis
-  - STRIDE Supervisor routing decisions (requires JSON accuracy)
-  - DSAP JSON retry convergence speed
-- **Cloud LLM fixed**: Bedrock Haiku 4.5 (`us.anthropic.claude-haiku-4-5-20251001-v1:0`)
+### 35 Conditions
+
+| Tier | Conditions | Description |
+|------|-----------|-------------|
+| Cloud-only | 3 | Sonnet 4.6, Haiku 4.5, Llama 3.3 70B |
+| Hybrid | 24 | 8 local models × 3 cloud backends |
+| All-local | 8 | 8 local models, no cloud calls |
+
+### 8 Local Models
+
+| Model | Size | Tier |
+|-------|------|------|
+| exaone3.5:2.4b | ~2.4B | ~2–4B |
+| gemma3:4b | ~4B | ~2–4B |
+| qwen3:4b | ~4B | ~2–4B |
+| llama3.2:3b | ~3B | ~2–4B |
+| qwen3:8b | ~8B | ~7–8B |
+| exaone3.5:7.8b | ~7.8B | ~7–8B |
+| llama3.1:8b | ~8B | ~7–8B |
+| gemma3:12b | ~12B | ~12B |
+
+### 3 Cloud Backends
+
+- Sonnet 4.6 (`us.anthropic.claude-sonnet-4-6`)
+- Haiku 4.5 (`us.anthropic.claude-haiku-4-5-20251001-v1:0`)
+- Llama 3.3 70B (via Bedrock)
 
 ---
 
@@ -24,59 +43,13 @@ Determine whether better candidates exist, and where the size-performance trade-
 
 ### Instance Selection
 
-The pipeline `search_worker` fan-out runs 5–7 sub-queries concurrently.
-`OLLAMA_NUM_PARALLEL` must match the number of sub-queries for true parallel processing;
-required VRAM = model size × number of sub-queries by this criterion.
+| Instance | GPU | VRAM | Use case | $/hr |
+|---------|-----|------|----------|------|
+| **g6.xlarge** | L4 | 24GB | Hybrid/all-local (2–4B, 7–8B models) | ~$0.80 |
+| **g6e.xlarge** | L40S | 48GB | Hybrid/all-local (12B models, full parallelism) | ~$2.0 |
+| t3.xlarge | CPU | — | Cloud-only conditions | ~$0.17 |
 
-| Instance | GPU | VRAM | 8B NUM_PARALLEL | 14B NUM_PARALLEL | $/hr |
-|---------|-----|------|----------------|-----------------|------|
-| g6.xlarge | L4 | 24GB | 4 (insufficient) | 2 (insufficient) | $0.80 |
-| **`g6e.xlarge`** | **L40S** | **48GB** | **8 (full coverage)** | **5 (full coverage)** | **~$2.0** |
-| g5.12xlarge | 4×A10G | 96GB | multi-model concurrent | multi-model concurrent | $5.67 |
-
-**Selection**: `g6e.xlarge` (us-west-2)
-- L40S 48GB — truly parallel processing for the full sub-query fan-out
-- 8B models: NUM_PARALLEL=8, 14B models: NUM_PARALLEL=5
-- Speed-first choice suited for many benchmark iterations
-
-### Model Storage Strategy
-
-Pre-pull all candidate models to the EBS disk; load only the target model into VRAM at benchmark time.
-- Total disk space for all models: ~50GB → EBS 100GB is sufficient
-- Only one model is loaded into VRAM at a time (Ollama auto-unloads)
-
-```bash
-# Pre-download all candidate models on EC2 (background)
-for model in llama3.2:3b qwen3:4b phi4-mini \
-             qwen3:8b gemma3:9b exaone3.5:7.8b llama3.1:8b mistral:7b \
-             qwen3:14b gemma3:12b; do
-  ollama pull $model
-done
-```
-
-### Handling Pipeline Parallel Sections — OLLAMA_NUM_PARALLEL
-
-Sections that run in parallel in the pipeline:
-- `search_worker` fan-out: N sub-queries → each worker simultaneously requests Ollama CRAG classification
-- `local_search_worker` fan-out: same pattern
-
-With the current architecture, sequential Ollama processing negates the parallel fan-out benefit.
-Setting `OLLAMA_NUM_PARALLEL` to open N slots in VRAM allows concurrent requests to be truly processed in parallel.
-
-**NUM_PARALLEL settings by model size** (based on g6e.xlarge VRAM 48GB):
-
-| Model | VRAM/slot | NUM_PARALLEL | VRAM used | Fan-out coverage |
-|------|---------|-------------|---------|-----------|
-| llama3.2:3b | ~2GB | 16 | ~32GB | Full ✅ |
-| qwen3:4b | ~3GB | 12 | ~36GB | Full ✅ |
-| phi4-mini | ~3GB | 12 | ~36GB | Full ✅ |
-| qwen3:8b | ~5GB | 8 | ~40GB | Full ✅ |
-| gemma3:9b | ~6GB | 7 | ~42GB | Full ✅ |
-| exaone3.5:7.8b | ~5GB | 8 | ~40GB | Full ✅ |
-| llama3.1:8b | ~5GB | 8 | ~40GB | Full ✅ |
-| mistral:7b | ~5GB | 8 | ~40GB | Full ✅ |
-| qwen3:14b | ~9GB | 5 | ~45GB | Full ✅ |
-| gemma3:12b | ~8GB | 6 | ~48GB | Full ✅ |
+**Paper hardware**: NVIDIA L4 (24GB VRAM), Ubuntu 22.04. Broadly comparable to RTX 4090 (24GB VRAM).
 
 ### Setup Procedure
 
@@ -88,210 +61,177 @@ aws ec2 run-instances \
   --key-name <key-name> \
   --security-group-ids <sg-id> \
   --block-device-mappings '[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":100}}]' \
-  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=ollama-benchmark}]'
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=hybrid-benchmark}]'
 
-# 2. Security group — open port 11434 to your IP only
-aws ec2 authorize-security-group-ingress \
-  --group-id <sg-id> \
-  --protocol tcp --port 11434 \
-  --cidr <MY_IP>/32
-
-# 3. SSH into EC2 and install Ollama
+# 2. SSH into EC2 and install Ollama
 curl -fsSL https://ollama.com/install.sh | sh
 
-# 4. Pre-pull all models (background, ~30 min)
-for model in llama3.2:3b qwen3:4b phi4-mini \
-             qwen3:8b gemma3:9b exaone3.5:7.8b llama3.1:8b mistral:7b \
-             qwen3:14b gemma3:12b; do
-  ollama pull $model &
+# 3. Pre-pull all local models
+for model in exaone3.5:2.4b gemma3:4b qwen3:4b llama3.2:3b \
+             qwen3:8b exaone3.5:7.8b llama3.1:8b gemma3:12b; do
+  ollama pull $model
 done
-wait
+
+# 4. Pull embedding model
+ollama pull nomic-embed-text
 ```
 
-### Benchmark Run Script (from local laptop)
+### OLLAMA_NUM_PARALLEL Settings
 
-Restart Ollama with the appropriate `NUM_PARALLEL` when switching models:
+| Model | VRAM/slot | NUM_PARALLEL (L4 24GB) |
+|-------|-----------|------------------------|
+| exaone3.5:2.4b | ~2GB | 8 |
+| gemma3:4b | ~3GB | 6 |
+| qwen3:4b | ~3GB | 6 |
+| llama3.2:3b | ~2GB | 8 |
+| qwen3:8b | ~5GB | 4 |
+| exaone3.5:7.8b | ~5GB | 4 |
+| llama3.1:8b | ~5GB | 4 |
+| gemma3:12b | ~8GB | 2 |
+
+---
+
+## 3. Running the Benchmark
+
+### Single condition
 
 ```bash
-#!/bin/bash
-# run_benchmark.sh
-EC2_IP=<EC2_PUBLIC_IP>
+# Best hybrid configuration (paper's top result)
+python eval/standalone_benchmark.py \
+  --mode hybrid \
+  --local-model exaone3.5:2.4b \
+  --cloud sonnet \
+  --queries eval/fixtures/benchmark_queries.json \
+  --runs 5
 
-declare -A NUM_PARALLEL=(
-  ["llama3.2:3b"]=8  ["qwen3:4b"]=7    ["phi4-mini"]=7
-  ["qwen3:8b"]=4     ["gemma3:9b"]=3   ["exaone3.5:7.8b"]=4
-  ["llama3.1:8b"]=4  ["mistral:7b"]=4
-  ["qwen3:14b"]=2    ["gemma3:12b"]=2
-)
+# Cloud-only baseline
+python eval/standalone_benchmark.py \
+  --mode cloud-only \
+  --cloud sonnet \
+  --queries eval/fixtures/benchmark_queries.json \
+  --runs 5
 
-for MODEL in "${!NUM_PARALLEL[@]}"; do
-  NP=${NUM_PARALLEL[$MODEL]}
-  echo "=== $MODEL (NUM_PARALLEL=$NP) ==="
+# All-local
+python eval/standalone_benchmark.py \
+  --mode all-local \
+  --local-model exaone3.5:2.4b \
+  --queries eval/fixtures/benchmark_queries.json \
+  --runs 5
+```
 
-  # Restart Ollama on EC2 with correct parallelism setting
-  ssh ec2-user@$EC2_IP \
-    "pkill ollama; sleep 2; OLLAMA_HOST=0.0.0.0:11434 OLLAMA_NUM_PARALLEL=$NP ollama serve &"
-  sleep 5
+### Full 35-condition benchmark
 
-  export OLLAMA_HOST=http://$EC2_IP:11434
-  export OLLAMA_MODEL=$MODEL
+```bash
+# Deploy parallel EC2 instances for multi-model runs
+python eval/deploy_ec2.py --conditions all
 
-  python -m eval.critic_pretest        # Phase 1
-  python -m eval.component_benchmark --provider ollama --model $MODEL  # Phase 2
-  python -m eval.e2e_benchmark --provider hybrid --model $MODEL --slim  # Phase 3
-done
+# Or run sequentially on a single instance
+python eval/run_phase1.py   # ~2–4B models
+python eval/run_phase2.py   # ~7–8B models
+python eval/run_phase3.py   # ~12B models
+```
+
+### Feature-flag ablation (Bedrock only)
+
+```bash
+python -m eval.e2e_benchmark --provider bedrock --conditions baseline phase1 phase1_2_3
+python eval/analyze_results.py eval/results/bedrock_full_v1.json
 ```
 
 ---
 
-## 3. Candidate Model List
+## 4. Evaluation: Triple Judge Jury
 
-Target spec for research desktop: GPU VRAM 16–24GB, RAM 32GB or more.
+The paper uses a Triple Judge Jury for evaluation. To reproduce:
 
-### Tier A — 3–4B (extra-small / fast response priority)
+```bash
+# Run evaluation with all three judges
+python eval/evaluate_reports.py \
+  --results eval/results/standalone/ \
+  --judges deepseek-r1 claude-opus-4.6 mistral-large-3 \
+  --output eval/results/judge_scores.json
+```
 
-| Model | Size | VRAM | Speed estimate | Notes |
-|------|------|------|---------|------|
-| `llama3.2:3b` | 2.0GB | ~4GB | ~120 tok/s | Meta official, minimal footprint |
-| `qwen3:4b` | 2.6GB | ~5GB | ~100 tok/s | Alibaba, strong instruction following |
-| `phi4-mini` | 3.8B | ~6GB | ~90 tok/s | Microsoft, high reasoning capability for its size |
+**Judge models**:
+- Judge A: DeepSeek R1 (671B) — `deepseek-r1`
+- Judge B: Claude Opus 4.6 — `us.anthropic.claude-opus-4-6`
+- Judge C: Mistral Large 3 (675B) — `mistral-large-3`
 
-### Tier B — 7–9B (main target / standard for research desktops)
+**G-Eval rubric** (5 dimensions, 1–10 scale, divided by 10):
+1. Coverage — does the report address all key aspects?
+2. Accuracy — are claims well-supported and factually sound?
+3. Citation Quality — are sources used effectively?
+4. Depth — does the report demonstrate analytical depth?
+5. Coherence — is the report well-organized and clearly written?
 
-| Model | Size | VRAM | Speed estimate | Notes |
-|------|------|------|---------|------|
-| `qwen3:8b` ⭐ | 5.2GB | ~8GB | ~40 tok/s | **Current baseline** |
-| `gemma3:9b` | 6.0GB | ~9GB | ~35 tok/s | Google, strong reasoning / long context |
-| `exaone3.5:7.8b` | 4.7GB | ~8GB | ~45 tok/s | LG AI, balanced Korean + English |
-| `llama3.1:8b` | 4.9GB | ~8GB | ~45 tok/s | Meta, general-purpose baseline |
-| `mistral:7b` | 4.1GB | ~7GB | ~50 tok/s | Mistral, stable JSON output |
-
-### Tier C — 12–14B (high-end desktop / maximum quality target)
-
-| Model | Size | VRAM | Speed estimate | Notes |
-|------|------|------|---------|------|
-| `qwen3:14b` | 9.0GB | ~14GB | ~25 tok/s | Alibaba, expected significant accuracy improvement over 8B |
-| `gemma3:12b` | 8.1GB | ~13GB | ~28 tok/s | Google, strong fact alignment |
-
-> g6.xlarge VRAM 24GB — all Tier C models fit under Q4 quantization.
+Final score = median of three judges' scores.
 
 ---
 
-## 4. Evaluation Phases
+## 5. Benchmark Queries
 
-### Phase 1 — Quick Screening (~10 min per model)
+120 multilingual queries across 5 domains and 5 query types:
 
-**Tool**: `eval/critic_pretest.py`
-**Content**: AlignRAG 3-phase recall (phase1 off-topic / phase2 fabricated citation / phase3 numeric contradiction)
-**Total time**: 8 models × 10 min = ~80 min
+| Domain | EN | KO+JA | Total |
+|--------|-----|-------|-------|
+| AI / ML | 23 | 3 | 26 |
+| Science & Tech | 20 | 3 | 23 |
+| Business | 23 | 4 | 27 |
+| Medical | 17 | 4 | 21 |
+| Law & Policy | 17 | 6 | 23 |
+| **Total** | **100** | **20** | **120** |
 
-**Pass criteria (advance to Phase 2)**:
-
-| Condition | Threshold |
-|------|------|
-| Overall recall | ≥ 0.40 (baseline qwen3:8b = 0.20) |
-| phase3 recall | ≥ 0.20 (qwen3:8b = 0.00, complete failure) |
-
-> Phase 1 pass bar set low — Spec RAG Stage 2 (cloud verifier) compensates, so direction matters more than absolute accuracy.
-
-### Phase 2 — Component Benchmark (~20 min per model)
-
-**Tool**: `eval/component_benchmark.py`
-**Target**: Phase 1 passing models (expected 4–6)
-**Total time**: 5 models × 20 min = ~100 min
-
-**Metrics**:
-
-| Technique | Metric | qwen3:8b baseline |
-|------|---------|-------------|
-| `alignrag` | recall vs gold | 0.67 |
-| `crag` | F1 (3-way classification) | FAIL (0.07 Δ) |
-| `stride` | JSON validity + routing accuracy | FAIL (0.00 Δ) |
-| `mass_rag` | persona adherence score | FAIL (+0.05 Δ) |
-| `sdp` | pruning accuracy | FAIL (0.00 Δ) |
-| `dsap` | JSON parse success rate | 1.00 |
-| `query_decomp` | sub-query diversity score | 0.80 |
-
-**Pass criteria (advance to Phase 3)**:
-PASS technique count vs. qwen3:8b ≥ 8/11 (currently 7/11)
-
-### Phase 3 — E2E Hybrid Benchmark (~30 min per model)
-
-**Tool**: `eval/e2e_benchmark.py --provider hybrid --slim`
-**Target**: Top 2–3 models from Phase 2
-**Condition**: `phase1_2_3` (full AlignRAG + Spec RAG critic)
-
-**Metrics**:
-
-| Metric | Description |
-|--------|------|
-| keyword_coverage | Domain keyword inclusion rate |
-| citation_density | Citation density |
-| misaligned_claims_detected | Spec RAG Stage 1 drafting quality |
-| spec_rag_recall | Stage 1+3 final misalignment detection rate |
-| revision_count | Number of critique → revise loop iterations |
-| latency_per_query | Time per query (seconds) |
-| hybrid_cost_usd | Bedrock cost (local = $0) |
-
----
-
-## 5. Pass Criteria Summary (Production Deployment Threshold)
-
-| Item | Minimum | Target |
-|------|---------|------|
-| Phase 1 overall recall | ≥ 0.40 | ≥ 0.50 |
-| Phase 2 PASS technique count | ≥ 8/11 | ≥ 9/11 |
-| Phase 3 spec_rag_recall | ≥ 0.67 (current qwen3:8b level) | ≥ 0.80 |
-| Phase 3 latency | ≤ 600s/query | ≤ 400s/query |
-| Phase 3 revision_count | ≤ 2 | ≤ 1 |
+Retrieved documents are pre-collected via Tavily web search into a frozen snapshot (7 sub-queries × 5 results = 35 documents per query). This ensures fair comparison across conditions.
 
 ---
 
 ## 6. Cost Estimate
 
-### EC2 Costs
+### EC2 Costs (full 35-condition run)
 
-| Phase | Duration | g6.xlarge Spot |
-|------|---------|--------------|
-| Phase 1 (8 models) | ~2 hours | ~$0.48 |
-| Phase 2 (5 models) | ~2 hours | ~$0.48 |
-| Phase 3 (3 models) | ~2 hours | ~$0.48 |
-| Setup / model downloads | ~1 hour | ~$0.24 |
-| **Total** | **~7 hours** | **~$1.68** |
+| Phase | Instances | Duration | Cost |
+|-------|-----------|----------|------|
+| Cloud-only (3 conditions) | 1× t3.xlarge | ~6 hours | ~$1.00 |
+| Hybrid ~2–4B (16 conditions) | 4× g6.xlarge | ~8 hours | ~$25.60 |
+| Hybrid ~7–8B (12 conditions) | 3× g6.xlarge | ~10 hours | ~$24.00 |
+| Hybrid ~12B (4 conditions) | 1× g6.xlarge | ~8 hours | ~$6.40 |
+| All-local (8 conditions) | 2× g6.xlarge | ~8 hours | ~$12.80 |
+| **Total** | | | **~$70** |
 
-> If Spot is interrupted, restart with the same settings and skip completed models.
+### Bedrock Costs (cloud API calls)
 
-### Bedrock Costs (Haiku 4.5)
+| Condition | Queries | Runs | Cost/query | Total |
+|-----------|---------|------|------------|-------|
+| Cloud-only Sonnet | 120 | 5 | $1.128 | ~$677 |
+| Cloud-only Haiku | 120 | 5 | $0.376 | ~$226 |
+| Cloud-only Llama 70B | 120 | 5 | $0.600 | ~$360 |
+| Hybrid+Sonnet (8 configs) | 120 | 5 | ~$0.375 | ~$1,800 |
+| Hybrid+Haiku (8 configs) | 120 | 5 | ~$0.093 | ~$446 |
+| Hybrid+Llama 70B (8 configs) | 120 | 5 | ~$0.110 | ~$528 |
+| **Total** | | | | **~$4,037** |
 
-Phase 3 E2E: 3 models × 3 queries × ~$0.02/query ≈ **~$0.18**
-
-### Model Download Size
-
-Total for all candidate models: ~50GB (EBS 100GB is sufficient)
-
-**Total estimated cost: under ~$6**
-
----
-
-## 7. Execution Order
-
-```
-1. Launch EC2 g6.xlarge + install Ollama
-2. Pre-pull all candidate models (background)
-3. Phase 1: run critic_pretest sequentially for 8 models → select passing models
-4. Phase 2: component_benchmark for passing models → select top models
-5. Phase 3: e2e_benchmark hybrid for top models → finalize recommended model
-6. Terminate EC2 instance (cost saving)
-7. Add results to BENCHMARK.md as Layer 4
-```
+**Note**: The paper's full evaluation is expensive. For a quick reproduction, run a subset:
+- 5 representative conditions × 20 queries × 3 runs ≈ ~$200
 
 ---
 
-## 8. Using the Results
+## 7. Results Storage
 
-- Select a **single recommended model** → update `.env` default `OLLAMA_MODEL`
-- Provide **size-specific recommendations** → can be linked with TechniquesPanel depth presets
-  - fast preset → recommend 3B model
-  - normal preset → recommend 7–8B model
-  - deep preset → recommend 14B model
-- Analyze FAIL technique patterns → identify opportunities to improve prompts/schemas for those techniques
+Results are stored in `eval/results/`:
+
+```
+eval/results/
+├── standalone/
+│   ├── cloud_only_sonnet/         # Cloud-only Sonnet results
+│   ├── cloud_only_haiku/          # Cloud-only Haiku results
+│   ├── cloud_only_llama70b/       # Cloud-only Llama 70B results
+│   ├── exaone2.4b_sonnet/         # Hybrid: exaone3.5:2.4b + Sonnet
+│   ├── gemma4b_sonnet/            # Hybrid: gemma3:4b + Sonnet
+│   ├── ...
+│   └── _summary.json              # Aggregated results across all conditions
+└── judge_scores.json              # Triple Judge Jury scores
+```
+
+Each condition directory contains:
+- `results.json`: per-query scores and reports
+- `summary.json`: aggregated metrics (mean, std, median)

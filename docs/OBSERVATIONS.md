@@ -1,209 +1,133 @@
 # Benchmark Observations
 
-> **Internal research notes** — raw observations recorded during experiment runs.
-> Not required to reproduce results; see `eval/RESEARCH_REPORT.md` for the full report.
-
-> Bedrock E2E: 6 conditions × 5 queries = 30 runs (Claude Sonnet 4.6, 2026-04-23)
-> Ollama E2E: 3 conditions × 5 queries = 15 runs (qwen3:8b) — in progress
+> Research notes from the 35-condition evaluation described in the paper:
+> **Stage-Aware Local-Cloud Inference: Hybrid Pipelines Consistently Outperform Matched Cloud-Only Baselines**
 
 ---
 
-## 1. Metric Artifact — citation_density v1 design flaw
+## 1. Every Hybrid Condition Outperforms Its Matched Cloud-Only Baseline
 
-### Discovery
+The most unambiguous finding: across all 35 conditions, every hybrid configuration outperforms the cloud-only baseline using the **same cloud model**.
 
-Original formula: `citation_density = inline_refs / total_citations`
+- Hybrid+Sonnet beats cloud-only Sonnet (all 8 local model configurations)
+- Hybrid+Haiku beats cloud-only Haiku (all 8 local model configurations)
+- Hybrid+Llama 70B beats cloud-only Llama 70B (all 8 local model configurations)
 
-STRIDE Supervisor rewrites sub-queries to retrieve more sources (avg 27.6 → 37.4, +35%).
-The writer cites selectively — inline refs grow modestly, but the denominator grows faster.
-Result: a system that retrieves *more* sources scores *lower* on citation density.
-
-```
-phase1_2   : 27.6 total sources, 27.4 inline refs → density 0.994
-phase1_2_3 : 37.4 total sources, 30.6 inline refs → density 0.843
-```
-
-This caused phase1_2_3 overall (0.893) to appear *below* baseline (0.907) under v1.
-
-### Fix
-
-v2 formula: `citation_density = min(inline_refs / 20, 1.0)`
-
-Rationale: measures absolute citation adequacy (≥ 20 inline citations = 1.0)
-independent of how many total sources were available. The threshold 20 was
-calibrated against baseline's average inline ref count (27.8).
-
-### Impact
-
-| Condition   | Overall v1 | Overall v2 | Reversal |
-|-------------|-----------|-----------|---------|
-| baseline    | 0.907     | 0.92      | —       |
-| phase1_2_3  | 0.893 (-0.014 vs baseline) | 0.93 (+0.017 vs baseline) | Yes |
-| no_mass_rag | 0.862     | 0.94      | Yes     |
-
-After v2: **all conditions outperform baseline**. The conclusion that Phase 3
-techniques hurt quality was an artifact of the metric, not real regression.
-
-### Implication for system design
-
-Any RAG evaluation metric of the form `used / available` penalizes better retrieval.
-This pattern also appears in: recall-based metrics when retrieval set grows,
-citation coverage when document pool expands. Always verify metric invariance
-with respect to the quantity being optimized.
+This rules out model-diversity as the explanation — the quality gain follows from offloading System 1 stages to a local model alone.
 
 ---
 
-## 2. True quality driver — keyword_coverage, not citation_density
+## 2. 2.4B Local Model Achieves Best Overall Quality
 
-After v2 fix, citation_density converges to 1.0 for most conditions.
-The remaining overall score differences are driven by **keyword_coverage**:
+exaone3.5:2.4b + Sonnet 4.6 achieves 0.869 — the highest quality across all 35 conditions, including all cloud-only and larger-model hybrid configurations.
 
-| Condition   | kw_coverage | cit_v2 | overall_v2 |
-|-------------|-------------|--------|-----------|
-| phase1      | 0.85        | 1.00   | **0.96**  |
-| phase1_2    | 0.81        | 1.00   | 0.95      |
-| phase1_2_3  | 0.73        | 1.00   | 0.93      |
+Within Hybrid+Sonnet tier:
+- exaone3.5:2.4b: 0.869 (233s/query)
+- gemma3:4b: 0.867 (312s/query)
+- qwen3:8b: 0.855 (590s/query)
+- exaone3.5:7.8b: 0.845 (382s/query)
+- llama3.1:8b: 0.840 (317s/query)
+- gemma3:12b: 0.838 (525s/query)
 
-phase1_2_3's lower keyword coverage (0.73 vs 0.85) is the true driver of its gap
-behind phase1. Hypothesis: CRAG marks some expected-keyword-bearing documents as
-INCORRECT, removing them from the context. Verifiable via CRAG verdict logs.
-
-**This is unresolved and should be noted before claiming phase1 is "best overall".**
+Performance does not increase monotonically with local model size. The sufficiency threshold varies across model families.
 
 ---
 
-## 3. LLM Judge — important caveats
+## 3. Task-Scope Alignment Explains the Quality Gain
 
-### Baseline LJudge = 0.50 is a placeholder
+Two mechanisms explain why local System 1 models improve overall quality:
 
-The benchmark sets `judge_score = 0.5` for the baseline condition because there is
-no reference report to compare against. It is not a real quality measurement.
-Baseline LJudge **cannot** be compared to other conditions' LJudge values.
+**Task-scope alignment**: Frontier models over-elaborate outputs for constrained generation tasks (CRAG classification, trust scoring), producing verbose reasoning where a concise label is required. Smaller models, with narrower output distributions, stay on-task more reliably.
 
-### Binary × 5 samples = 0.20 delta = 1 query flip
-
-LJudge is binary (0 or 1) per query. With 5 queries, any 0.20 difference in
-mean represents exactly 1 query judged differently. This is below any reasonable
-significance threshold. All LJudge-based conclusions should be stated as
-"X/5 queries showed improvement" rather than as continuous quality deltas.
-
-### LJudge results (stated correctly)
-
-| Condition   | LJudge raw | Queries improved vs baseline |
-|-------------|-----------|------------------------------|
-| phase1_2    | 0.60      | 3/5                          |
-| phase1_2_3  | 0.60      | 3/5                          |
-| no_mass_rag | 0.40      | 2/5 — MASS-RAG removal hurts |
-| no_stride   | 0.80      | 4/5 — highest                |
+**Synthesis leverage**: When local models generate section drafts, the cloud synthesis stage receives imperfect but diverse raw material, creating genuine revision leverage absent when a frontier draft is already near-final.
 
 ---
 
-## 4. Leave-One-Out (LOO) findings — v2 metric
+## 4. Hybrid+Haiku Pareto-Dominates Cloud-Only Sonnet
 
-### MASS-RAG (phase1_2_3 vs no_mass_rag)
+exaone3.5:2.4b + Haiku 4.5 achieves 0.828 at $0.093/query — simultaneously better quality, 12× lower cost, and stronger privacy than cloud-only Sonnet ($1.128/query, 0.798).
 
-| Metric        | phase1_2_3 | no_mass_rag | delta                   |
-|---------------|-----------|-------------|-------------------------|
-| Overall v2    | 0.932     | 0.942       | +0.010 ≈same (within noise) |
-| LJudge        | 3/5       | 2/5         | -1 query                |
-| Cost/query    | $0.75     | $0.31       | -$0.44 saved (59%)      |
-| p50 latency   | 216s      | 161s        | -55s faster             |
-
-MASS-RAG's contribution is not captured by automated metrics (overall ≈same)
-but is visible in LLM Judge (3/5 vs 2/5). The technique adds depth that LLM
-evaluators notice but keyword/citation metrics do not.
-Cost is 2.4× higher with MASS-RAG. Decision depends on quality requirements.
-
-### STRIDE (phase1_2_3 vs no_stride)
-
-| Metric        | phase1_2_3 | no_stride | delta                   |
-|---------------|-----------|-----------|-------------------------|
-| Overall v2    | 0.932     | 0.941     | +0.008 ≈same (within std 0.046) |
-| LJudge        | 3/5       | 4/5       | +1 query (no_stride better) |
-| Cost/query    | $0.75     | $0.60     | -$0.15 saved (20%)      |
-
-STRIDE shows no positive contribution in either metric direction.
-The +0.008 overall and -1 LJudge query for STRIDE are both within noise.
-Known deviation: dependency graph (Ω) not implemented; this STRIDE build
-uses Sq→Cq Meta-Planner + Supervisor only.
+The conventional framing treats privacy and quality as opposing forces. Stage-Aware Local-Cloud Inference overturns this directly.
 
 ---
 
-## 5. AlignRAG zero-shot — H2 confirmed
+## 5. All-Local Is Viable Above Weaker Cloud-Only Baselines
 
-All 5 queries (including q4 comparative and q5 factual with explicit contradictions)
-returned misaligned_claims = 0.
+exaone3.5:2.4b all-local: 0.802 at $0.000/query
+gemma3:4b all-local: 0.803 at $0.000/query
 
-**H2: AlignRAG detects nothing without CLM fine-tuning.**
-
-Consistent with paper (arxiv:2504.15811): the full pipeline requires
-Claim-Level Modeling (CLM) with CCS+CFT training. Zero-shot LLM cannot
-replicate the trained claim-alignment discriminator. This is not a bug —
-it is a fundamental paper requirement not reproducible via API-only deployment.
-
-Blog framing: "AlignRAG zero-shot showed 0 misalignments across all queries,
-including those with known contradictions. The paper's detection capability
-requires fine-tuned CLM components unavailable in API-only deployment."
+Both exceed cloud-only Haiku (0.671) and cloud-only Llama 70B (0.688). The 6–7 point gap vs. Hybrid+Sonnet is the cost of complete privacy.
 
 ---
 
-## 6. Query-type patterns (phase1_2_3)
+## 6. Cloud Token Reduction: 65–92%
 
-| Query | Type          | Overall | CRAG_filter | STRIDE_rewrite | Trust |
-|-------|---------------|---------|-------------|----------------|-------|
-| q1    | analytical    | 0.93    | -36%        | 27%            | 0.77  |
-| q2    | definitional  | 0.80    | -60%        | 60%            | 0.63  |
-| q3    | current_state | 0.81    | -11%        | 11%            | 0.53  |
-| q4    | comparative   | 0.96    | -20%        | 0%             | 0.70  |
-| q5    | factual       | 0.96    | -44%        | 44%            | 0.37  |
+Average cloud input tokens reduced from 136,891 (cloud-only Sonnet) to 10,700–54,731 (hybrid):
 
-- q2 has highest STRIDE rewrite rate (60%) and lowest overall (0.80).
-  Correlation exists; causation unconfirmed (kw_coverage=0.43 is proximate cause).
-- q4, q5 (contradiction=True) score highest (0.96) — contradictory sources
-  do not degrade report quality; this contradicts naive expectations.
-- CONSTRUCT trust scores vary widely (0.37–0.77) with no clear query-type pattern.
+| Configuration | Cloud Tokens/q | Reduction |
+|---------------|----------------|-----------|
+| Cloud-only Sonnet | 136,891 | ref |
+| exaone3.5:2.4b + Sonnet | 45,918 | −66.5% |
+| gemma3:4b + Sonnet | 47,330 | −65.4% |
+| qwen3:4b + Haiku | 31,900 | −76.7% |
+| qwen3:4b + Llama 70B | 10,700 | −92.2% |
+
+The most privacy-aggressive condition (qwen3:4b + Llama 70B, 92.2% reduction) still scores 0.799 — above both weaker cloud-only baselines.
 
 ---
 
-## 7. Cost-efficiency analysis
+## 7. Cloud-Only Pipelines Face a Quality Ceiling
 
-| Condition   | Overall v2 | Cost/q | Overall/$ |
-|-------------|-----------|--------|-----------|
-| phase1      | 0.96      | $0.16  | **6.0** (best) |
-| no_mass_rag | 0.94      | $0.31  | 3.03      |
-| phase1_2    | 0.95      | $0.55  | 1.73      |
-| no_stride   | 0.94      | $0.60  | 1.57      |
-| phase1_2_3  | 0.93      | $0.75  | 1.24      |
+Cloud-only Haiku (0.671) and cloud-only Llama 70B (0.688) fall substantially below cloud-only Sonnet (0.798), confirming that single-model cloud pipelines face a quality ceiling that hybrid architectures overcome.
 
-Phase1 (CRAG + Query Decomp + VCM, $0.16/q) is the most cost-efficient.
-For highest absolute quality with moderate cost: no_mass_rag ($0.31, overall 0.94).
-Full phase1_2_3 justified only when LLM-judged report depth is the priority.
+The hybrid architecture overcomes this ceiling by separating reasoning demands: System 1 stages (where local models are sufficient) and System 2 stages (where frontier reasoning matters).
 
 ---
 
-## 8. Open questions
+## 8. qwen3:4b All-Local Bimodal Distribution
 
-1. **kw_coverage drop mechanism**: phase1 kw=0.85 → phase1_2_3 kw=0.73.
-   Is CRAG filtering keyword-bearing documents as INCORRECT?
-   Verifiable via retrieval_quality[*].verdict per document.
+qwen3:4b all-local shows a bimodal score distribution (σ=0.337): 35% of queries score ≤0.3, 50% score ≥0.8. Not recommended for all-local deployment.
 
-2. **STRIDE keyword impact**: q2 kw=0.43 in phase1_2_3 vs kw=0.71 in phase1.
-   Does STRIDE rewrite shift sub-query focus away from expected keywords?
-
-3. **AlignRAG with weaker model**: Does qwen3:8b produce detectable misalignments?
-   If yes → H1 (AlignRAG works for weak models); if no → H2 universal.
-
-4. **no_construct ablation**: $3, 5 runs. Lower priority after v2 fix reduced
-   phase1_2 → phase1_2_3 gap to 0.019 (within noise).
-
-5. **Live search generalization**: Results use mock fixtures. Real Tavily search
-   may change CRAG filtering rates and STRIDE rewrite patterns significantly.
+This pattern does not appear in hybrid configurations of qwen3:4b — the cloud synthesis stage resolves the bimodal failure mode.
 
 ---
 
-## Pending: Ollama results (qwen3:8b)
+## 9. Failure Mode: Capacity-Limited Cloud Backend
 
-Key questions:
-- AlignRAG H1 vs H2 on weaker model
-- MASS-RAG LJudge contribution with weaker base
-- Cost-efficiency curve (Ollama $0/query)
+Hybrid quality degrades when the System 2 cloud model is capacity-limited. Hybrid+Llama 70B conditions fall below the Sonnet baseline but remain above weaker cloud-only baselines (0.671–0.688).
+
+Practitioners should prioritize cloud backend quality over local model size. A 2.4B local model with Sonnet cloud (0.869) outperforms a 12B local model with Llama 70B cloud (0.717).
+
+---
+
+## 10. Inter-Judge Reliability
+
+The Triple Judge Jury (DeepSeek R1, Claude Opus 4.6, Mistral Large 3) shows strong condition-level agreement:
+
+| Judge pair | Condition-level Pearson r |
+|------------|--------------------------|
+| Judge A ↔ Judge B | 0.82 |
+| Judge A ↔ Judge C | 0.85 |
+| Judge B ↔ Judge C | 0.48 |
+
+The low B↔C correlation reflects Judge B's systematically compressed score range (mean 0.627 vs. 0.777 and 0.858 for A and C), not disagreement on system rankings. The median aggregation is robust to this pattern: with two of three judges (A and C) in strong agreement, the median consistently tracks the consensus.
+
+---
+
+## 11. Latency Observations
+
+exaone3.5:2.4b is the fastest hybrid configuration (233s/query with Sonnet), faster than cloud-only Sonnet (270s/query). This is because local System 1 stages run in parallel with cloud API round-trips, and the reduced cloud token count shortens cloud processing time.
+
+Llama 70B hybrid is faster than Haiku hybrid despite being a larger model, because it receives far fewer tokens (local models handle more pipeline stages).
+
+---
+
+## 12. Open Questions
+
+1. **Multilingual analysis**: The benchmark includes Korean and Japanese queries, but the current analysis is primarily English-focused. Multilingual analysis will be reported in future work.
+
+2. **Other retrieval backends**: All experiments use Tavily web search via a frozen snapshot. Performance on other retrieval backends (academic search, internal document stores) may differ.
+
+3. **CPU-only hardware**: Experiments were conducted on NVIDIA L4 (24GB VRAM). On CPU-only or weaker GPU hardware, local model latency would increase substantially, potentially altering practical throughput.
+
+4. **Privacy boundary completeness**: The Privacy Boundary prevents document bodies from reaching the cloud, but does not protect against inference attacks on the abstractions and drafts that do reach the cloud. Stronger privacy guarantees remain future work.

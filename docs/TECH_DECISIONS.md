@@ -1,6 +1,6 @@
 # Technology Decision Rationale
 
-Records the alternatives and reasons behind each technology decision.
+Records the alternatives and reasons behind each technology decision, updated to reflect the Stage-Aware Local-Cloud Inference architecture.
 
 ---
 
@@ -11,14 +11,14 @@ Records the alternatives and reasons behind each technology decision.
 **Reasons for choosing**:
 
 | Criterion | LangGraph | Alternatives |
-|------|-----------|------|
+|-----------|-----------|--------------|
 | Parallel fan-out | Send API — native support | Manual asyncio.gather() required |
 | Mid-execution checkpoints | interrupt/Command — built-in | Manual state saving |
 | State persistence | SQLite/Redis/Postgres options | Custom implementation |
 | Streaming events | astream_events v2 — per-node events | Custom callback system |
 | Cyclic graphs | revise → critique loop native | Not possible with DAG-only frameworks |
 
-**Core reason**: The `interrupt/Command` API fits precisely for human-in-the-loop flows such as "plan approval". The framework handles the flow of the user modifying the plan and then resuming at the framework level.
+**Core reason**: The `interrupt/Command` API fits precisely for human-in-the-loop flows such as plan approval. The Send API enables the parallel fan-out pattern (N search workers) that is central to the pipeline's performance.
 
 ---
 
@@ -31,12 +31,7 @@ Records the alternatives and reasons behind each technology decision.
 - Automatic request/response validation via Pydantic models
 - Automatic OpenAPI documentation generation
 
-**SSE vs WebSocket**:
-- SSE: Unidirectional server → client, HTTP/1.1 compatible, auto-reconnect
-- WebSocket: Bidirectional but higher overhead
-- Research streaming is unidirectional, so SSE is more appropriate
-
-**POST SSE chat**: Standard EventSource only supports GET, so chat implements POST SSE directly using `fetch` + `ReadableStream`.
+**SSE vs WebSocket**: SSE is unidirectional server → client, HTTP/1.1 compatible, auto-reconnect. Research streaming is unidirectional, so SSE is more appropriate. POST SSE chat implements POST SSE directly using `fetch` + `ReadableStream`.
 
 ---
 
@@ -45,12 +40,12 @@ Records the alternatives and reasons behind each technology decision.
 **Alternatives**: SerpAPI, Google Custom Search, Bing API, DuckDuckGo, Brave Search
 
 **Reasons for choosing**:
-- **Research-specialized**: Superior coverage of academic, news, and technical documentation compared to general search APIs
+- Research-specialized: superior coverage of academic, news, and technical documentation
 - `search_depth="advanced"` option improves summary quality
 - Returns `relevance_score` → enables dual filtering when combined with CRAG evaluator
 - Official Python SDK + async (`asyncio.to_thread` wrapping)
 
-**Async handling**: Since the Tavily SDK only provides a synchronous API, it is wrapped asynchronously with `asyncio.to_thread()`. Blocking I/O runs in a thread pool to prevent blocking the event loop.
+**Benchmark note**: All 35-condition experiments use Tavily web search via a frozen snapshot (7 sub-queries × 5 results = 35 documents per query). Performance on other retrieval backends may differ.
 
 ---
 
@@ -66,23 +61,21 @@ Records the alternatives and reasons behind each technology decision.
 **Reasons for choosing fastembed**:
 - Runs local embedding models without external APIs
 - `BAAI/bge-small-en-v1.5` default model (130MB, fast)
-- Can be combined with Ollama embed() to build a fully offline embedding pipeline
-
-**Trade-off**: In qdrant-client 1.17.1, `add()`/`query()` methods are deprecated → named vector name conflict issue when using new `Document` API. Currently continuing with deprecated API using `warnings.catch_warnings()`. Migration needed in the future.
+- Fully offline embedding pipeline — consistent with Privacy Boundary requirements
 
 ---
 
-## 5. AWS Bedrock — Default LLM Backend
+## 5. AWS Bedrock — Default Cloud LLM Backend
 
 **Alternatives**: Anthropic API direct, Azure OpenAI, Vertex AI
 
 **Reasons for choosing**:
-- **Enterprise-friendly**: IAM Role-based authentication, VPC internal traffic
-- **Data sovereignty**: Data does not leave AWS regions
+- Enterprise-friendly: IAM Role-based authentication, VPC internal traffic
+- Data sovereignty: data does not leave AWS regions
 - Latest Claude models available immediately via Inference Profile
 - Same SDK interface maintained with `anthropic[bedrock]` package
 
-**Claude vs GPT-4 choice**: Claude has an advantage in Korean language quality, long-context processing performance, and instruction-following ability — which is critical for research agents.
+**Paper evaluation**: Sonnet 4.6, Haiku 4.5, and Llama 3.3 70B all evaluated via Bedrock. Sonnet 4.6 is the recommended cloud backend for maximum quality.
 
 ---
 
@@ -91,49 +84,60 @@ Records the alternatives and reasons behind each technology decision.
 **Alternatives**: llama.cpp direct, vLLM, Hugging Face Transformers
 
 **Reasons for choosing**:
-- **Installation simplicity**: Single binary, model management with `ollama pull <model>`
+- Installation simplicity: single binary, model management with `ollama pull <model>`
 - OpenAI-compatible REST API → easy interface unification
-- Official Python SDK (`ollama`) supports async completion, streaming, and embeddings
+- Official Python SDK supports async completion, streaming, and embeddings
 - Automatic detection of Apple Silicon (MPS) / NVIDIA CUDA
 
-**Model selection**: `qwen3:14b` as default (as of 2026):
-- Balanced Korean + English
-- 14B parameters → sufficient speed on RTX 3080 and above
-- Supports Thinking Mode (Extended Thinking)
+**Model selection** (from paper results):
+- `exaone3.5:2.4b`: best quality/speed for hybrid (0.869 with Sonnet, 233s/query)
+- `gemma3:4b`: alternative with comparable quality (0.867 with Sonnet, 312s/query)
+- Q4_K_M quantization used for all models in the paper's evaluation
+
+**Hardware**: NVIDIA L4 (24GB VRAM) used in paper. Broadly comparable to RTX 4090 (24GB VRAM) — best-performing configurations can run on commodity consumer hardware.
 
 ---
 
-## 7. AsyncSqliteSaver — Checkpointer
+## 7. HybridProvider — System 1/System 2 Routing
+
+**Design**: `HybridProvider(cloud, local)` wrapper implementing the same `LLMProvider` protocol as all other providers. Routes each node to the appropriate tier based on `node_hint`.
+
+**Key design choice**: `partial()` injection at graph build time, not runtime dispatch.
+- Zero changes to existing node code — each node receives a pre-resolved provider
+- System 2 nodes (plan_elaboration, crag_recheck, synthesis, gap_detector) receive cloud provider
+- System 1 nodes receive local provider
+- Graceful degradation: `hasattr(llm, 'local')` checks fall through for non-hybrid providers
+
+**Why this matters**: The routing is auditable — what reaches the cloud is determined by code, not by agent reasoning. This is the privacy enforcement point.
+
+---
+
+## 8. AsyncSqliteSaver — Checkpointer
 
 **Alternatives**: MemorySaver (in-memory), RedisSaver, PostgresSaver
 
 **Reasons for choosing**:
-- **No external dependencies**: No Redis/Postgres server required
+- No external dependencies: no Redis/Postgres server required
 - SQLite is a single file → simple deployment and migration
 - Fully async with `aiosqlite`
-- Official LangGraph package (`langgraph-checkpoint-sqlite`)
-
-**Compared to MemorySaver**: Checkpoints are preserved on server restart. Even if the server restarts while in `interrupt` state, the user can reconnect to the report stream and resume execution.
+- Checkpoints preserved on server restart — users can reconnect to report stream and resume
 
 ---
 
-## 8. DSAP Guard Functions — JSON Stability
+## 9. DSAP Guard Functions — JSON Stability
 
 **Alternatives**: Pydantic structured output, Instructor library, grammar-constrained sampling
 
 **Reasons for choosing**:
 - `Instructor` depends on Anthropic SDK → compatibility issues with Bedrock and Ollama
-- Grammar-constrained sampling is only supported in Ollama (`format: "json"`)
-- The DSAP approach (error context + retry) works identically across all LLM providers
+- Grammar-constrained sampling only supported in Ollama (`format: "json"`)
+- DSAP approach (error context + retry) works identically across all LLM providers
 
-**Implementation**: `utils/llm_json.py`
-- On parse failure, adds error message + schema hint to conversation and retries
-- On retry, replaces system prompt with strict `"ONLY valid JSON"` mode
-- Returns fallback dictionary after a maximum of 2 retries
+**Critical for hybrid**: Local models (System 1) produce more malformed JSON than frontier models. DSAP Level 1+2 in `llm_json.py` is the reliability layer that makes System 1 local model calls production-viable.
 
 ---
 
-## 9. Next.js — Frontend
+## 10. Next.js — Frontend
 
 **Alternatives**: React + Vite, Vue.js, SvelteKit, plain HTML
 
@@ -143,66 +147,47 @@ Records the alternatives and reasons behind each technology decision.
 - Report markdown rendering with `react-markdown` + `remark-gfm`
 - EventSource / ReadableStream: browser-native APIs — no additional libraries needed
 
-**State management**: No Redux or Zustand. `useState` + unidirectional state machine (`AppState` type) is sufficient. The research pipeline has a linear flow, so complex state management is unnecessary.
-
 ---
 
-## 10. Sequential LLM Execution — Preventing Ollama Queue Overflow
+## 11. Sequential LLM Execution — Preventing Ollama Queue Overflow
 
 **Problem**: When multiple LLM calls are run in parallel with `asyncio.gather()`, queue timeouts occur in Ollama.
 
-**Cause**: Ollama processes requests serially on a single GPU. When 4–5 calls arrive concurrently, the internal queue saturates and some requests time out. Cloud LLMs (Bedrock, Claude) are not affected because they handle parallel processing through external scaling.
+**Cause**: Ollama processes requests serially on a single GPU. When 4–5 calls arrive concurrently, the internal queue saturates and some requests time out.
 
-**Solution**: Changed `asyncio.gather()` → sequential `await` for section generation (`write_draft`) and section revision (`revise`).
-
-```python
-# Before (timeout in Ollama)
-results = await asyncio.gather(*[_write_section(s) for s in sections])
-
-# After (stable with all providers)
-results = []
-for section in sections:
-    results.append(await _write_section(section))
-```
+**Solution**: Changed `asyncio.gather()` → sequential `await` for section generation and revision.
 
 **Trade-offs**:
-- Cloud LLM: 5 sections × 2s = 10s (parallel) → 10s (sequential) — **no difference** (dominated by API latency)
-- Ollama: 5 × 15s = 75s (sequential) — stable without timeouts
-- The actual total time for deep+detailed is dominated by the number of searches per `depth`, so the impact of sequential section writing is minimal.
+- Cloud LLM: no difference (dominated by API latency)
+- Ollama: stable without timeouts
+- Hybrid: local System 1 calls are sequential; cloud System 2 calls are independent
 
 ---
 
-## 11. Independent Report Length Control — Section-by-Section Sequential Generation
+## 12. Frozen Retrieval Snapshot — Benchmark Reproducibility
 
-**Problem**: Unable to generate long reports due to the `max_tokens` limit of a single LLM call (typically 4k–8k tokens).
+**Decision**: All 35-condition experiments use a pre-collected frozen snapshot of Tavily search results (7 sub-queries × 5 results = 35 documents per query).
 
-**Solution**: Split the report into independent sections and generate each section with a separate LLM call.
+**Rationale**: Ensures fair comparison across conditions — all configurations see identical retrieved documents. Eliminates retrieval variance as a confound when comparing System 1/System 2 routing effects.
 
-| Mode | Calls | Expected length | Implementation |
-|------|---------|-----------|------|
-| `brief` | 1 | 2,000 max_tokens | Single full summary |
-| `standard` | 3 | 7,000 max_tokens total | Summary + findings + conclusion |
-| `detailed` | 3+N | 15,000+ max_tokens total | Per-sub-query analysis sections added |
-
-**Independent design from `depth`**: Research depth (number of searches, gap detection passes) and report length are separate axes. Combinations such as `deep+brief` (broad research, short summary) and `fast+detailed` (quick research, detailed report) are all supported.
-
-**State propagation path**: `plan_review_node` → `Command(update={"report_length": ...})` → LangGraph state → `write_draft()` branching. The user's selection is passed to the pipeline via LangGraph's interrupt/resume mechanism.
+**Trade-off**: Performance on live search may differ from frozen snapshot results. The paper notes this as a limitation.
 
 ---
 
 ## Decision Summary Matrix
 
 | Component | Choice | Core Reason |
-|-----------|------|-----------|
+|-----------|--------|-------------|
 | Agent framework | LangGraph | interrupt/Send API, checkpointer |
 | API server | FastAPI | async native, SSE |
 | Web search | Tavily | Research-specialized, relevance_score |
 | Vector DB | Qdrant | No external dependencies, high performance |
-| Embeddings | fastembed | Fully local, no API needed |
+| Embeddings | fastembed | Fully local, Privacy Boundary compatible |
 | LLM (cloud) | Bedrock | Enterprise, data sovereignty |
-| LLM (local) | Ollama | Simple installation, model management |
+| LLM (local) | Ollama | Simple installation, Q4_K_M quantization |
+| Hybrid routing | HybridProvider | Auditable privacy enforcement point |
 | Checkpointer | AsyncSqliteSaver | Single file, restart recovery |
-| JSON stability | DSAP Guard Functions | Provider-agnostic |
+| JSON stability | DSAP Guard Functions | Provider-agnostic, critical for local models |
 | Frontend | Next.js 14 | TypeScript, App Router |
 | LLM parallelism | Sequential execution | Prevent Ollama queue overflow |
-| Report length | Section-by-section sequential generation | Overcome max_tokens limit |
+| Benchmark retrieval | Frozen snapshot | Reproducibility, fair comparison |

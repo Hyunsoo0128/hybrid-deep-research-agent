@@ -1,96 +1,120 @@
-# Pipeline Details
+# Pipeline Details — Stage-Aware Local-Cloud Inference
 
-Describes the role, inputs/outputs, and design principles of each node.
+Describes the role, inputs/outputs, and System 1/System 2 routing of each node in the four-phase pipeline.
+
+---
+
+## Pipeline Overview
+
+```
+Planning Phase    → Retrieval Phase    → Drafting Phase    → Verification Phase
+generate_plan        search_worker×N      mass_rag_drafters    gap_detector
+plan_elaboration     crag_recheck         synthesis            gap_search
+checklist_node       reranker                                  cross_validator
+[plan_review]        supervisor                                evidence_auditor
+                                                               critique/revise
+```
+
+**System 1 (local)**: generate_plan, checklist_node, search_worker (CRAG scoring), reranker, supervisor, mass_rag_drafters, gap_search, cross_validator, evidence_auditor, critique, revise
+
+**System 2 (cloud)**: plan_elaboration, crag_recheck (AMBIGUOUS only), synthesis, gap_detector
 
 ---
 
 ## Node List
 
-| Node | File | Role |
-|------|------|------|
-| `generate_plan` | `nodes/plan_generator.py` | Query decomposition + STRIDE meta-planning |
-| `checklist_node` | `nodes/checklist_node.py` | RhinoInsight VCM: sub-queries → verifiable checklist |
-| `plan_review` | `graph.py` | User approval interrupt |
-| `search_orchestrator` | `graph.py` | Send API fan-out trigger |
-| `search_worker` | `nodes/search_worker.py` | CRAG filtering + MASS-RAG 3-agent synthesis |
-| `local_search_worker` | `nodes/local_search_worker.py` | Local file search |
-| `reranker` | `nodes/reranker.py` | Cross-encoder reranking (ms-marco-MiniLM) |
-| `supervisor` | `nodes/supervisor.py` | STRIDE: per sub-query routing (retrieve/rewrite/answer) |
-| `gap_detector` | `nodes/gap_detector.py` | Coverage gap analysis with CRAG/VCM/STRIDE signals |
-| `gap_search` | `nodes/gap_detector.py` | Additional search for gap queries |
-| `cross_validator` | `nodes/cross_validator.py` | Source cross-validation + SDP pruning |
-| `evidence_auditor` | `nodes/evidence_auditor.py` | RhinoInsight EAM: evidence normalization + claim binding |
-| `write_draft` | `nodes/writer.py` | Report draft writing + privacy sanitization |
-| `critique` | `nodes/critic.py` | AlignRAG 3-phase diagnosis + Speculative RAG |
-| `evidence_stage2` | `nodes/evidence_auditor.py` | EAM Stage 2b: misalignment flag annotation |
-| `revise` | `nodes/critic.py` | Section-by-section rewrite from feedback |
-| `quality_scorer` | `nodes/quality_scorer.py` | CONSTRUCT: field-level trust scoring (called within search_worker) |
-| `finalize` | `graph.py` | Finalize the report |
+| Node | File | Phase | Tier | Role |
+|------|------|-------|------|------|
+| `generate_plan` | `nodes/plan_generator.py` | Planning | LOCAL | STRIDE Sq + query_decomp |
+| `plan_elaboration` | `nodes/plan_generator.py` | Planning | CLOUD | STRIDE Cq from skeleton |
+| `checklist_node` | `nodes/checklist_node.py` | Planning | LOCAL | RhinoInsight VCM |
+| `plan_review` | `graph.py` | Planning | — | User approval interrupt |
+| `search_orchestrator` | `graph.py` | Retrieval | — | Send API fan-out trigger |
+| `search_worker` | `nodes/search_worker.py` | Retrieval | LOCAL | CRAG + MASS-RAG drafting |
+| `crag_recheck` | `nodes/search_worker.py` | Retrieval | CLOUD | AMBIGUOUS re-adjudication |
+| `local_search_worker` | `nodes/local_search_worker.py` | Retrieval | LOCAL | Local file search |
+| `reranker` | `nodes/reranker.py` | Retrieval | LOCAL | Cross-encoder reranking |
+| `supervisor` | `nodes/supervisor.py` | Retrieval | LOCAL | STRIDE: retrieve/rewrite/answer |
+| `synthesis` | `nodes/writer.py` | Drafting | CLOUD | Multi-draft synthesis |
+| `gap_detector` | `nodes/gap_detector.py` | Verification | CLOUD | Coverage-gap analysis |
+| `gap_search` | `nodes/gap_detector.py` | Verification | LOCAL | Additional search for gaps |
+| `cross_validator` | `nodes/cross_validator.py` | Verification | LOCAL | Source cross-validation |
+| `evidence_auditor` | `nodes/evidence_auditor.py` | Verification | LOCAL | RhinoInsight EAM |
+| `write_draft` | `nodes/writer.py` | Verification | LOCAL | Report draft assembly |
+| `critique` | `nodes/critic.py` | Verification | LOCAL | AlignRAG 3-phase diagnosis |
+| `evidence_stage2` | `nodes/evidence_auditor.py` | Verification | LOCAL | EAM Stage 2b misalignment flags |
+| `revise` | `nodes/critic.py` | Verification | LOCAL | Section-by-section rewrite |
+| `quality_scorer` | `nodes/quality_scorer.py` | Cross-cutting | LOCAL | CONSTRUCT trust scoring |
+| `finalize` | `graph.py` | — | — | Finalize the report |
 
 ---
 
-## 1. generate_plan — Query Decomposition
+## 1. Planning Phase
 
-**Purpose**: Decompose a single query into sub-queries that can be searched in parallel from multiple angles.
+### generate_plan — Query Decomposition + Abstract Planning [LOCAL]
 
-**Improvement** (arxiv:2507.00355 applied):
-Instead of simply "split the query into N parts", **explicitly specify decomposition dimensions** to minimize semantic overlap.
+**Purpose**: Decompose the query and generate an abstract research skeleton (Sq) that the cloud can elaborate without seeing the original query.
 
-```
-Decomposition dimensions:
-  [Definition/Background]    Core concept definitions, historical context
-  [Status/Evidence]          Latest data, statistics, real-world cases
-  [Comparison/Alternatives]  Other approaches, competing technologies, analogues
-  [Cause/Mechanism]          How it works, causal relationships
-  [Limitations/Challenges]   Drawbacks, risk factors, unresolved issues
-```
+**STRIDE Meta-Planner** (arxiv:2604.17405):
+- Stage 1 (local): Generates entity-agnostic abstract strategy Sq with [ENTITY] slots
+  - e.g., "need: definition + current state + comparison" without specific entities
+- Stage 2 (cloud, `plan_elaboration`): Derives concrete plan Cq from Sq — cloud receives only the skeleton
 
-**Example**: Query "Current state of quantum computing"
-- sq1: "Core principles of quantum computing and qubit technology definitions" [Definition/Background]
-- sq2: "2024-2025 practical quantum computing status and IBM/Google roadmaps" [Status/Evidence]
-- sq3: "Quantum computing vs classical computing performance comparison and use cases" [Comparison/Alternatives]
-- sq4: "Quantum decoherence problem and error correction techniques" [Cause/Mechanism]
-- sq5: "Technical and cost challenges blocking quantum computing commercialization" [Limitations/Challenges]
+**Query Decomposition** (arxiv:2507.00355):
+- 5-dimension framework applied to Cq sub-queries:
+  - [Definition/Background] — Core concept definitions, historical context
+  - [Status/Evidence] — Latest data, statistics, real-world cases
+  - [Comparison/Alternatives] — Other approaches, competing technologies
+  - [Cause/Mechanism] — How it works, causal relationships
+  - [Limitations/Challenges] — Drawbacks, risk factors, unresolved issues
+- Original query always prepended as sq0 (Q = {q} ∪ Decompose(q))
 
-**Output**: `plan.sub_queries` (4–6 items, each including a dimension tag)
+**Output**: `plan.sub_queries` (4–6 items with dimension tags)
 
----
+### plan_elaboration — Concrete Plan Generation [CLOUD]
 
-## 2. plan_review — User Interrupt
+**Purpose**: Elaborate the abstract skeleton into concrete execution steps.
 
-**Purpose**: A checkpoint where users can review, approve, modify, or reject the plan.
+**Privacy**: Receives only the plan skeleton (Sq) — never the original query text. The cloud infers the research topic from the skeleton structure, not from raw query content.
 
-Uses the LangGraph `interrupt()` API to pause execution and wait for user input.
+### checklist_node — Sub-Goal Tracking [LOCAL]
 
-```python
-user_response = interrupt({
-    "type": "plan_review",
-    "plan": state["plan"],
-    "message": "Please review the research plan and approve or modify it.",
-})
-```
+**Purpose**: Generate a verifiable checklist of sub-goals before research begins.
 
-On resume, routing goes to `Command(goto="search_orchestrator")` to start the search.
-On rejection, routing returns to `Command(goto="generate_plan")` to regenerate.
+**RhinoInsight VCM** (arxiv:2511.18743): Converts each sub-query into a verifiable subgoal statement. Tracks completion after each search cycle; surfaces uncovered goals to gap detection.
+
+**Output**: `checklist` — `[{id, subgoal, sub_query_id, status: pending|partial|complete, evidence_ids}]`
+
+### plan_review — User Interrupt
+
+Uses LangGraph `interrupt()` API to pause execution and wait for user approval. Users can review, edit, or reject the plan before search begins.
 
 ---
 
-## 3. search_orchestrator + search_worker — Parallel Search
+## 2. Retrieval Phase
 
-**Purpose**: Execute N sub-queries in true parallel.
+### search_worker × N — CRAG + MASS-RAG Drafting [LOCAL]
 
-When `fan_out_to_workers()` returns `list[Send]`, LangGraph runs them in parallel and automatically merges `citations`.
+**Purpose**: Execute N sub-queries in parallel, filter documents, and produce section drafts.
 
-**CRAG Retrieval Evaluator** (arxiv:2401.15884):
-Each worker does not use Tavily search results as-is; it first performs **batch relevance evaluation** with an LLM.
+**CRAG** (arxiv:2401.15884) — 3-way classification:
 
 ```
-Tavily results → LLM batch evaluation → relevant / partial / irrelevant
+Tavily results → LLM batch evaluation → CORRECT / AMBIGUOUS / INCORRECT
                                             │            │           │
                                        full fetch    summary only  skip
-                                       score×1.0     score×0.6×0.6   -
-                                       (if empty → score×0.4 fallback)
+                                       score≥0.5     score 0.3–0.5   score<0.3
 ```
+
+- CORRECT: Decompose-then-Recompose — strip scoring + extraction in single LLM call
+- AMBIGUOUS: Escalated to `crag_recheck` (cloud) using title + 150-char excerpt only
+- INCORRECT: Delegated to `gap_detector` as gap signal (no pipeline-level retry)
+
+**MASS-RAG Drafting** (arxiv:2604.18509) — 3-agent parallel:
+- Summarizer [LOCAL]: Full document summarization
+- Extractor [LOCAL]: Key fact and citation span extraction
+- Reasoner [LOCAL]: Cross-document inference and causal relationships
+- All three agents read source documents directly; only draft text forwarded to synthesis
 
 **Parameters by depth**:
 
@@ -100,133 +124,102 @@ Tavily results → LLM batch evaluation → relevant / partial / irrelevant
 | normal | 7 | 3 |
 | deep | 12 | 6 |
 
-Dual filtering effect:
-- Tavily relevance score ≥ 0.7: term-matching based 1st filter (fast)
-- LLM CRAG evaluation: semantic relevance to research intent 2nd filter (accurate)
+### crag_recheck — AMBIGUOUS Re-adjudication [CLOUD]
 
-**Zero-citation prevention**: If all results are `irrelevant`, top 2 are promoted to partial (confidence = score × 0.6 × 0.6).
+**Purpose**: Resolve AMBIGUOUS CRAG verdicts without exposing document bodies.
 
----
+**Privacy**: Receives only document title + 150-character excerpt. Never receives full document content. Resolves the over-conservative tendency of small local models on boundary cases (score 0.3–0.5).
 
-## 4. gap_detector + gap_search — Gap Detection & Multi-round Iteration
+### reranker — Cross-Encoder Reranking [LOCAL]
 
-**Purpose**: Evaluate whether the collected citation sources sufficiently cover the sub-queries in the research plan.
+**Purpose**: Re-rank all candidate documents against the original query (not sub-queries).
 
-The LLM analyzes:
-1. Whether each sub-query is supported by at least 2 sources
-2. Whether important perspectives or data are missing
+**Speculative Reranking** (arxiv:2407.08223): Uses cross-encoder/ms-marco-MiniLM-L-6-v2 (fastembed ONNX backend, ~80MB). Decomposition improves recall; reranking restores precision.
 
-When gaps are found, additional search queries are added to `gap_queries` and routed to the `gap_search` node. Otherwise, routing goes directly to `cross_validator`.
+- Rerank basis: original_query scored against `title + excerpt`
+- Top-k by depth: fast=10, normal=20, deep=40
+- URL-based dedup before reranking
 
-```
-coverage_score calculation:
-  (number of answered sub-queries) / (total sub-queries) × source confidence weight
-```
+### supervisor — STRIDE Routing [LOCAL]
 
-**Parameters by depth**:
+**Purpose**: Per sub-query routing decision (retrieve/rewrite/answer).
 
-| depth | max_gap_queries | analysis source limit | gap search result count |
-|-------|----------------|----------------|----------------|
-| fast | 2 | 15 | 3 |
-| normal | 3 | 25 | 5 |
-| deep | 5 | 50 | 8 |
-
-**Deep mode multi-round loop** (same structure as commercial deep research tools):
-
-```
-gap_search complete
-    ↓
-should_continue_research()
-    ├── depth == "deep" AND research_round < 2  →  gap_detector (re-enter)
-    └── otherwise                               →  cross_validator
-```
-
-In deep mode, the process iterates up to 3 rounds (1 initial search + 2 gap fill passes) to maximize coverage.
+**STRIDE Supervisor** (arxiv:2604.17405): Assigns action per sub-query based on CRAG verdict and evidence quality. Rewrite decisions feed into gap_detector as STRIDE hint axis.
 
 ---
 
-## 5. cross_validator — Cross-Validation
+## 3. Drafting Phase
 
-**Purpose**: Evaluate factual consistency across multiple sources + provide quality signals for report writing.
+### synthesis — Multi-Draft Synthesis [CLOUD]
 
-The LLM analyzes up to 25 citations to identify:
-- **Cross-confirmed groups**: Sources supporting the same fact → marked `✓ cross-confirmed`
-- **Conflicting information**: Pairs of mutually contradictory sources → marked `⚠️ conflict`
-- **Single-source claims**: Important information with only one source → marked `⚠️ single-source`
+**Purpose**: Synthesize locally-generated section drafts into a coherent final report.
 
-The returned `cross_validation_report` is passed to the writer node and used to display confidence levels for each claim during report writing.
+**Privacy**: Receives only the 3-agent draft text (summary, key_spans, inferences) — never the underlying retrieved documents. The cloud synthesizes from locally-generated abstractions.
 
-**Note**: Because the `citations` field is managed by the `operator.add` reducer, the cross_validator does not directly modify citations.
-
----
-
-## 6. write_draft — Report Writing (Section-by-Section Generation)
-
-**Purpose**: Synthesize collected evidence into a structured research report. To overcome the max_tokens limit of a single LLM call, sections are generated separately.
-
-Inputs:
-- `citations`: Full citation list
-- `cross_validation_report`: Cross-validation quality signals
-- `plan.interpretation`: Query interpretation
-- `report_length`: brief | standard | detailed
+**MASS-RAG Synthesis** (arxiv:2604.18509): Detects contradictions across 3 drafts, selects best elements, integrates into coherent report.
 
 **Generation strategy by report_length**:
 
-| Mode | LLM calls | Sections generated | Expected length |
-|------|-------------|-----------|-----------|
-| `brief` | 1 | Single prompt (summary + findings + conclusion combined) | 2,000 max_tokens |
-| `standard` | 3 | Key summary + main findings + conclusion | 7,000 max_tokens total |
-| `detailed` | 3+N | Key summary + main findings + per-sub-query analysis (N) + conclusion | 15,000+ max_tokens total |
-
-For detailed mode with 8 sub-queries:
-```
-2k(summary) + 3k(findings) + 8×4k(analysis) + 2k(conclusion) = 39k tokens
-```
-This is approximately 5× the single-call max_tokens (8k) and is impossible without section-by-section generation.
-
-**Report structure (detailed)**:
-```
-# [Original Query]
-
-## Key Summary
-## Main Findings  [numbered list, each item citing [Source N]]
-## Concept Definitions and Background    ← sub-query [Definition/Background] analysis
-## Current Status and Empirical Data     ← sub-query [Status/Evidence] analysis
-## Comparative Analysis and Alternatives ← sub-query [Comparison/Alternatives] analysis
-## Cause and Mechanism Analysis          ← sub-query [Cause/Mechanism] analysis
-## Limitations and Future Challenges     ← sub-query [Limitations/Challenges] analysis
-## Conclusion
-## Sources
-```
-
-Automatic labeling based on cross-validation results:
-- `✓ cross-confirmed`: Claims agreed upon by multiple sources
-- `⚠️ single-source`: Claims with only one source
-- Conflicting information: Both sides presented together
-
-> **Ollama timeout prevention**: Sections are executed sequentially to prevent request queue explosion on single-GPU environments.
+| Mode | LLM calls | Expected length |
+|------|-----------|-----------------|
+| `brief` | 1 | ~2,000 tokens |
+| `standard` | 3 | ~7,000 tokens total |
+| `detailed` | 3+N | ~15,000+ tokens total |
 
 ---
 
-## 7. critique + revise — Quality Review Loop
+## 4. Verification Phase
 
-**Purpose**: Guarantee report quality using the Evaluator-Optimizer pattern.
+### gap_detector — Coverage-Gap Detection [CLOUD]
 
-**AlignRAG improvement** (arxiv:2504.14858):
-In addition to existing logic/citation review, **factual alignment** checking is added.
+**Purpose**: Survey the assembled evidence to identify under-covered topics and trigger targeted re-retrieval.
 
-```
-Review items:
-  1. Logical contradictions or self-conflicts
-  2. Assertive claims without citations
-  3. Unanswered sub-queries
-  4. [AlignRAG] Claims that actually mismatch their cited sources
-  5. Structural issues
-```
+**Privacy**: Receives a locally-compiled coverage index — a structured record of retrieved topics and source counts — not the raw documents. This cross-document judgment must precede claim verification, as verifying claims against an incomplete evidence set yields unreliable results.
 
-By including citation source excerpts in the critique context, it directly verifies whether "the report's claims are expressed differently from the actual source content".
+**Hint axes**: CRAG signals (retrieval quality) + VCM signals (subgoal completion) + STRIDE signals (rewrite decisions).
 
-**Maximum rewrites by depth**:
+**Parameters by depth**:
+
+| depth | max_gap_queries | gap search results |
+|-------|----------------|-------------------|
+| fast | 2 | 3 |
+| normal | 3 | 5 |
+| deep | 5 | 8 |
+
+**Deep mode multi-round loop**: In deep mode, iterates up to 3 rounds (1 initial + 2 gap fill passes).
+
+### cross_validator — Cross-Source Consistency [LOCAL]
+
+**Purpose**: Evaluate factual consistency across multiple sources.
+
+Analyzes up to 25 citations to identify:
+- Cross-confirmed groups: sources supporting the same fact → `✓ cross-confirmed`
+- Conflicting information: mutually contradictory sources → `⚠️ conflict`
+- Single-source claims: important information with only one source → `⚠️ single-source`
+
+### evidence_auditor — EAM Claim Binding [LOCAL]
+
+**Purpose**: Normalize evidence store and bind claims to citations.
+
+**RhinoInsight EAM** (arxiv:2511.18743):
+- Stage 1: Normalize — dedup + sort + verification_level (corroborated/single_source/unverified)
+- Stage 2a: MASS-RAG key_spans → claim_bindings per evidence item
+- Stage 2b: critic_feedback.misaligned_claims → misalignment_flags per evidence item
+
+### critique — AlignRAG 3-Phase Diagnosis [LOCAL]
+
+**Purpose**: Detect factual misalignments between report claims and cited sources.
+
+**AlignRAG** (arxiv:2504.14858) — 3-phase diagnosis:
+1. Phase 1: Relevance assessment — wrong span importance
+2. Phase 2: Query-evidence mapping — wrong relationship identified
+3. Phase 3: Evidence-integrated synthesis — unsupported conclusion
+
+Output: `misaligned_claims: [{phase, claim, source_citation_ids, source_quote, correction_hint}]`
+
+`passed` computed in code: `len(misaligned)==0 and len(uncited)==0 and len(unanswered)==0`
+
+**Maximum revisions by depth**:
 
 | depth | max_revisions |
 |-------|---------------|
@@ -234,49 +227,49 @@ By including citation source excerpts in the critique context, it directly verif
 | normal | 1 |
 | deep | 3 |
 
-When the maximum count is reached, `passed=True` is forced to finalize (infinite loop prevention).
+### revise — Section-by-Section Rewrite [LOCAL]
 
-**revise section-by-section editing**: The revise node also splits the report by `## ` headings and modifies each section independently. The sources list section is excluded from modification.
+**Purpose**: Apply critique feedback to revise the report section by section.
 
-Result: `CriticFeedback.passed == True` → `finalize` / `False` → `revise`
+**DSAP** (arxiv:2512.20660): JSON guard functions applied to all structured outputs. Level 1 (context refinement) + Level 2 (stagnation detection + strategy switch).
+
+Splits report by `## ` headings and modifies each section independently. Sources section excluded from modification.
 
 ---
 
-## 8. Chat Graph Nodes
+## 5. Chat Graph Nodes
 
-### router
-Classifies follow-up questions into 3 paths (max_tokens=200, temperature=0 — optimized for fast judgment):
-- `memory`: Can be answered directly from the report
+### router [LOCAL]
+Classifies follow-up questions into 3 paths (temperature=0, deterministic):
+- `memory`: Can be answered from the report
 - `targeted`: Needs 1–2 additional searches
-- `new_research`: Completely outside the scope of existing research
+- `new_research`: Outside scope of existing research
 
-### memory_answer
-Answers using the full report + citation sources + conversation history as context. Explicitly notifies when content is not in the report.
+### memory_answer [LOCAL]
+Answers using full report + citation sources + conversation history.
 
-### targeted_search
-Generates 1–2 search queries with an LLM → executes them → stores in `extra_citations` → adds context to `memory_answer`.
-
-### new_research_signal
-Generates a message indicating new research is needed. Guides the client to start a new research session.
+### targeted_search [LOCAL]
+Generates 1–2 search queries → executes → stores in `extra_citations` → adds context to memory_answer.
 
 ---
 
 ## Pipeline Performance Characteristics
 
-| Stage | Time | LLM calls |
-|------|-----------|-------------|
-| Plan generation | ~3s | 1 |
-| Parallel search (5 sub-queries) | ~15–30s | 5–15 (including CRAG) |
-| Gap detection | ~3s | 1 |
-| Gap additional search | ~5–10s | 1–3 |
-| Cross-validation | ~5s | 1 |
-| Report writing (brief) | ~5s | 1 |
-| Report writing (standard) | ~15s | 3 |
-| Report writing (detailed, N=5) | ~40s | 8 |
-| Quality review | ~5s | 1 |
-| **Total (normal + standard)** | **~50–80s** | **~14–27** |
-| **Total (deep + detailed)** | **~120–180s** | **~30–50** |
+From the paper (NVIDIA L4, Ubuntu 22.04):
 
-> Local LLM (Qwen3 8B, M1 Pro 16GB) is 3–5× slower than cloud.
-> The parallel search stage accounts for approximately 40–50% of total time.
-> In detailed mode, report writing is the second largest contributor.
+| Configuration | Latency/query | Cloud calls | Local calls |
+|---------------|---------------|-------------|-------------|
+| Cloud-only Sonnet | 270s | ~20+ | ~4 |
+| exaone3.5:2.4b + Sonnet | 233s | ~6–8 | ~18–22 |
+| gemma3:4b + Sonnet | 312s | ~6–8 | ~18–22 |
+| exaone3.5:2.4b (all-local) | 174s | 0 | ~22–26 |
+
+**Cloud call budget breakdown** (hybrid):
+```
+plan_elaboration (STRIDE Cq)        × 1
+crag_recheck (AMBIGUOUS only)       × 0–2  (conditional)
+synthesis (MASS-RAG)                × 3–4  (per sub-query)
+gap_detector                        × 1
+─────────────────────────────────────────
+Total                               5–8 calls
+```

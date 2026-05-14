@@ -1,260 +1,184 @@
-# Research Findings and Applied Studies
+# Research Findings — Stage-Aware Local-Cloud Inference
 
-Summarizes the technical investigations, analyses, and academic paper techniques actually incorporated into the pipeline during the development of this project.
+Summarizes the key findings from the paper and the applied academic techniques.
 
----
-
-## 1. Applied Academic Paper Techniques
-
-### 1.1 Query Decomposition
-**Paper**: arxiv:2507.00355
-**Results**: MRR@10 +36.7%, F1 +11.6%
-**Applied in**: `src/nodes/plan_generator.py`
-
-**Core idea**: By splitting a query into semantically distinct **decomposition dimensions** before searching, each sub-query covers a different document cluster, greatly improving overall recall.
-
-Instead of simply "split the query into N parts", specifying dimensions prevents overlap:
-- Definition/Background — conceptual documents
-- Status/Evidence — latest statistics and cases
-- Comparison/Alternatives — competing technologies
-- Cause/Mechanism — in-depth technical documents
-- Limitations/Challenges — critical analysis
-
-**Before vs After**:
-```
-Before: "quantum computing" → ["what is quantum computing", "quantum computing status", "quantum computing companies"]
-After: ["qubit definition and history" [Definition/Background],
-       "2025 quantum computer performance comparison" [Status/Evidence],
-       "quantum vs classical computing gap" [Comparison/Alternatives],
-       "decoherence problem mechanism" [Cause/Mechanism],
-       "commercialization barriers and cost challenges" [Limitations/Challenges]]
-```
+> **Paper**: Stage-Aware Local-Cloud Inference: Hybrid Pipelines Consistently Outperform Matched Cloud-Only Baselines
 
 ---
 
-### 1.2 CRAG (Corrective RAG)
-**Paper**: arxiv:2401.15884
-**Results**: Improved answer accuracy by removing irrelevant documents
-**Applied in**: `src/nodes/search_worker.py`
+## 1. Core Finding: The Trilemma is an Architectural Artifact
 
-**Core idea**: Instead of using search results as-is, an LLM evaluates the relevance of each result (Retrieval Evaluator) and classifies them into three tiers:
+The privacy-cost-quality trilemma in regulated-industry LLM deployments is not an inherent constraint — it is a consequence of treating all pipeline stages as equally demanding.
 
-```
-Search results
-    │
-    ▼
-LLM batch evaluation (1 call)
-    │
-    ├── "relevant"   → full body fetch, key extraction
-    │                  confidence = relevance_score × 1.0
-    │                  (if extraction returns empty → × 0.4 fallback)
-    ├── "partial"    → summary only
-    │                  confidence = relevance_score × 0.6 × 0.6
-    └── "irrelevant" → skip entirely
-                       (zero-citation guard: if all results irrelevant, top-2 promoted to partial)
-```
+**The trilemma**:
+- Privacy: Cloud APIs route queries and documents through third-party servers
+- Cost: Deep research pipelines push per-query costs above $1 at frontier pricing
+- Quality: Local-only pipelines degrade analytical depth
 
-**Dual filtering effect**:
-- Tavily relevance_score (0.7 or above): keyword matching-based first filter
-- CRAG LLM evaluation: semantic relevance to the question's intent, second filter
+**The resolution**: Stage-Aware Local-Cloud Inference routes each stage to the appropriate compute tier based on reasoning demand. System 1 stages (bounded-context operations on single documents) run locally on 2–4B models. System 2 stages (integrative reasoning across multiple sources) run on frontier cloud LLMs.
 
-Only documents that pass both filters are fully fetched → simultaneously reduces LLM cost and noise.
+**Empirical validation**: Every hybrid condition outperforms its matched cloud-only baseline across 35 conditions, 120 queries × 5 runs, evaluated by a Triple Judge Jury.
 
 ---
 
-### 1.3 AlignRAG
-**Paper**: arxiv:2504.14858
-**Results**: 8B critic achieves +12.1% accuracy improvement vs 72B (out-of-domain)
-**Applied in**: `src/nodes/critic.py`
+## 2. Applied Academic Paper Techniques
 
-**Core idea**: During report quality review, in addition to "is it well-written", separately verifies **whether the claims in the report align with the cited sources**. This is called a "factual alignment" check.
+### 2.1 CRAG — Corrective Retrieval-Augmented Generation
+**Paper**: arxiv:2401.15884 | **Phase**: Retrieval
 
-Problems that actually occur: LLM "exaggerates", "undersells", or "reasons without evidence" from source content.
+**Core idea**: Evaluate retrieved documents before generation and take corrective action based on quality. Three-way branch: CORRECT (≥0.5) → Decompose-then-Recompose, AMBIGUOUS (0.3–0.5) → cloud re-adjudication, INCORRECT (<0.3) → gap_detector delegation.
 
-**Implementation**: Includes citation source excerpts as context in the critique node, and adds a `misaligned_claims` item:
-```json
-{
-  "passed": false,
-  "misaligned_claims": [
-    "Report: 'X shows 100% success rate' → Source: 'X achieved approximately 80% success rate'"
-  ]
-}
-```
+**Stage-Aware adaptation**: CRAG classification runs locally (System 1 — single document at a time). Only AMBIGUOUS boundary cases are escalated to the cloud using title + 150-character excerpt only — never full document bodies.
 
-`misaligned_claims` are passed to the revise node and corrected to match the sources.
+**Implementation**: `src/nodes/search_worker.py`
+
+**Finding**: Small local models over-predict AMBIGUOUS due to low calibration confidence. Cloud re-adjudication of AMBIGUOUS cases (without document bodies) resolves this over-conservative tendency.
 
 ---
 
-### 1.4 DSAP Guard Functions
-**Paper**: arxiv:2512.20660
-**Results**: LLM parsing reliability +20–66pp
-**Applied in**: `src/utils/llm_json.py` (applied to all nodes)
+### 2.2 Query Decomposition + Speculative Reranking
+**Paper**: arxiv:2507.00355 | **Phase**: Planning + Retrieval
 
-**Core idea**: When an LLM returns malformed JSON, instead of a simple fallback, **feeding back the parse error information to the LLM** for a retry greatly improves the success rate.
+**Core idea**: Decompose complex queries into sub-questions for parallel retrieval (improves recall), then re-rank all candidate documents against the **original query** (restores precision). The Reranker is the paper's core contribution.
 
-**Implementation**:
-```
-Attempt 1: Normal call
-  → Parse success: return
-  → Parse failure: add error message + schema hint to conversation
+**Stage-Aware adaptation**: Entirely System 1 — no cloud contact. ONNX cross-encoder inference runs locally.
 
-Attempt 2: System prompt → "ONLY valid JSON. No markdown, no explanations."
-  → Parse success: return
-  → Parse failure: retry
+**Implementation**: `src/nodes/plan_generator.py`, `src/nodes/reranker.py`
 
-Attempt 3: ...
-
-Final failure: return fallback dictionary (safe default value per node)
-```
-
-Applied consistently across 6 nodes (plan_generator, search_worker, gap_detector, cross_validator, critic, router).
+**Finding**: Original query always preserved in sub-query list (Q = {q} ∪ Decompose(q)). Cross-encoder/ms-marco-MiniLM-L-6-v2 via fastembed (~80MB, ONNX backend).
 
 ---
 
-### 1.5 Speculative RAG — Removed
-**Paper**: arxiv:2407.08223
-**Reason for removal**: The paper's value proposition (small fine-tuned drafter + large verifier)
-does not fit either usage mode of this pipeline:
-- Bedrock/Claude users: already perform well without it (all_on → 0.97 overall score)
-- Local LLM users: cannot benefit without a large verifier model, which defeats the local-only purpose
+### 2.3 STRIDE — Strategic Iterative Decision-Making
+**Paper**: arxiv:2604.17405 | **Phase**: Planning
 
-The parallel fan-out search (Send API) that was previously labeled as "Speculative RAG" is now
-simply the default search architecture — it was never Speculative RAG to begin with.
+**Core idea**: Meta-Planner generates an abstract strategy Sq based on entity types (not specific entities), then converts to concrete plan Cq. Supervisor manages execution state, decides retrieve/rewrite/answer per sub-query.
 
----
+**Stage-Aware adaptation**: Sq generation runs locally (System 1 — bounded to the query). Cq elaboration runs on the cloud (System 2 — requires frontier reasoning), receiving only the skeleton. Original query never transmitted to cloud.
 
-## 2. Local LLM Technology Trend Survey (2025–2026)
+**Implementation**: `src/nodes/plan_generator.py`, `src/nodes/supervisor.py`
 
-For Phase 5 (Local LLM) implementation of DeepResearch, a survey of the latest local LLM landscape as of April 2026 was conducted.
-
-### Key Model Status
-
-| Model | Parameters | Features | Korean | Recommended Use |
-|------|----------|------|--------|-----------|
-| **Qwen3-14B** | 14B | Thinking Mode, balanced Korean/English | ★★★★☆ | DeepResearch default |
-| **Qwen3-32B** | 32B | Higher reasoning accuracy | ★★★★☆ | High-performance analysis |
-| **EXAONE-3.5:7.8B** | 7.8B | LG AI, Korean-specialized | ★★★★★ | Korean-only use |
-| **Llama4-Scout** | 17B (MoE) | 10M context, efficient | ★★★☆☆ | Long document processing |
-| **Phi-4** | 14B | Math and code specialized | ★★☆☆☆ | Technical fields |
-
-### Cloud vs Local LLM Performance Comparison (Measured Data)
-
-> The figures below are directly measured with `eval/benchmark.py`.
-> Test environment: M1 Pro 16GB, qwen3:8b (5.2GB), Ollama v0.4+
-> Detailed results: [`docs/BENCHMARK.md`](BENCHMARK.md)
-
-**Component benchmark measurements (11 tests)**:
-
-| Category | qwen3:8b (measured) | Claude Sonnet 4.6 (estimated from public benchmarks) |
-|---------|----------------|----------------------------------------|
-| JSON instruction compliance | **0.75** (3/4 passed) | ~0.98 |
-| Query decomposition quality | **0.62** (2/3 passed) | ~0.96 |
-| Reasoning and factual alignment | **0.80** (2/3 passed) | ~0.98 |
-| Korean response quality | **0.98** (1/1 passed) | ~0.99 |
-| **Overall score** | **74.9%** | **~97%** |
-| **Pass rate** | **72.7%** | **~95%** |
-
-**Speed measurements**:
-
-| Item | qwen3:8b (M1 Pro) | Claude Sonnet 4.6 |
-|------|-------------------|-------------------|
-| Average latency per call | **21.5s** | **~2–4s** |
-| `fast + brief` total | ~8–12 min | ~45–75s |
-| `normal + standard` total | ~15–25 min | ~2–4 min |
-| `deep + detailed` total | **~40–70 min** | **~8–15 min** |
-
-**Major failure patterns of qwen3:8b found in measurements**:
-
-1. **Thinking mode interference** (most common): Output inside `<think>` tags mixes with the actual response, causing JSON parse failures. The retry logic in `llm_json()` compensates for most cases, but increases latency.
-2. **Copying complex nested JSON templates**: Tendency to return example JSON as-is. Resolved with 2 DSAP retries.
-3. **Empty responses for comparison queries**: Cases where thinking becomes very long and actual output is empty. Requires retry.
-
-**Conclusions (updated based on measurements)**:
-
-| Scenario | Recommended Settings |
-|---------|---------|
-| Privacy required, speed not a concern | qwen3:8b + fast + brief |
-| Development/experimentation (zero cost) | qwen3:8b + normal + standard |
-| Production quality | Claude Sonnet + deep + detailed |
-| Balanced (speed + quality) | Claude Sonnet + normal + standard |
-
-### Effect of Improvement Techniques (When Applied to Local LLM)
-
-| Technique | Before | After | Improvement |
-|------|---------|---------|------|
-| Query Decomposition | Baseline | +36.7% MRR | Search coverage |
-| CRAG Evaluator | Baseline | ~40% noise reduction | Citation quality |
-| DSAP Guard | ~30% parse failures | ~5% parse failures | Stability |
-| AlignRAG Critique | Baseline | ~30% factual error reduction | Accuracy |
+**Finding**: The Sq→Cq split is the key privacy mechanism for the planning phase. The cloud elaborates from an entity-agnostic skeleton, not from the raw query.
 
 ---
 
-## 3. Architecture Pattern Survey
+### 2.4 MASS-RAG — Multi-Agent Synthesis RAG
+**Paper**: arxiv:2604.18509 | **Phase**: Drafting
 
-Key RAG architecture patterns evaluated during development:
+**Core idea**: Three parallel specialist agents (Summarizer, Extractor, Reasoner) process retrieved documents from different angles. A Synthesis Agent reconciles the three outputs.
 
-### Naive RAG vs Advanced RAG vs Agentic RAG
+**Stage-Aware adaptation**: All three drafting agents run locally (System 1 — each processes a bounded document set). Synthesis runs on the cloud (System 2 — integrates across multiple agent outputs), receiving only the locally-generated draft text — never the underlying documents.
 
-```
-Naive RAG:         query → search → LLM → answer
-                   Issues: 1 search pass, no gaps, no fact verification
+**Implementation**: `src/nodes/search_worker.py`
 
-Advanced RAG:      query rewriting → search → re-ranking → LLM → answer
-                   Improvement: higher search quality↑, lower speed↓
-
-Agentic RAG:       query decomposition → parallel search → gap detection → additional search
-(this project)      → cross-validation → write → critique → improve → complete
-                   Improvement: complex analytical questions, multi-angle coverage
-```
-
-This project follows the Agentic RAG pattern, specifically including an **iterative self-improvement loop** (critique → revise) and a **knowledge gap fill loop** (gap_detector → gap_search).
-
-### Why LangGraph Fits This Pattern
-
-1. **Cycle support**: revise → critique → revise loop
-2. **Conditional branching**: gap found/not found → different paths
-3. **Fan-out/join**: parallel search → single aggregation
-4. **Interrupt**: human-in-the-loop plan approval
-5. **Persistent State**: checkpoint for pausing and resuming
-
-DAG-based frameworks (LangChain Expression Language, etc.) do not support cycles, making this pattern impossible to implement.
+**Finding**: Local models generate imperfect but diverse raw material, creating genuine revision leverage for the cloud synthesis stage. This is absent when a frontier draft is already near-final — explaining why hybrid outperforms cloud-only.
 
 ---
 
-## 4. Prompt Engineering Patterns
+### 2.5 AlignRAG — Alignment-Based RAG Critic
+**Paper**: arxiv:2504.14858 | **Phase**: Verification
 
-Prompt design principles applied throughout the pipeline:
+**Core idea**: Detect misaligned claims in generated reports through 3-phase diagnosis: relevance assessment, query-evidence mapping, evidence-integrated synthesis.
 
-### ACI (Autonomous Context Integration) Principle
-Instead of putting entire web pages into the LLM context, extract only relevant content from search results before use.
+**Stage-Aware adaptation**: Entirely System 1 — self-critique runs locally. The local model checks its own draft against the evidence store without cloud involvement.
 
-```python
-# Bad example (context explosion)
-draft = await llm.complete(context=full_webpage_content)
+**Implementation**: `src/nodes/critic.py`
 
-# Good example (ACI)
-excerpt = await llm.complete(
-    "Extract 200 characters from this content that are relevant to the research question"
-)
-draft = await llm.complete(context=excerpt)
-```
+**Finding**: AlignRAG self-critique is a bounded-context operation (checking one claim against one source at a time) — well within System 1 capability. No cloud contact required.
 
-### Role Separation Principle
-Each node's LLM is assigned only one clear, single role:
-- plan_generator: "Research planning expert"
-- search_worker: "Information extraction expert"
-- gap_detector: "Coverage analysis expert"
-- critic: "Quality and factual alignment review expert"
+---
 
-Assigning multiple roles to a single node degrades quality due to role conflicts within the LLM.
+### 2.6 DSAP — Dual-State Architecture for Reliable LLM Agents
+**Paper**: arxiv:2512.20660 | **Phase**: Cross-cutting
 
-### Temperature Strategy
-| Node | Temperature | Reason |
-|------|-------------|--------|
-| router | 0.0 | Classification must be deterministic |
-| critique | 0.1 | Fact-checking requires precision |
-| search_worker (extraction) | 0.1 | Factual extraction, no creativity |
-| gap_detector | 0.2 | Low creativity, high accuracy |
-| plan_generator | 0.3 | Allow slight diversity |
-| revise | 0.3 | Revisions should be conservative |
-| write_draft | 0.4 | Creativity for fluent writing style |
+**Core idea**: Guard functions with three-level recovery. Level 1: retry with accumulated error feedback. Level 2: stagnation detection + strategy switch. Level 3: human escalation.
+
+**Stage-Aware adaptation**: Applied to all local model calls. Critical for System 1 reliability — local models produce more malformed JSON than frontier models.
+
+**Implementation**: `src/utils/llm_json.py`
+
+**Finding**: DSAP Level 1+2 is the reliability layer that makes System 1 local model calls production-viable. Without it, JSON parse failures would cascade through the pipeline.
+
+---
+
+### 2.7 RhinoInsight — VCM + EAM
+**Paper**: arxiv:2511.18743 | **Phase**: Planning + Verification
+
+**Core idea**: VCM (Verification Checklist Module) generates a structured checklist of sub-goals before research begins, tracks completion, surfaces uncovered goals to gap detection. EAM (Evidence Audit Module) normalizes retrieved results into a structured evidence store and binds specific citations to specific claims.
+
+**Stage-Aware adaptation**: Entirely System 1 — checklist generation and evidence normalization are bounded-context operations.
+
+**Implementation**: `src/nodes/checklist_node.py`, `src/nodes/evidence_auditor.py`
+
+**Finding**: VCM pending/partial subgoals feed into gap_detector as an independent hint axis, complementing CRAG signals and STRIDE rewrite signals.
+
+---
+
+### 2.8 CONSTRUCT — Real-Time Trustworthiness Scoring
+**Paper**: arxiv:2603.18014 | **Phase**: Verification
+
+**Core idea**: Score the trustworthiness of each field in LLM-generated structured output using a Judge LLM. Works on black-box APIs without logprobs or fine-tuning.
+
+**Stage-Aware adaptation**: Entirely System 1 — trustworthiness scoring is a bounded classification task on a single output field.
+
+**Implementation**: `src/nodes/quality_scorer.py`
+
+**Finding**: Applied to MASS-RAG outputs. Fields in `untrustworthy_fields` (score < 0.5) get hedging language hints in the writer prompt and increased scrutiny in the critic prompt.
+
+---
+
+## 3. Key Experimental Findings
+
+### 3.1 Every hybrid condition outperforms its matched cloud-only baseline
+
+Across all 35 conditions, every hybrid configuration outperforms the cloud-only baseline using the same cloud model. This holds for all three cloud backends (Sonnet 4.6, Haiku 4.5, Llama 3.3 70B) and all eight local model configurations.
+
+The quality gain is not attributable to model diversity — it follows from offloading System 1 stages to a local model alone.
+
+### 3.2 2.4B local model achieves best overall quality
+
+exaone3.5:2.4b + Sonnet 4.6 achieves 0.869 — the highest quality across all 35 conditions, including all cloud-only and larger-model hybrid configurations. This exceeds cloud-only Sonnet (0.798) by 7.1 points.
+
+### 3.3 Hybrid+Haiku Pareto-dominates cloud-only Sonnet
+
+exaone3.5:2.4b + Haiku 4.5 achieves 0.828 at $0.093/query — simultaneously better quality, 12× lower cost, and stronger privacy than cloud-only Sonnet ($1.128/query, 0.798).
+
+### 3.4 All-local is viable for air-gapped deployments
+
+exaone3.5:2.4b all-local achieves 0.802 — above cloud-only Haiku (0.671) and cloud-only Llama 70B (0.688), at zero cloud cost. The 6–7 point gap vs. Hybrid+Sonnet is the cost of complete privacy.
+
+### 3.5 Cloud token reduction: 65–92%
+
+Average cloud input tokens reduced from 136,891 (cloud-only Sonnet) to 10,700–54,731 (hybrid). The most privacy-aggressive condition (qwen3:4b + Llama 70B) achieves 92.2% reduction while scoring 0.799 — above both weaker cloud-only baselines.
+
+---
+
+## 4. Why Local Models Improve System 1 Stages
+
+An unexpected finding: replacing frontier-model System 1 stages with 2–4B local models not only preserves but improves overall quality. Two mechanisms:
+
+**Task-scope alignment**: Frontier models over-elaborate outputs for constrained generation tasks (CRAG classification, trust scoring), producing verbose reasoning where a concise label is required. Smaller models, with narrower output distributions, stay on-task more reliably.
+
+**Synthesis leverage**: When local models generate section drafts, the cloud synthesis stage receives imperfect but diverse raw material, creating genuine revision leverage absent when a frontier draft is already near-final.
+
+---
+
+## 5. Failure Modes
+
+**Capacity-limited cloud backend**: Hybrid quality degrades when the System 2 cloud model is capacity-limited. Hybrid+Llama 70B conditions fall below the Sonnet baseline but remain above weaker cloud-only baselines. Practitioners should prioritize cloud backend quality over local model size.
+
+**Model-family dependency**: The sufficiency threshold for local model size varies across architectures. qwen3:4b (0.801) falls below qwen3:8b (0.855) in the same tier, while exaone3.5:2.4b (0.869) exceeds all larger models. Validate within your target model family.
+
+**qwen3:4b all-local bimodal distribution**: qwen3:4b all-local shows a bimodal score distribution (σ=0.337): 35% of queries score ≤0.3, 50% score ≥0.8. Not recommended for all-local deployment.
+
+---
+
+## 6. Benchmark Methodology
+
+**120 multilingual queries**: 100 English + 10 Korean + 10 Japanese, spanning 5 domains (AI/ML, Science & Tech, Business, Medical, Law & Policy) and 5 query types (Analytical, Definitional, Current-state, Comparative, Factual).
+
+**Triple Judge Jury**: DeepSeek R1 (671B), Claude Opus 4.6, Mistral Large 3 (675B). Median of three judges from distinct training lineages. G-Eval rubric with 5 anchored dimensions (Coverage, Accuracy, Citation Quality, Depth, Coherence).
+
+**Statistical rigor**: N=600 per condition (120 queries × 5 runs). Paired Wilcoxon signed-rank tests with Bonferroni correction. Cohen's d effect sizes.
+
+**Inter-judge reliability**: Condition-level Pearson r = 0.82–0.85 (A↔B, A↔C). Judges agree on system rankings despite different absolute scales.
